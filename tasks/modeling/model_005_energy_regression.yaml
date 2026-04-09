@@ -1,0 +1,79 @@
+task_id: model_005
+title: "Multi-Model Regression Pipeline for Energy Consumption"
+difficulty: hard
+category: modeling
+description: |
+  You are given a building energy consumption dataset.
+  Your task is to:
+  1. Split into train (80%) and test (20%) with random_state=42. Standardize features.
+  2. Train three regression models: LinearRegression, RandomForestRegressor (n_estimators=100),
+     and GradientBoostingRegressor (n_estimators=100). All with random_state=42 where applicable.
+  3. Report test RMSE and R² for all three models.
+  4. Identify which model achieves the best (lowest) test RMSE.
+  5. For the best model, report the top 3 most important features.
+  6. Report the 5-fold cross-validated R² (mean ± std) for the best model.
+  7. State whether solar_panels has a negative coefficient / negative importance
+     (i.e., reduces energy use as expected).
+
+dataset:
+  generator: energy_consumption
+  seed: 42
+  n_rows: 600
+  schema:
+    building_area: float
+    num_floors: int
+    occupants: int
+    avg_temp_celsius: float
+    insulation_rating: float
+    hvac_age_years: int
+    windows_ratio: float
+    solar_panels: int
+    building_type: int
+    energy_kwh_per_day: float
+
+ground_truth:
+  rmse_all_models_reported: true
+  rmse_all_models_reported_aliases:
+    - "rmse"
+    - "root mean square"
+    - "linear"
+    - "random forest"
+    - "gradient boost"
+    - "three models"
+    - "all models"
+  solar_negative_effect: true
+  solar_negative_effect_aliases:
+    - "solar"
+    - "negative"
+    - "reduces"
+    - "lower energy"
+    - "solar_panels"
+  cv_r2_reported: true
+  cv_r2_reported_aliases:
+    - "cross-val"
+    - "5-fold"
+    - "r2"
+    - "r-squared"
+    - "cv"
+
+scoring:
+  correctness_weight: 0.40
+  code_quality_weight: 0.15
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.30
+
+evaluation:
+  max_steps: 40
+  timeout_seconds: 300
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - regression
+  - random_forest
+  - gradient_boosting
+  - energy
+  - model_comparison
+  - cross_validation

@@ -1,0 +1,78 @@
+task_id: stat_005
+title: "Statistical Process Control — Manufacturing Defect Analysis"
+difficulty: hard
+category: statistical_inference
+description: |
+  You are given a manufacturing quality control dataset with measurements from two machines.
+  Your task is to:
+  1. Compute the defect rate (%) for machine A and machine B separately.
+  2. Run a chi-squared test (or z-test for proportions) to determine if machine B has
+     a significantly higher defect rate than machine A (α=0.05).
+  3. Compute the process capability index Cp = (USL - LSL) / (6 * sigma) for each machine,
+     where spec limits are [9.5, 10.5]. Report Cp for both machines.
+  4. State whether machine A is capable (Cp >= 1.33).
+  5. Detect if machine B shows measurement drift: compute the Pearson correlation between
+     batch_id (for machine B only) and measurement. Report correlation and p-value.
+  6. Report mean and std of measurements for each machine.
+
+dataset:
+  generator: manufacturing_quality
+  seed: 42
+  n_rows: 500
+  schema:
+    batch_id: int
+    machine: str
+    shift: int
+    measurement: float
+    temperature: float
+    humidity: float
+    defect: int
+
+ground_truth:
+  defect_rate_compared: true
+  defect_rate_compared_aliases:
+    - "defect rate"
+    - "machine A"
+    - "machine B"
+    - "chi-squared"
+    - "proportion"
+    - "significant"
+  cp_reported: true
+  cp_reported_aliases:
+    - "Cp"
+    - "process capability"
+    - "capability index"
+    - "1.33"
+    - "capable"
+    - "USL"
+    - "LSL"
+  drift_detected: true
+  drift_detected_aliases:
+    - "drift"
+    - "correlation"
+    - "batch_id"
+    - "increasing"
+    - "trend"
+    - "Pearson"
+
+scoring:
+  correctness_weight: 0.40
+  code_quality_weight: 0.15
+  efficiency_weight: 0.10
+  stat_validity_weight: 0.35
+
+evaluation:
+  max_steps: 40
+  timeout_seconds: 300
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - spc
+  - process_control
+  - chi_squared
+  - process_capability
+  - manufacturing
+  - drift_detection

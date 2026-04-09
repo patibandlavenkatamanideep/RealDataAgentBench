@@ -1,0 +1,71 @@
+task_id: model_001
+title: "Logistic Regression for Diabetes Prediction"
+difficulty: easy
+category: modeling
+description: |
+  You are given a diabetes prediction dataset with medical features.
+  Your task is to:
+  1. Split the data into train (80%) and test (20%) sets with random_state=42.
+  2. Standardize the numeric features using StandardScaler.
+  3. Train a Logistic Regression model (max_iter=1000, random_state=42).
+  4. Report the test Accuracy and ROC-AUC score.
+  5. Identify the top 3 most important features by absolute coefficient magnitude.
+  6. State whether glucose is the most predictive feature.
+
+dataset:
+  generator: diabetes_prediction
+  seed: 42
+  n_rows: 800
+  schema:
+    pregnancies: int
+    glucose: float
+    blood_pressure: float
+    skin_thickness: float
+    insulin: float
+    bmi: float
+    diabetes_pedigree: float
+    age: int
+    diabetes: int
+
+ground_truth:
+  glucose_top_feature: true
+  glucose_top_feature_aliases:
+    - "glucose"
+    - "most predictive"
+    - "top feature"
+    - "highest coefficient"
+    - "largest weight"
+  roc_auc_reported: true
+  roc_auc_reported_aliases:
+    - "roc_auc"
+    - "roc-auc"
+    - "auc"
+    - "area under"
+    - "roc auc"
+  accuracy_reported: true
+  accuracy_reported_aliases:
+    - "accuracy"
+    - "correct"
+    - "0."
+    - "test accuracy"
+
+scoring:
+  correctness_weight: 0.40
+  code_quality_weight: 0.20
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.25
+
+evaluation:
+  max_steps: 20
+  timeout_seconds: 180
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - logistic_regression
+  - classification
+  - roc_auc
+  - diabetes
+  - sklearn

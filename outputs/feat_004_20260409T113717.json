@@ -1,0 +1,23 @@
+{
+  "task_id": "feat_004",
+  "title": "Feature Importance & Selection Pipeline for Credit Risk",
+  "difficulty": "hard",
+  "category": "feature_engineering",
+  "model": "claude-sonnet-4-6",
+  "run_at": "2026-04-09T11:37:17.830197+00:00",
+  "dataset_shape": [
+    800,
+    16
+  ],
+  "trace": {
+    "task_id": "feat_004",
+    "model": "claude-sonnet-4-6",
+    "final_answer": "",
+    "total_input_tokens": 0,
+    "total_output_tokens": 0,
+    "total_elapsed_seconds": 0.0,
+    "num_steps": 0,
+    "error": "Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CZt8VvC9WkSbKYLhAft8m'}",
+    "steps": []
+  }
+}

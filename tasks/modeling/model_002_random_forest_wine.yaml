@@ -1,0 +1,78 @@
+task_id: model_002
+title: "Random Forest Classifier for Wine Quality"
+difficulty: medium
+category: modeling
+description: |
+  You are given a wine quality dataset with physicochemical properties.
+  Your task is to:
+  1. Predict high_quality (1 if quality >= 7, else 0) using all other numeric features
+     (exclude the raw quality column).
+  2. Split into train (75%) and test (25%) with random_state=42.
+  3. Train a Random Forest classifier (n_estimators=100, random_state=42).
+  4. Report test Accuracy, Precision, Recall, and F1-score (macro).
+  5. Plot (or report) feature importances — which feature ranks #1?
+  6. Tune the model by trying max_depth in [3, 5, None] using 5-fold CV and report
+     the best max_depth and its cross-validated F1 (macro).
+
+dataset:
+  generator: wine_quality
+  seed: 42
+  n_rows: 800
+  schema:
+    fixed_acidity: float
+    volatile_acidity: float
+    citric_acid: float
+    residual_sugar: float
+    chlorides: float
+    free_sulfur_dioxide: float
+    total_sulfur_dioxide: float
+    density: float
+    ph: float
+    sulphates: float
+    alcohol: float
+    quality: int
+    high_quality: int
+
+ground_truth:
+  alcohol_top_feature: true
+  alcohol_top_feature_aliases:
+    - "alcohol"
+    - "most important"
+    - "top feature"
+    - "highest importance"
+    - "feature importance"
+  cv_tuning_done: true
+  cv_tuning_done_aliases:
+    - "cross-val"
+    - "cross val"
+    - "5-fold"
+    - "GridSearch"
+    - "best max_depth"
+    - "tuned"
+  f1_reported: true
+  f1_reported_aliases:
+    - "f1"
+    - "f1-score"
+    - "f1 score"
+    - "macro"
+
+scoring:
+  correctness_weight: 0.40
+  code_quality_weight: 0.15
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.30
+
+evaluation:
+  max_steps: 30
+  timeout_seconds: 240
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - random_forest
+  - classification
+  - feature_importance
+  - cross_validation
+  - wine_quality

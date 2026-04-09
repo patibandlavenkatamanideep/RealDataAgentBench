@@ -1,0 +1,74 @@
+task_id: model_003
+title: "Ridge vs Lasso Regression for Student Performance"
+difficulty: medium
+category: modeling
+description: |
+  You are given a student performance dataset. Predict final_score from all other features.
+  Your task is to:
+  1. Split into train (80%) and test (20%) with random_state=42. Standardize features.
+  2. Train a Ridge regression (alpha=1.0) and a Lasso regression (alpha=0.1).
+  3. Report test RMSE and R² for both models.
+  4. Identify which model achieves lower test RMSE.
+  5. For the Lasso model, report how many features have zero coefficients (are eliminated).
+  6. State whether study_hours is in the top 3 most important features (by |coefficient|)
+     in the Ridge model.
+
+dataset:
+  generator: student_performance
+  seed: 42
+  n_rows: 700
+  schema:
+    study_hours: float
+    attendance_pct: float
+    prev_score: float
+    sleep_hours: float
+    tutoring: int
+    extracurricular: int
+    parental_education: int
+    internet_access: int
+    num_absences: int
+    final_score: float
+
+ground_truth:
+  rmse_reported: true
+  rmse_reported_aliases:
+    - "rmse"
+    - "root mean square"
+    - "mean squared error"
+    - "mse"
+  lasso_sparsity_reported: true
+  lasso_sparsity_reported_aliases:
+    - "zero coefficient"
+    - "zero coeff"
+    - "eliminated"
+    - "lasso"
+    - "sparse"
+    - "feature eliminated"
+  r2_reported: true
+  r2_reported_aliases:
+    - "r2"
+    - "r-squared"
+    - "r²"
+    - "coefficient of determination"
+
+scoring:
+  correctness_weight: 0.40
+  code_quality_weight: 0.15
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.30
+
+evaluation:
+  max_steps: 25
+  timeout_seconds: 180
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - regression
+  - ridge
+  - lasso
+  - regularization
+  - rmse
+  - student_performance

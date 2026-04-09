@@ -1,7 +1,7 @@
 # RealDataAgentBench
 
 [![CI](https://github.com/patibandlavenkatamanideep/RealDataAgentBench/actions/workflows/ci.yml/badge.svg)](https://github.com/patibandlavenkatamanideep/RealDataAgentBench/actions)
-[![Tests](https://img.shields.io/badge/tests-120%20passing-brightgreen)](https://github.com/patibandlavenkatamanideep/RealDataAgentBench/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-120%2B%20passing-brightgreen)](https://github.com/patibandlavenkatamanideep/RealDataAgentBench/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue)](https://github.com/patibandlavenkatamanideep/RealDataAgentBench/blob/main/LICENSE)
 
@@ -54,8 +54,9 @@ git clone https://github.com/patibandlavenkatamanideep/RealDataAgentBench
 cd RealDataAgentBench
 pip install -e ".[dev]"
 
-# 2. Add your API key
-echo "ANTHROPIC_API_KEY=sk-ant-..." > .env
+# 2. Add your API keys (.env file)
+echo "ANTHROPIC_API_KEY=sk-ant-..." >> .env
+echo "OPENAI_API_KEY=sk-..."       >> .env
 
 # 3. List all tasks
 dab list
@@ -63,30 +64,65 @@ dab list
 # 4. Dry-run (validates dataset loading, no API call)
 dab run eda_001 --dry-run
 
-# 5. Live run
+# 5. Live run (default: claude-sonnet-4-6)
 dab run eda_001
 
-# 6. Score the result
+# 6. Run with a different model
+dab run eda_001 --model gpt-4o
+dab run eda_001 --model gpt-4o-mini
+dab run eda_001 --model haiku
+
+# 7. Score the result
 dab score outputs/eda_001_<timestamp>.json
 
-# 7. Run all tasks
-dab run --all
+# 8. Run all tasks with one model
+dab run --all --model gpt-4o-mini
+
+# 9. See all supported models + API key status
+dab models
 ```
 
 ---
 
-## Tasks (8 total)
+## Tasks (18 total)
 
-| ID | Title | Difficulty | Category | Key Concepts |
-|----|-------|-----------|----------|-------------|
-| eda_001 | Income Distribution Analysis | Easy | EDA | Skewness, log transform |
-| eda_002 | Patient Records — Missing Data & Outlier Audit | Medium | EDA | Missing rates, IQR outliers |
-| eda_003 | E-Commerce Confounding Variable Detection | Hard | EDA | Simpson's Paradox, partial correlation |
-| feat_001 | Polynomial Feature Engineering for House Prices | Easy | Feature Engineering | Interaction terms, R² comparison |
-| feat_002 | Categorical Encoding & Feature Selection | Medium | Feature Engineering | One-hot encoding, RF feature importance |
-| feat_003 | Datetime Feature Extraction for Retail Sales | Medium | Feature Engineering | Datetime parsing, weekend effect |
-| feat_004 | Feature Selection Pipeline for Credit Risk | Hard | Feature Engineering | Multicollinearity, ROC-AUC, Gradient Boosting |
-| feat_005 | Feature Engineering for Imbalanced Fraud Detection | Hard | Feature Engineering | SMOTE, F1-score, class imbalance |
+### Exploratory Data Analysis (3)
+
+| ID | Title | Difficulty | Key Concepts |
+|----|-------|-----------|-------------|
+| eda_001 | Income Distribution Analysis | Easy | Skewness, log transform |
+| eda_002 | Patient Records — Missing Data & Outlier Audit | Medium | Missing rates, IQR outliers |
+| eda_003 | E-Commerce Confounding Variable Detection | Hard | Simpson's Paradox, partial correlation |
+
+### Feature Engineering (5)
+
+| ID | Title | Difficulty | Key Concepts |
+|----|-------|-----------|-------------|
+| feat_001 | Polynomial Feature Engineering for House Prices | Easy | Interaction terms, R² comparison |
+| feat_002 | Categorical Encoding & Feature Selection | Medium | One-hot encoding, RF feature importance |
+| feat_003 | Datetime Feature Extraction for Retail Sales | Medium | Datetime parsing, weekend effect |
+| feat_004 | Feature Selection Pipeline for Credit Risk | Hard | Multicollinearity, ROC-AUC, Gradient Boosting |
+| feat_005 | Feature Engineering for Imbalanced Fraud Detection | Hard | SMOTE, F1-score, class imbalance |
+
+### Modeling (5)
+
+| ID | Title | Difficulty | Key Concepts |
+|----|-------|-----------|-------------|
+| model_001 | Logistic Regression for Diabetes Prediction | Easy | Coefficients, ROC-AUC, feature ranking |
+| model_002 | Random Forest for Wine Quality | Medium | Feature importance, CV tuning, F1 |
+| model_003 | Ridge vs Lasso for Student Performance | Medium | Regularization, RMSE, sparsity |
+| model_004 | Gradient Boosting for Customer Churn | Hard | Confusion matrix, CV AUC, model comparison |
+| model_005 | Multi-Model Regression for Energy Consumption | Hard | RMSE comparison, CV R², feature importance |
+
+### Statistical Inference (5)
+
+| ID | Title | Difficulty | Key Concepts |
+|----|-------|-----------|-------------|
+| stat_001 | A/B Test — Conversion Rate Experiment | Easy | z-test, confidence intervals, lift |
+| stat_002 | Clinical Trial — Drug Efficacy Test | Medium | t-test, Cohen's d, baseline balance |
+| stat_003 | Salary Gap Analysis — Controlling for Confounders | Hard | OLS regression, pay gap, confounding |
+| stat_004 | Time Series Decomposition — Sales Trend & Seasonality | Medium | Decomposition, trend, seasonality |
+| stat_005 | Statistical Process Control — Manufacturing Defects | Hard | Cp index, drift detection, chi-squared |
 
 ---
 
@@ -113,11 +149,12 @@ dataagentbench/
 │   ├── task.py           # Pydantic schema — validates every YAML field
 │   └── registry.py       # Discovers, loads, and filters tasks
 ├── datasets/
-│   └── generators/       # Seeded, reproducible dataset generators (8 datasets)
+│   └── generators/       # Seeded, reproducible dataset generators (18 datasets)
 ├── harness/
 │   ├── tools.py          # Sandboxed agent tools (run_code, get_dataframe_info, get_column_stats)
 │   ├── tracer.py         # Records every step, tool call, and token count
-│   ├── agent.py          # Claude agentic loop with tool use
+│   ├── agent.py          # Multi-model agentic loop (Claude, GPT-4o, GPT-4o-mini, Haiku)
+│   ├── providers.py      # Unified BaseProvider for Anthropic + OpenAI
 │   └── runner.py         # Orchestrates task → dataset → agent → trace → JSON
 ├── scoring/
 │   ├── correctness.py    # Ground truth matching with alias expansion
@@ -125,10 +162,12 @@ dataagentbench/
 │   ├── efficiency.py     # Token and step efficiency vs. budget
 │   ├── stat_validity.py  # Statistical rigour signals
 │   └── composite.py      # Weighted RDAB Score + ScoreCard
-└── cli.py                # dab run / list / inspect / score
+└── cli.py                # dab run / list / inspect / score / models
 tasks/
 ├── eda/                  # 3 EDA tasks
-└── feature_engineering/  # 5 feature engineering tasks
+├── feature_engineering/  # 5 feature engineering tasks
+├── modeling/             # 5 modeling tasks
+└── statistical_inference/ # 5 statistical inference tasks
 tests/                    # 120 offline tests — no API calls required
 scripts/
 └── build_leaderboard.py  # Aggregates outputs/ → docs/results.json
@@ -170,8 +209,9 @@ pytest tests/ --cov=dataagentbench --cov-report=term-missing
 - [x] Phase 1 — Task schema, harness, scoring engine, 120 tests
 - [x] Phase 2 — 8 tasks across EDA + Feature Engineering
 - [x] Phase 3 — GitHub Pages leaderboard with auto-rebuild CI
-- [ ] Multi-model support (GPT-4o, Gemini 1.5 Pro, Llama-3)
-- [ ] 30+ tasks (modeling, visualization, inference categories)
+- [x] Phase 4 — Multi-model support (GPT-4o, GPT-4o-mini, Claude Haiku, Claude Sonnet)
+- [x] Phase 5 — 18 tasks across 4 categories (EDA, Feature Engineering, Modeling, Statistical Inference)
+- [ ] 30+ tasks (visualization, NLP, time series categories)
 - [ ] Human baseline scores
 - [ ] arXiv paper
 

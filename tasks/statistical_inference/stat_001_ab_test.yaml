@@ -1,0 +1,72 @@
+task_id: stat_001
+title: "A/B Test Analysis — Conversion Rate Experiment"
+difficulty: easy
+category: statistical_inference
+description: |
+  You are given an A/B test dataset with control and treatment groups.
+  Your task is to:
+  1. Report the conversion rate for each group (control vs treatment).
+  2. Compute the absolute lift (treatment_rate - control_rate) and relative lift.
+  3. Run a two-proportion z-test (or chi-squared test) to test H0: no difference in conversion.
+  4. Report the p-value and state whether the result is statistically significant (α=0.05).
+  5. Compute a 95% confidence interval for the conversion rate difference.
+  6. Report the average revenue per user for each group.
+
+dataset:
+  generator: ab_test
+  seed: 42
+  n_rows: 1000
+  schema:
+    group: str
+    converted: int
+    revenue: float
+    age: int
+    device: str
+    session_duration_sec: float
+    prior_purchases: int
+
+ground_truth:
+  significant_result: true
+  significant_result_aliases:
+    - "significant"
+    - "p < 0.05"
+    - "p-value"
+    - "reject"
+    - "statistically"
+    - "p ="
+  confidence_interval_reported: true
+  confidence_interval_reported_aliases:
+    - "confidence interval"
+    - "95% CI"
+    - "CI"
+    - "95%"
+    - "interval"
+  lift_reported: true
+  lift_reported_aliases:
+    - "lift"
+    - "absolute"
+    - "relative"
+    - "difference"
+    - "treatment rate"
+    - "control rate"
+
+scoring:
+  correctness_weight: 0.45
+  code_quality_weight: 0.15
+  efficiency_weight: 0.10
+  stat_validity_weight: 0.30
+
+evaluation:
+  max_steps: 20
+  timeout_seconds: 180
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - ab_test
+  - hypothesis_testing
+  - z_test
+  - confidence_interval
+  - conversion_rate

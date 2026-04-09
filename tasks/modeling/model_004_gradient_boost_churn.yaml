@@ -1,0 +1,78 @@
+task_id: model_004
+title: "Gradient Boosting for Customer Churn Prediction"
+difficulty: hard
+category: modeling
+description: |
+  You are given a telecom customer churn dataset.
+  Your task is to:
+  1. Split data into train (80%) and test (20%) with random_state=42.
+  2. Train a GradientBoostingClassifier (n_estimators=100, random_state=42).
+  3. Report test ROC-AUC, Precision, Recall, and F1 (binary, positive=churn).
+  4. Plot or report the confusion matrix values (TP, FP, TN, FN).
+  5. Compute 5-fold cross-validated ROC-AUC on the training set.
+  6. Compare vs a Logistic Regression baseline — does GBM outperform by > 0.02 AUC?
+  7. Report the top 3 features driving churn predictions.
+
+dataset:
+  generator: customer_churn
+  seed: 42
+  n_rows: 900
+  schema:
+    tenure_months: int
+    monthly_charges: float
+    total_charges: float
+    num_services: int
+    contract_type: int
+    payment_method: int
+    tech_support: int
+    online_security: int
+    senior_citizen: int
+    paperless_billing: int
+    churn: int
+
+ground_truth:
+  roc_auc_reported: true
+  roc_auc_reported_aliases:
+    - "roc_auc"
+    - "roc-auc"
+    - "auc"
+    - "area under"
+  confusion_matrix_reported: true
+  confusion_matrix_reported_aliases:
+    - "confusion matrix"
+    - "TP"
+    - "FP"
+    - "TN"
+    - "FN"
+    - "true positive"
+    - "false positive"
+  gbm_vs_lr_compared: true
+  gbm_vs_lr_compared_aliases:
+    - "logistic regression"
+    - "baseline"
+    - "compared"
+    - "outperform"
+    - "LR"
+    - "gradient boost"
+
+scoring:
+  correctness_weight: 0.40
+  code_quality_weight: 0.15
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.30
+
+evaluation:
+  max_steps: 40
+  timeout_seconds: 300
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - gradient_boosting
+  - churn
+  - roc_auc
+  - confusion_matrix
+  - classification
+  - telecom

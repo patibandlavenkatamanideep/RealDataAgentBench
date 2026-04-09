@@ -1,0 +1,76 @@
+task_id: stat_002
+title: "Clinical Trial — Drug Efficacy Hypothesis Test"
+difficulty: medium
+category: statistical_inference
+description: |
+  You are given a randomized clinical trial dataset comparing a drug vs placebo
+  on blood pressure reduction.
+  Your task is to:
+  1. Report mean bp_reduction for the drug group and the placebo group separately.
+  2. Run an independent samples t-test (assume unequal variances) on bp_reduction.
+  3. Report the t-statistic, p-value, and whether the drug effect is significant (α=0.05).
+  4. Report Cohen's d effect size for the treatment effect.
+  5. Compute a 95% confidence interval for the mean difference in bp_reduction.
+  6. Check for baseline balance: compare baseline_bp between groups using a t-test.
+     Report whether the groups are balanced (p > 0.05).
+
+dataset:
+  generator: clinical_trial
+  seed: 42
+  n_rows: 300
+  schema:
+    patient_id: int
+    treatment: int
+    age: int
+    baseline_bp: float
+    bmi: float
+    smoker: int
+    comorbidities: int
+    follow_up_bp: float
+    bp_reduction: float
+
+ground_truth:
+  significant_drug_effect: true
+  significant_drug_effect_aliases:
+    - "significant"
+    - "p < 0.05"
+    - "p-value"
+    - "reject"
+    - "t-test"
+    - "drug effect"
+  cohens_d_reported: true
+  cohens_d_reported_aliases:
+    - "cohen"
+    - "effect size"
+    - "cohens d"
+    - "d ="
+    - "standardized"
+  baseline_balance_checked: true
+  baseline_balance_checked_aliases:
+    - "baseline"
+    - "balanced"
+    - "balance check"
+    - "baseline_bp"
+    - "randomization"
+
+scoring:
+  correctness_weight: 0.40
+  code_quality_weight: 0.15
+  efficiency_weight: 0.10
+  stat_validity_weight: 0.35
+
+evaluation:
+  max_steps: 25
+  timeout_seconds: 180
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - clinical_trial
+  - t_test
+  - effect_size
+  - cohens_d
+  - hypothesis_testing
+  - rct

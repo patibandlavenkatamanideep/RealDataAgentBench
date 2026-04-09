@@ -1,0 +1,78 @@
+task_id: stat_003
+title: "Salary Gap Analysis — Controlling for Confounders"
+difficulty: hard
+category: statistical_inference
+description: |
+  You are given a salary survey dataset. Investigate whether a gender pay gap exists.
+  Your task is to:
+  1. Report the raw mean salary for each gender (unadjusted gap).
+  2. Run a t-test on salary by gender and report p-value.
+  3. Fit an OLS regression: salary ~ gender + years_experience + role_level + department.
+     Report the gender coefficient and its p-value (controlling for confounders).
+  4. State whether the raw gap is statistically significant AND whether the
+     controlled gap (regression coefficient) is also significant (α=0.05).
+  5. Report which confounder has the largest effect on salary (highest |coefficient|).
+  6. State whether the raw gender gap is reduced after controlling for experience and role
+     (i.e., compare raw gap vs adjusted coefficient).
+
+dataset:
+  generator: salary_survey
+  seed: 42
+  n_rows: 600
+  schema:
+    gender: str
+    department: str
+    years_experience: int
+    education: str
+    role_level: str
+    performance_score: float
+    salary: int
+
+ground_truth:
+  raw_gap_reported: true
+  raw_gap_reported_aliases:
+    - "raw"
+    - "unadjusted"
+    - "mean salary"
+    - "gender gap"
+    - "t-test"
+    - "p-value"
+  controlled_regression_done: true
+  controlled_regression_done_aliases:
+    - "regression"
+    - "OLS"
+    - "controlling"
+    - "confounder"
+    - "coefficient"
+    - "adjusted"
+  gap_reduced_after_control: true
+  gap_reduced_after_control_aliases:
+    - "reduced"
+    - "smaller"
+    - "explained"
+    - "after controlling"
+    - "adjusted gap"
+    - "role"
+    - "experience"
+
+scoring:
+  correctness_weight: 0.40
+  code_quality_weight: 0.15
+  efficiency_weight: 0.10
+  stat_validity_weight: 0.35
+
+evaluation:
+  max_steps: 35
+  timeout_seconds: 240
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - regression
+  - pay_gap
+  - confounding
+  - ols
+  - hypothesis_testing
+  - salary
