@@ -12,7 +12,8 @@ env/
 .coverage
 htmlcov/
 .pytest_cache/
-outputs/
 *.json
 !tasks/**/*.yaml
+!outputs/*.json
+!docs/results.json
 .DS_Store

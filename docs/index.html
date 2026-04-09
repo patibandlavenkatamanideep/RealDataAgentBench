@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataAgentBench — Leaderboard</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2a2d3a;
+      --text: #e2e4ed;
+      --muted: #6b7280;
+      --accent: #6366f1;
+      --accent-dim: #3730a3;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --red: #ef4444;
+      --easy: #22c55e;
+      --medium: #eab308;
+      --hard: #ef4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 2rem 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    header h1 span { color: var(--accent); }
+
+    header p {
+      color: var(--muted);
+      margin-top: 0.4rem;
+      font-size: 0.95rem;
+    }
+
+    .meta {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .meta span { display: flex; align-items: center; gap: 0.3rem; }
+
+    main { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+
+    /* Model summary cards */
+    .model-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .model-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.2rem 1.4rem;
+    }
+
+    .model-card .rank {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .model-card .name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 0.3rem 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .model-card .score {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .model-card .tasks-run {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    /* Section title */
+    .section-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .filter-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.35rem 0.9rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+      color: #fff;
+    }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    thead th {
+      background: var(--surface);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      border-bottom: 1px solid var(--border);
+    }
+
+    thead th:hover { color: var(--text); }
+    thead th.sorted { color: var(--accent); }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.1s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--surface); }
+
+    td {
+      padding: 0.85rem 1rem;
+      white-space: nowrap;
+    }
+
+    td.task-title { white-space: normal; min-width: 200px; }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    .badge-easy   { background: #14532d; color: var(--easy); }
+    .badge-medium { background: #422006; color: var(--yellow); }
+    .badge-hard   { background: #450a0a; color: var(--red); }
+
+    .score-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 90px;
+    }
+
+    .score-bar {
+      flex: 1;
+      height: 5px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+      min-width: 50px;
+    }
+
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: var(--accent);
+    }
+
+    .score-val {
+      font-variant-numeric: tabular-nums;
+      font-size: 0.85rem;
+      font-weight: 600;
+      min-width: 36px;
+      text-align: right;
+    }
+
+    .dab-score { color: var(--accent); font-size: 0.95rem; }
+
+    .model-chip {
+      background: var(--border);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-family: monospace;
+    }
+
+    .sort-arrow { margin-left: 0.25rem; opacity: 0.4; }
+    .sort-arrow.active { opacity: 1; }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    #loading { text-align: center; padding: 3rem; color: var(--muted); }
+    #error   { text-align: center; padding: 3rem; color: var(--red); }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Data<span>Agent</span>Bench</h1>
+  <p>Benchmark for evaluating LLM agents on real data science tasks</p>
+  <div class="meta">
+    <span id="meta-runs">— runs</span>
+    <span id="meta-updated">—</span>
+    <span>
+      <a href="https://github.com/patibandlavenkatamanideep/Data-AgentBench"
+         style="color:var(--accent);text-decoration:none;" target="_blank">
+        GitHub ↗
+      </a>
+    </span>
+  </div>
+</header>
+
+<main>
+  <div id="loading">Loading results…</div>
+  <div id="error" style="display:none"></div>
+
+  <div id="content" style="display:none">
+    <p class="section-title">Model Rankings</p>
+    <div class="model-cards" id="model-cards"></div>
+
+    <p class="section-title">All Runs</p>
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="easy">Easy</button>
+      <button class="filter-btn" data-filter="medium">Medium</button>
+      <button class="filter-btn" data-filter="hard">Hard</button>
+    </div>
+
+    <div class="table-wrap">
+      <table id="results-table">
+        <thead>
+          <tr>
+            <th data-col="task_id">Task <span class="sort-arrow">↕</span></th>
+            <th data-col="title">Title <span class="sort-arrow">↕</span></th>
+            <th data-col="difficulty">Difficulty <span class="sort-arrow">↕</span></th>
+            <th data-col="model">Model <span class="sort-arrow">↕</span></th>
+            <th data-col="correctness">Correctness <span class="sort-arrow">↕</span></th>
+            <th data-col="code_quality">Code Quality <span class="sort-arrow">↕</span></th>
+            <th data-col="efficiency">Efficiency <span class="sort-arrow">↕</span></th>
+            <th data-col="stat_validity">Stat Validity <span class="sort-arrow">↕</span></th>
+            <th data-col="dab_score">DAB Score <span class="sort-arrow active">↓</span></th>
+            <th data-col="total_tokens">Tokens <span class="sort-arrow">↕</span></th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Built by <a href="https://github.com/patibandlavenkatamanideep" target="_blank">Manideep Patibandla</a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/patibandlavenkatamanideep/Data-AgentBench" target="_blank">DataAgentBench on GitHub</a>
+</footer>
+
+<script>
+  let allRuns = [];
+  let sortCol = 'dab_score';
+  let sortDir = -1; // -1 = desc
+  let activeFilter = 'all';
+
+  async function load() {
+    try {
+      const resp = await fetch('results.json');
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+
+      document.getElementById('meta-runs').textContent =
+        `${data.total_runs} run${data.total_runs !== 1 ? 's' : ''}`;
+      document.getElementById('meta-updated').textContent =
+        'Updated ' + new Date(data.generated_at).toLocaleDateString('en-US', {
+          month: 'short', day: 'numeric', year: 'numeric'
+        });
+
+      renderModelCards(data.model_summary);
+      allRuns = data.runs;
+      renderTable();
+    } catch (e) {
+      document.getElementById('loading').style.display = 'none';
+      const el = document.getElementById('error');
+      el.style.display = 'block';
+      el.textContent = 'Could not load results.json — ' + e.message;
+    }
+  }
+
+  function renderModelCards(summaries) {
+    const container = document.getElementById('model-cards');
+    container.innerHTML = summaries.map((s, i) => `
+      <div class="model-card">
+        <div class="rank">#${i + 1} ${i === 0 ? '🏆' : ''}</div>
+        <div class="name" title="${s.model}">${s.model}</div>
+        <div class="score">${s.avg_dab_score.toFixed(3)}</div>
+        <div class="tasks-run">${s.tasks_run} task${s.tasks_run !== 1 ? 's' : ''} completed</div>
+      </div>
+    `).join('');
+  }
+
+  function scoreBar(val) {
+    const pct = Math.round(val * 100);
+    return `
+      <div class="score-bar-wrap">
+        <div class="score-bar">
+          <div class="score-bar-fill" style="width:${pct}%"></div>
+        </div>
+        <span class="score-val">${val.toFixed(3)}</span>
+      </div>`;
+  }
+
+  function renderTable() {
+    const filtered = activeFilter === 'all'
+      ? allRuns
+      : allRuns.filter(r => r.difficulty === activeFilter);
+
+    const sorted = [...filtered].sort((a, b) => {
+      const av = a[sortCol], bv = b[sortCol];
+      if (typeof av === 'number') return sortDir * (bv - av);
+      return sortDir * String(av).localeCompare(String(bv));
+    });
+
+    const tbody = document.getElementById('table-body');
+    tbody.innerHTML = sorted.map(r => `
+      <tr>
+        <td><code>${r.task_id}</code></td>
+        <td class="task-title">${r.title}</td>
+        <td><span class="badge badge-${r.difficulty}">${r.difficulty}</span></td>
+        <td><span class="model-chip">${r.model}</span></td>
+        <td>${scoreBar(r.correctness)}</td>
+        <td>${scoreBar(r.code_quality)}</td>
+        <td>${scoreBar(r.efficiency)}</td>
+        <td>${scoreBar(r.stat_validity)}</td>
+        <td><span class="dab-score">${r.dab_score.toFixed(3)}</span></td>
+        <td style="color:var(--muted)">${r.total_tokens.toLocaleString()}</td>
+      </tr>
+    `).join('');
+  }
+
+  // Sorting
+  document.getElementById('results-table').addEventListener('click', e => {
+    const th = e.target.closest('th[data-col]');
+    if (!th) return;
+    const col = th.dataset.col;
+    if (col === sortCol) {
+      sortDir *= -1;
+    } else {
+      sortCol = col;
+      sortDir = -1;
+    }
+    document.querySelectorAll('thead th').forEach(t => {
+      const arrow = t.querySelector('.sort-arrow');
+      if (!arrow) return;
+      if (t.dataset.col === sortCol) {
+        arrow.textContent = sortDir === -1 ? '↓' : '↑';
+        arrow.classList.add('active');
+        t.classList.add('sorted');
+      } else {
+        arrow.textContent = '↕';
+        arrow.classList.remove('active');
+        t.classList.remove('sorted');
+      }
+    });
+    renderTable();
+  });
+
+  // Filters
+  document.getElementById('filters').addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    activeFilter = btn.dataset.filter;
+    document.querySelectorAll('.filter-btn').forEach(b =>
+      b.classList.toggle('active', b === btn)
+    );
+    renderTable();
+  });
+
+  load();
+</script>
+</body>
+</html>

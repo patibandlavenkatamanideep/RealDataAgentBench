@@ -1,0 +1,58 @@
+{
+  "generated_at": "2026-04-09T06:14:47.421675+00:00",
+  "total_runs": 3,
+  "model_summary": [
+    {
+      "model": "claude-sonnet-4-6",
+      "avg_dab_score": 0.7829,
+      "tasks_run": 3
+    }
+  ],
+  "runs": [
+    {
+      "task_id": "eda_001",
+      "title": "Income Distribution Analysis",
+      "difficulty": "easy",
+      "category": "eda",
+      "model": "claude-sonnet-4-6",
+      "run_at": "2026-04-09T06:07:31.316542+00:00",
+      "correctness": 1.0,
+      "code_quality": 0.72,
+      "efficiency": 0.25,
+      "stat_validity": 1.0,
+      "dab_score": 0.8315,
+      "total_tokens": 24411,
+      "num_steps": 14
+    },
+    {
+      "task_id": "eda_002",
+      "title": "Patient Records \u2014 Missing Data & Outlier Audit",
+      "difficulty": "medium",
+      "category": "eda",
+      "model": "claude-sonnet-4-6",
+      "run_at": "2026-04-09T06:09:47.365478+00:00",
+      "correctness": 0.6667,
+      "code_quality": 0.82,
+      "efficiency": 0.1,
+      "stat_validity": 0.75,
+      "dab_score": 0.629,
+      "total_tokens": 55925,
+      "num_steps": 25
+    },
+    {
+      "task_id": "eda_003",
+      "title": "E-Commerce Confounding Variable Detection",
+      "difficulty": "hard",
+      "category": "eda",
+      "model": "claude-sonnet-4-6",
+      "run_at": "2026-04-09T06:10:59.132142+00:00",
+      "correctness": 1.0,
+      "code_quality": 0.72,
+      "efficiency": 0.5344,
+      "stat_validity": 1.0,
+      "dab_score": 0.8882,
+      "total_tokens": 27705,
+      "num_steps": 17
+    }
+  ]
+}
