@@ -1,9 +1,9 @@
 # DataAgentBench
 
-[![CI](https://github.com/patibandlavenkatamanideep/dataagentbench/actions/workflows/ci.yml/badge.svg)](https://github.com/patibandlavenkatamanideep/dataagentbench/actions)
-[![Tests](https://img.shields.io/badge/tests-85%20passing-brightgreen)](https://github.com/patibandlavenkatamanideep/dataagentbench/actions)
+[![CI](https://github.com/patibandlavenkatamanideep/Data-AgentBench/actions/workflows/ci.yml/badge.svg)](https://github.com/patibandlavenkatamanideep/Data-AgentBench/actions)
+[![Tests](https://img.shields.io/badge/tests-85%20passing-brightgreen)](https://github.com/patibandlavenkatamanideep/Data-AgentBench/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue)](https://github.com/patibandlavenkatamanideep/Data-AgentBench/blob/main/LICENSE)
 
 **A benchmark for evaluating LLM agents on real data science tasks.**
 
