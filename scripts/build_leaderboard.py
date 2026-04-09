@@ -29,7 +29,7 @@ def build(
         print("No result files found in outputs/")
         return
 
-    # Group by task_id — keep only the latest run per (task_id, model)
+    # Group by task_id — keep only the latest successful run per (task_id, model)
     runs: dict[tuple[str, str], dict] = {}
     for path in result_files:
         try:
@@ -37,6 +37,10 @@ def build(
         except Exception:
             continue
         if data.get("dry_run"):
+            continue
+        # Skip runs that produced no usable output (credit exhaustion, unrecovered errors)
+        trace = data.get("trace", {})
+        if trace.get("error") and not trace.get("final_answer"):
             continue
         task_id = data.get("task_id")
         model = data.get("model", "unknown")

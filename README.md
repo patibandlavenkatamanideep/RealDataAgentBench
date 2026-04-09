@@ -11,18 +11,21 @@ RealDataAgentBench (RDAB) evaluates LLM agents on statistically rigorous data sc
 
 ---
 
-## Leaderboard (claude-sonnet-4-6 · 2026-04-09)
+## Leaderboard (2026-04-09 · 6 shared tasks + 2 GPT-4o only)
 
-| Task | Difficulty | Correctness | Code Quality | Efficiency | Stat Validity | **RDAB Score** |
-|------|-----------|:-----------:|:------------:|:----------:|:-------------:|:--------------:|
-| eda_001 — Income Distribution | Easy | 1.000 | 0.667 | 0.950 | 1.000 | **0.926** |
-| eda_002 — Patient Records Audit | Medium | 0.667 | 0.771 | 0.970 | 0.500 | **0.700** |
-| eda_003 — Confounding Detection | Hard | 1.000 | 0.825 | 0.696 | 1.000 | **0.928** |
-| feat_001 — House Price Features | Easy | 1.000 | 0.756 | 0.150 | 0.500 | **0.749** |
-| feat_002 — Employee Attrition | Medium | 1.000 | 0.733 | 1.000 | 0.250 | **0.797** |
-| **Average (claude-sonnet-4-6)** | | **0.933** | **0.750** | **0.753** | **0.650** | **0.820** |
+| Task | Difficulty | claude-sonnet-4-6 | gpt-4o |
+|------|-----------|:-----------------:|:------:|
+| eda_001 — Income Distribution | Easy | **0.926** | 0.900 |
+| eda_002 — Patient Records Audit | Medium | 0.700 | 0.750 |
+| eda_003 — Confounding Detection | Hard | **0.928** | 0.830 |
+| feat_001 — House Price Features | Easy | **0.749** | 0.657 |
+| feat_002 — Employee Attrition | Medium | **0.797** | 0.711 |
+| feat_003 — Retail Datetime Features | Medium | 0.727 | **0.837** |
+| feat_004 — Credit Risk Selection | Hard | — *(pending)* | **0.768** |
+| feat_005 — Fraud Imbalance | Hard | — *(pending)* | **0.802** |
+| **Average (6 shared tasks)** | | **0.804** | 0.781 |
 
-> More models coming. Live leaderboard: [patibandlavenkatamanideep.github.io/RealDataAgentBench](https://patibandlavenkatamanideep.github.io/RealDataAgentBench/)
+> Live leaderboard: [patibandlavenkatamanideep.github.io/RealDataAgentBench](https://patibandlavenkatamanideep.github.io/RealDataAgentBench/)
 
 ---
 
