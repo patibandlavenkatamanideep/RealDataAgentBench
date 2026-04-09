@@ -185,5 +185,28 @@ def score(result_file, task_id):
     console.print(table)
 
 
+@cli.command("models")
+def list_models():
+    """Show supported models and which API keys are configured."""
+    from .harness.providers import ANTHROPIC_MODELS, OPENAI_MODELS
+
+    table = Table(title="Supported Models", show_lines=True)
+    table.add_column("Model", style="cyan")
+    table.add_column("Provider")
+    table.add_column("API Key")
+
+    import os
+    ant_key = "✓ set" if os.environ.get("ANTHROPIC_API_KEY") else "[red]✗ missing[/red]"
+    oai_key = "✓ set" if os.environ.get("OPENAI_API_KEY") else "[red]✗ missing[/red]"
+
+    for m in sorted(ANTHROPIC_MODELS - {"claude", "sonnet", "opus", "haiku"}):
+        table.add_row(m, "Anthropic", ant_key)
+    for m in sorted(OPENAI_MODELS - {"gpt4o"}):
+        table.add_row(m, "OpenAI", oai_key)
+
+    console.print(table)
+    console.print("\n[dim]Usage: dab run eda_001 --model gpt-4o[/dim]")
+
+
 if __name__ == "__main__":
     cli()
