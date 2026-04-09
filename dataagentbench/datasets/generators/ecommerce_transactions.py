@@ -25,25 +25,28 @@ def generate(n_rows: int = 2000, seed: int = 42) -> pd.DataFrame:
 
     for i, seg in enumerate(segments):
         if seg == "enterprise":
-            d = rng.uniform(0.15, 0.35)
-            o = rng.normal(50_000, 10_000)
-            r = o * (1 - d * 0.3) + rng.normal(0, 500)
+            # Low discount (locked contract pricing), very high revenue
+            d = rng.uniform(0.02, 0.08)
+            o = rng.normal(50_000, 8_000)
+            r = o * (1 + d * 0.1) + rng.normal(0, 500)   # slight +ve within-group
         elif seg == "smb":
-            d = rng.uniform(0.05, 0.15)
-            o = rng.normal(8_000, 2_000)
-            r = o * (1 - d * 0.2) + rng.normal(0, 200)
+            # Medium discount, medium revenue
+            d = rng.uniform(0.08, 0.18)
+            o = rng.normal(6_000, 1_500)
+            r = o * (1 + d * 0.05) + rng.normal(0, 150)
         else:  # consumer
-            d = rng.uniform(0.0, 0.05)
-            o = rng.normal(200, 80)
-            r = o * (1 - d * 0.1) + rng.normal(0, 10)
+            # High discount (promotional), very low revenue
+            d = rng.uniform(0.20, 0.45)
+            o = rng.normal(150, 50)
+            r = o * (1 + d * 0.02) + rng.normal(0, 8)
 
-        discount_pct[i] = max(0.0, d)
+        discount_pct[i] = max(0.0, min(0.99, d))
         order_size[i] = max(10.0, o)
         revenue[i] = max(1.0, r)
 
-    # Raw correlation: enterprise has high discounts + high revenue → marginal positive
-    # But overall, high-discount consumers have low revenue → raw is negative
-    # Partial (controlling order_size) collapses toward zero
+    # Raw correlation: consumer = high discount + low revenue → strongly negative
+    # Within each segment: discount is slightly positive (more promotions → more volume)
+    # Partial (controlling order_size) collapses toward zero → Simpson's Paradox
 
     return pd.DataFrame({
         "transaction_id": np.arange(1, n_rows + 1),
