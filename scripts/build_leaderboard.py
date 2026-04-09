@@ -14,6 +14,26 @@ sys.path.insert(0, str(ROOT))
 from realdataagentbench.core.registry import TaskRegistry
 from realdataagentbench.scoring.composite import CompositeScorer
 
+# ── Token cost per million tokens (input / output) ───────────────────────────
+# Prices as of 2025-Q4 (USD per 1M tokens)
+COST_PER_M = {
+    "claude-sonnet-4-6":        {"input": 3.00,  "output": 15.00},
+    "claude-opus-4-6":          {"input": 15.00, "output": 75.00},
+    "claude-haiku-4-5-20251001": {"input": 0.25,  "output": 1.25},
+    "haiku":                    {"input": 0.25,  "output": 1.25},
+    "gpt-4o":                   {"input": 2.50,  "output": 10.00},
+    "gpt-4o-mini":              {"input": 0.15,  "output": 0.60},
+}
+
+def compute_cost(model: str, input_tokens: int, output_tokens: int) -> float:
+    """Return cost in USD for a run."""
+    rates = COST_PER_M.get(model, {"input": 3.00, "output": 15.00})
+    return round(
+        (input_tokens / 1_000_000) * rates["input"]
+        + (output_tokens / 1_000_000) * rates["output"],
+        6,
+    )
+
 
 def build(
     outputs_dir: Path = ROOT / "outputs",
@@ -57,6 +77,9 @@ def build(
         task = registry.get(task_id)
         card = scorer.score(task, data)
         trace = data.get("trace", {})
+        input_tokens = trace.get("total_input_tokens", 0)
+        output_tokens = trace.get("total_output_tokens", 0)
+        cost_usd = compute_cost(model, input_tokens, output_tokens)
         rows.append({
             "task_id": task_id,
             "title": task.title,
@@ -69,7 +92,10 @@ def build(
             "efficiency": card.efficiency,
             "stat_validity": card.stat_validity,
             "dab_score": card.dab_score,
-            "total_tokens": trace.get("total_input_tokens", 0) + trace.get("total_output_tokens", 0),
+            "total_tokens": input_tokens + output_tokens,
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+            "cost_usd": cost_usd,
             "num_steps": trace.get("num_steps", 0),
         })
 
@@ -78,15 +104,19 @@ def build(
     for row in rows:
         m = row["model"]
         if m not in model_summary:
-            model_summary[m] = {"scores": [], "model": m}
+            model_summary[m] = {"scores": [], "costs": [], "model": m}
         model_summary[m]["scores"].append(row["dab_score"])
+        model_summary[m]["costs"].append(row["cost_usd"])
 
     summaries = []
     for m, info in model_summary.items():
         scores = info["scores"]
+        costs = info["costs"]
         summaries.append({
             "model": m,
             "avg_dab_score": round(sum(scores) / len(scores), 4),
+            "avg_cost_usd": round(sum(costs) / len(costs), 6),
+            "total_cost_usd": round(sum(costs), 4),
             "tasks_run": len(scores),
         })
     summaries.sort(key=lambda x: x["avg_dab_score"], reverse=True)

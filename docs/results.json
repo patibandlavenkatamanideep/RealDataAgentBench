@@ -1,25 +1,33 @@
 {
-  "generated_at": "2026-04-09T16:14:41.211190+00:00",
-  "total_runs": 38,
+  "generated_at": "2026-04-09T19:27:37.868266+00:00",
+  "total_runs": 39,
   "model_summary": [
     {
       "model": "claude-sonnet-4-6",
       "avg_dab_score": 0.7995,
+      "avg_cost_usd": 0.445366,
+      "total_cost_usd": 3.5629,
       "tasks_run": 8
+    },
+    {
+      "model": "gpt-4o",
+      "avg_dab_score": 0.7855,
+      "avg_cost_usd": 0.043335,
+      "total_cost_usd": 0.78,
+      "tasks_run": 18
     },
     {
       "model": "gpt-4o-mini",
       "avg_dab_score": 0.7803,
+      "avg_cost_usd": 0.003841,
+      "total_cost_usd": 0.0192,
       "tasks_run": 5
-    },
-    {
-      "model": "gpt-4o",
-      "avg_dab_score": 0.7793,
-      "tasks_run": 17
     },
     {
       "model": "haiku",
       "avg_dab_score": 0.7632,
+      "avg_cost_usd": 0.062501,
+      "total_cost_usd": 0.5,
       "tasks_run": 8
     }
   ],
@@ -37,6 +45,9 @@
       "stat_validity": 1.0,
       "dab_score": 0.9333,
       "total_tokens": 16269,
+      "input_tokens": 12821,
+      "output_tokens": 3448,
+      "cost_usd": 0.090183,
       "num_steps": 10
     },
     {
@@ -52,6 +63,9 @@
       "stat_validity": 1.0,
       "dab_score": 0.9,
       "total_tokens": 1303,
+      "input_tokens": 990,
+      "output_tokens": 313,
+      "cost_usd": 0.005605,
       "num_steps": 4
     },
     {
@@ -67,6 +81,9 @@
       "stat_validity": 1.0,
       "dab_score": 0.96,
       "total_tokens": 1846,
+      "input_tokens": 1539,
+      "output_tokens": 307,
+      "cost_usd": 0.000415,
       "num_steps": 6
     },
     {
@@ -82,6 +99,9 @@
       "stat_validity": 1.0,
       "dab_score": 0.9205,
       "total_tokens": 23435,
+      "input_tokens": 20237,
+      "output_tokens": 3198,
+      "cost_usd": 0.009057,
       "num_steps": 14
     },
     {
@@ -97,6 +117,9 @@
       "stat_validity": 0.5,
       "dab_score": 0.6998,
       "total_tokens": 47627,
+      "input_tokens": 41968,
+      "output_tokens": 5659,
+      "cost_usd": 0.210789,
       "num_steps": 23
     },
     {
@@ -112,6 +135,9 @@
       "stat_validity": 1.0,
       "dab_score": 0.75,
       "total_tokens": 3150,
+      "input_tokens": 2526,
+      "output_tokens": 624,
+      "cost_usd": 0.012555,
       "num_steps": 9
     },
     {
@@ -127,6 +153,9 @@
       "stat_validity": 0.75,
       "dab_score": 0.646,
       "total_tokens": 48362,
+      "input_tokens": 42602,
+      "output_tokens": 5760,
+      "cost_usd": 0.009846,
       "num_steps": 32
     },
     {
@@ -142,6 +171,9 @@
       "stat_validity": 0.75,
       "dab_score": 0.6253,
       "total_tokens": 118987,
+      "input_tokens": 106597,
+      "output_tokens": 12390,
+      "cost_usd": 0.042137,
       "num_steps": 29
     },
     {
@@ -157,6 +189,9 @@
       "stat_validity": 1.0,
       "dab_score": 0.9441,
       "total_tokens": 39894,
+      "input_tokens": 35409,
+      "output_tokens": 4485,
+      "cost_usd": 0.173502,
       "num_steps": 23
     },
     {
@@ -172,6 +207,9 @@
       "stat_validity": 0.75,
       "dab_score": 0.83,
       "total_tokens": 7803,
+      "input_tokens": 6589,
+      "output_tokens": 1214,
+      "cost_usd": 0.028612,
       "num_steps": 15
     },
     {
@@ -187,6 +225,9 @@
       "stat_validity": 1.0,
       "dab_score": 0.7767,
       "total_tokens": 13739,
+      "input_tokens": 12636,
+      "output_tokens": 1103,
+      "cost_usd": 0.002557,
       "num_steps": 21
     },
     {
@@ -202,6 +243,9 @@
       "stat_validity": 1.0,
       "dab_score": 0.8308,
       "total_tokens": 109356,
+      "input_tokens": 98563,
+      "output_tokens": 10793,
+      "cost_usd": 0.038132,
       "num_steps": 27
     },
     {
@@ -217,6 +261,9 @@
       "stat_validity": 0.5,
       "dab_score": 0.7756,
       "total_tokens": 77043,
+      "input_tokens": 70216,
+      "output_tokens": 6827,
+      "cost_usd": 0.313053,
       "num_steps": 27
     },
     {
@@ -232,6 +279,9 @@
       "stat_validity": 0.5,
       "dab_score": 0.6605,
       "total_tokens": 14065,
+      "input_tokens": 11776,
+      "output_tokens": 2289,
+      "cost_usd": 0.05233,
       "num_steps": 15
     },
     {
@@ -247,6 +297,9 @@
       "stat_validity": 0.5,
       "dab_score": 0.7468,
       "total_tokens": 62821,
+      "input_tokens": 55712,
+      "output_tokens": 7109,
+      "cost_usd": 0.022814,
       "num_steps": 23
     },
     {
@@ -262,6 +315,9 @@
       "stat_validity": 0.25,
       "dab_score": 0.7967,
       "total_tokens": 40885,
+      "input_tokens": 35670,
+      "output_tokens": 5215,
+      "cost_usd": 0.185235,
       "num_steps": 21
     },
     {
@@ -277,6 +333,9 @@
       "stat_validity": 0.25,
       "dab_score": 0.7108,
       "total_tokens": 6135,
+      "input_tokens": 4818,
+      "output_tokens": 1317,
+      "cost_usd": 0.025215,
       "num_steps": 8
     },
     {
@@ -292,6 +351,9 @@
       "stat_validity": 0.25,
       "dab_score": 0.6975,
       "total_tokens": 15544,
+      "input_tokens": 13226,
+      "output_tokens": 2318,
+      "cost_usd": 0.003375,
       "num_steps": 17
     },
     {
@@ -307,6 +369,9 @@
       "stat_validity": 0.25,
       "dab_score": 0.6535,
       "total_tokens": 235085,
+      "input_tokens": 219419,
+      "output_tokens": 15666,
+      "cost_usd": 0.074437,
       "num_steps": 43
     },
     {
@@ -322,6 +387,9 @@
       "stat_validity": 0.25,
       "dab_score": 0.7273,
       "total_tokens": 122346,
+      "input_tokens": 117141,
+      "output_tokens": 5205,
+      "cost_usd": 0.429498,
       "num_steps": 50
     },
     {
@@ -337,6 +405,9 @@
       "stat_validity": 0.25,
       "dab_score": 0.8367,
       "total_tokens": 9817,
+      "input_tokens": 8670,
+      "output_tokens": 1147,
+      "cost_usd": 0.033145,
       "num_steps": 14
     },
     {
@@ -352,6 +423,9 @@
       "stat_validity": 0.25,
       "dab_score": 0.8214,
       "total_tokens": 15194,
+      "input_tokens": 13564,
+      "output_tokens": 1630,
+      "cost_usd": 0.003013,
       "num_steps": 18
     },
     {
@@ -367,6 +441,9 @@
       "stat_validity": 0.5,
       "dab_score": 0.8554,
       "total_tokens": 61413,
+      "input_tokens": 55154,
+      "output_tokens": 6259,
+      "cost_usd": 0.021612,
       "num_steps": 23
     },
     {
@@ -382,6 +459,9 @@
       "stat_validity": 0.75,
       "dab_score": 0.7772,
       "total_tokens": 375920,
+      "input_tokens": 365021,
+      "output_tokens": 10899,
+      "cost_usd": 1.258548,
       "num_steps": 73
     },
     {
@@ -397,6 +477,9 @@
       "stat_validity": 0.75,
       "dab_score": 0.7683,
       "total_tokens": 22684,
+      "input_tokens": 21065,
+      "output_tokens": 1619,
+      "cost_usd": 0.068852,
       "num_steps": 19
     },
     {
@@ -412,6 +495,9 @@
       "stat_validity": 0.75,
       "dab_score": 0.7453,
       "total_tokens": 358592,
+      "input_tokens": 341851,
+      "output_tokens": 16741,
+      "cost_usd": 0.106389,
       "num_steps": 57
     },
     {
@@ -427,6 +513,9 @@
       "stat_validity": 1.0,
       "dab_score": 0.7419,
       "total_tokens": 246682,
+      "input_tokens": 233176,
+      "output_tokens": 13506,
+      "cost_usd": 0.902118,
       "num_steps": 55
     },
     {
@@ -442,6 +531,9 @@
       "stat_validity": 0.75,
       "dab_score": 0.8025,
       "total_tokens": 8618,
+      "input_tokens": 6701,
+      "output_tokens": 1917,
+      "cost_usd": 0.035922,
       "num_steps": 10
     },
     {
@@ -457,7 +549,28 @@
       "stat_validity": 1.0,
       "dab_score": 0.7277,
       "total_tokens": 608861,
+      "input_tokens": 575644,
+      "output_tokens": 33217,
+      "cost_usd": 0.185432,
       "num_steps": 67
+    },
+    {
+      "task_id": "mod_001",
+      "title": "Data Leakage Detection in Model Selection",
+      "difficulty": "easy",
+      "category": "ml_engineering",
+      "model": "gpt-4o",
+      "run_at": "2026-04-09T19:27:02.878973+00:00",
+      "correctness": 1.0,
+      "code_quality": 0.7667,
+      "efficiency": 1.0,
+      "stat_validity": 0.75,
+      "dab_score": 0.8908,
+      "total_tokens": 13712,
+      "input_tokens": 12195,
+      "output_tokens": 1517,
+      "cost_usd": 0.045657,
+      "num_steps": 15
     },
     {
       "task_id": "model_001",
@@ -472,6 +585,9 @@
       "stat_validity": 0.25,
       "dab_score": 0.7725,
       "total_tokens": 14866,
+      "input_tokens": 12681,
+      "output_tokens": 2185,
+      "cost_usd": 0.053553,
       "num_steps": 13
     },
     {
@@ -487,6 +603,9 @@
       "stat_validity": 0.25,
       "dab_score": 0.327,
       "total_tokens": 17084,
+      "input_tokens": 15006,
+      "output_tokens": 2078,
+      "cost_usd": 0.058295,
       "num_steps": 13
     },
     {
@@ -502,6 +621,9 @@
       "stat_validity": 0.25,
       "dab_score": 0.7375,
       "total_tokens": 13900,
+      "input_tokens": 11476,
+      "output_tokens": 2424,
+      "cost_usd": 0.05293,
       "num_steps": 11
     },
     {
@@ -517,6 +639,9 @@
       "stat_validity": 0.25,
       "dab_score": 0.735,
       "total_tokens": 15704,
+      "input_tokens": 13813,
+      "output_tokens": 1891,
+      "cost_usd": 0.053443,
       "num_steps": 15
     },
     {
@@ -532,6 +657,9 @@
       "stat_validity": 0.5,
       "dab_score": 0.8125,
       "total_tokens": 14677,
+      "input_tokens": 12137,
+      "output_tokens": 2540,
+      "cost_usd": 0.055743,
       "num_steps": 11
     },
     {
@@ -547,6 +675,9 @@
       "stat_validity": 0.75,
       "dab_score": 0.9121,
       "total_tokens": 15621,
+      "input_tokens": 13419,
+      "output_tokens": 2202,
+      "cost_usd": 0.055567,
       "num_steps": 16
     },
     {
@@ -562,6 +693,9 @@
       "stat_validity": 0.75,
       "dab_score": 0.8975,
       "total_tokens": 11822,
+      "input_tokens": 9803,
+      "output_tokens": 2019,
+      "cost_usd": 0.044698,
       "num_steps": 14
     },
     {
@@ -577,6 +711,9 @@
       "stat_validity": 0.75,
       "dab_score": 0.8825,
       "total_tokens": 11657,
+      "input_tokens": 10074,
+      "output_tokens": 1583,
+      "cost_usd": 0.041015,
       "num_steps": 16
     },
     {
@@ -592,6 +729,9 @@
       "stat_validity": 0.75,
       "dab_score": 0.9125,
       "total_tokens": 18210,
+      "input_tokens": 16693,
+      "output_tokens": 1517,
+      "cost_usd": 0.056902,
       "num_steps": 24
     }
   ]

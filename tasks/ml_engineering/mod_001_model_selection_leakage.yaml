@@ -1,0 +1,79 @@
+task_id: mod_001
+title: "Data Leakage Detection in Model Selection"
+difficulty: easy
+category: ml_engineering
+description: |
+  You are given a loan approval dataset. One column — approval_code — is a near-perfect
+  predictor of the target (approved) because it was derived from the label.
+  Your task is to:
+  1. Explore the dataset. Identify which feature has suspiciously high correlation
+     with the target (approved). Report the feature name and its correlation.
+  2. Train a Logistic Regression with ALL features (including the leaking one).
+     Report the test ROC-AUC (80/20 split, random_state=42).
+  3. Train a second Logistic Regression WITHOUT the leaking feature.
+     Report the test ROC-AUC.
+  4. Report the difference in ROC-AUC between the two models.
+  5. State that approval_code is a leaking feature and explain why it leaks
+     (it encodes the label directly).
+
+dataset:
+  generator: leakage_dataset
+  seed: 42
+  n_rows: 600
+  schema:
+    age: int
+    income: float
+    credit_score: int
+    debt_ratio: float
+    employment_years: int
+    num_accounts: int
+    approval_code: int
+    approved: int
+
+ground_truth:
+  leaking_feature_identified: true
+  leaking_feature_identified_aliases:
+    - "approval_code"
+    - "leaking"
+    - "leakage"
+    - "data leakage"
+    - "suspiciously high"
+    - "derives from"
+    - "encodes the label"
+  auc_difference_reported: true
+  auc_difference_reported_aliases:
+    - "difference"
+    - "without"
+    - "drop"
+    - "removed"
+    - "without approval_code"
+    - "both models"
+  leakage_explained: true
+  leakage_explained_aliases:
+    - "derived"
+    - "label"
+    - "target"
+    - "encodes"
+    - "approval_code"
+    - "why"
+
+scoring:
+  correctness_weight: 0.45
+  code_quality_weight: 0.20
+  efficiency_weight: 0.10
+  stat_validity_weight: 0.25
+
+evaluation:
+  max_steps: 20
+  timeout_seconds: 180
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - data_leakage
+  - logistic_regression
+  - roc_auc
+  - model_selection
+  - easy

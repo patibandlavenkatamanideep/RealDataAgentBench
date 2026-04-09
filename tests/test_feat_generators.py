@@ -183,7 +183,7 @@ class TestFeatTaskLoading:
 
     def test_registry_total_count(self):
         registry = TaskRegistry(TASKS_DIR)
-        assert len(registry) == 18  # 3 EDA + 5 feat + 5 modeling + 5 stat_inference
+        assert len(registry) == 23  # 18 existing + 5 ml_engineering
 
     def test_filter_by_category(self):
         registry = TaskRegistry(TASKS_DIR)

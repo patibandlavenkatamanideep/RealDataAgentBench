@@ -1,7 +1,7 @@
 # RealDataAgentBench
 
 [![CI](https://github.com/patibandlavenkatamanideep/RealDataAgentBench/actions/workflows/ci.yml/badge.svg)](https://github.com/patibandlavenkatamanideep/RealDataAgentBench/actions)
-[![Tests](https://img.shields.io/badge/tests-120%2B%20passing-brightgreen)](https://github.com/patibandlavenkatamanideep/RealDataAgentBench/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-150%20passing-brightgreen)](https://github.com/patibandlavenkatamanideep/RealDataAgentBench/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue)](https://github.com/patibandlavenkatamanideep/RealDataAgentBench/blob/main/LICENSE)
 [![Leaderboard](https://img.shields.io/badge/leaderboard-live-brightgreen)](https://patibandlavenkatamanideep.github.io/RealDataAgentBench/)
@@ -10,13 +10,13 @@
 
 This benchmark forces LLM agents to think like real statisticians, not just copy answers. It measures four things most benchmarks ignore: whether the agent's code is production-quality, whether it uses the right statistical methods, whether it works efficiently, and whether it actually gets the right answer.
 
-- **18 tasks** across EDA, Feature Engineering, Modeling, and Statistical Inference
-- **4 models benchmarked**: Claude Sonnet, GPT-4o, GPT-4o-mini, Claude Haiku — with real scores from real API runs
+- **23 tasks** across EDA, Feature Engineering, Modeling, Statistical Inference, and ML Engineering — including data leakage, calibration, nested CV, and ensemble methods
+- **4 models benchmarked**: Claude Sonnet, GPT-4o, GPT-4o-mini, Claude Haiku — real scores from real API runs, with per-run cost in USD
 - **4-dimension scoring**: Correctness · Code Quality · Efficiency · Statistical Validity — so you know exactly *where* each model wins or fails
 
 ---
 
-## Leaderboard (38 runs · 4 models · 18 tasks)
+## Leaderboard (4 models · 23 tasks)
 
 | Model | Avg RDAB Score | Tasks Run |
 |-------|:--------------:|:---------:|
@@ -105,7 +105,7 @@ RealDataAgentBench/
 ├── realdataagentbench/
 │   ├── core/              # Task schema (Pydantic) + registry
 │   ├── datasets/
-│   │   └── generators/    # 18 seeded, reproducible generators
+│   │   └── generators/    # 23 seeded, reproducible generators
 │   ├── harness/           # Agent loop + multi-model providers
 │   │   ├── providers.py   # Claude, GPT-4o, GPT-4o-mini, Haiku
 │   │   └── tools.py       # run_code, get_dataframe_info, get_column_stats
@@ -178,7 +178,7 @@ dab models
 
 ---
 
-## Tasks (18 total)
+## Tasks (23 total)
 
 ### Exploratory Data Analysis (3)
 
@@ -217,6 +217,16 @@ dab models
 | stat_003 | Salary Gap Analysis — Controlling for Confounders | Hard | OLS regression, pay gap, confounding |
 | stat_004 | Time Series Decomposition — Sales Trend & Seasonality | Medium | Decomposition, trend, seasonality |
 | stat_005 | Statistical Process Control — Manufacturing Defects | Hard | Cp index, drift detection, chi-squared |
+
+### ML Engineering (5)
+
+| ID | Title | Difficulty | Key Concepts |
+|----|-------|-----------|-------------|
+| mod_001 | Data Leakage Detection in Model Selection | Easy | Target leakage, correlation, AUC drop |
+| mod_002 | K-Fold Cross-Validation vs Single Hold-Out | Easy | CV variance, small dataset evaluation |
+| mod_003 | Probability Calibration for Heart Disease Prediction | Medium | Brier score, Platt scaling, reliability |
+| mod_004 | Ensemble Voting vs Individual Models | Medium | VotingClassifier, soft voting, F1 |
+| mod_005 | Nested Cross-Validation for Unbiased Tuning | Hard | Selection bias, GridSearchCV, nested CV |
 
 ---
 
@@ -258,10 +268,11 @@ realdataagentbench/
 │   └── composite.py      # Weighted RDAB Score + ScoreCard
 └── cli.py                # dab run / list / inspect / score / models
 tasks/
-├── eda/                  # 3 EDA tasks
-├── feature_engineering/  # 5 feature engineering tasks
-├── modeling/             # 5 modeling tasks
-└── statistical_inference/ # 5 statistical inference tasks
+├── eda/                  # 3 tasks
+├── feature_engineering/  # 5 tasks
+├── modeling/             # 5 tasks
+├── statistical_inference/ # 5 tasks
+└── ml_engineering/       # 5 tasks (leakage, CV, calibration, ensemble, nested CV)
 tests/                    # 120 offline tests — no API calls required
 scripts/
 └── build_leaderboard.py  # Aggregates outputs/ → docs/results.json
@@ -304,7 +315,8 @@ pytest tests/ --cov=realdataagentbench --cov-report=term-missing
 - [x] Phase 2 — 8 tasks across EDA + Feature Engineering
 - [x] Phase 3 — GitHub Pages leaderboard with auto-rebuild CI
 - [x] Phase 4 — Multi-model support (GPT-4o, GPT-4o-mini, Claude Haiku, Claude Sonnet)
-- [x] Phase 5 — 18 tasks across 4 categories (EDA, Feature Engineering, Modeling, Statistical Inference)
+- [x] Phase 5 — 23 tasks across 5 categories including ML Engineering (leakage, calibration, nested CV)
+- [x] Phase 6 — Cost per run ($) in leaderboard; category filters on live site; 150 tests
 - [ ] 30+ tasks (visualization, NLP, time series categories)
 - [ ] Human baseline scores
 - [ ] arXiv paper

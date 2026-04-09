@@ -124,7 +124,7 @@ class TestValidationRejection:
 class TestRegistry:
     def test_registry_loads_all(self):
         registry = TaskRegistry(TASKS_DIR)
-        assert len(registry) == 18  # 3 EDA + 5 feat + 5 modeling + 5 stat
+        assert len(registry) == 23  # 18 existing + 5 ml_engineering
 
     def test_registry_get(self):
         registry = TaskRegistry(TASKS_DIR)
@@ -152,7 +152,7 @@ class TestRegistry:
     def test_registry_summary(self):
         registry = TaskRegistry(TASKS_DIR)
         summary = registry.summary()
-        assert summary["total"] == 18
+        assert summary["total"] == 23
         assert summary["by_category"]["eda"] == 3
         assert summary["by_category"]["feature_engineering"] == 5
 

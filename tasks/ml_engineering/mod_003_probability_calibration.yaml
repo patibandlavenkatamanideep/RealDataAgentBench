@@ -1,0 +1,78 @@
+task_id: mod_003
+title: "Probability Calibration for Heart Disease Prediction"
+difficulty: medium
+category: ml_engineering
+description: |
+  You are given a heart disease dataset. A Random Forest trained on it produces
+  overconfident probabilities (common with tree-based models).
+  Your task is to:
+  1. Split data 80/20 (random_state=42). Train a RandomForestClassifier
+     (n_estimators=100, random_state=42).
+  2. Report the test ROC-AUC and Brier Score (lower is better for Brier).
+  3. Apply Platt scaling calibration: wrap the model with
+     CalibratedClassifierCV(cv='prefit', method='sigmoid') fitted on the test set.
+  4. Report the Brier Score after calibration. Did it improve (decrease)?
+  5. Plot or report the fraction of positives vs mean predicted probability
+     for 10 equal-width bins (reliability diagram values) — before and after calibration.
+  6. State whether the Random Forest was overconfident or underconfident before
+     calibration (i.e., were predicted probabilities too extreme or too moderate?).
+
+dataset:
+  generator: calibration_dataset
+  seed: 42
+  n_rows: 800
+  schema:
+    age: int
+    bmi: float
+    systolic_bp: float
+    cholesterol: float
+    smoking: int
+    family_history: int
+    exercise_days: int
+    heart_disease: int
+
+ground_truth:
+  brier_score_reported: true
+  brier_score_reported_aliases:
+    - "brier"
+    - "brier score"
+    - "calibration"
+    - "probability score"
+  calibration_improved: true
+  calibration_improved_aliases:
+    - "improved"
+    - "lower brier"
+    - "better calibrated"
+    - "decrease"
+    - "platt"
+    - "sigmoid"
+  overconfident_identified: true
+  overconfident_identified_aliases:
+    - "overconfident"
+    - "too extreme"
+    - "extreme probabilities"
+    - "close to 0 or 1"
+    - "random forest"
+    - "overfit"
+
+scoring:
+  correctness_weight: 0.40
+  code_quality_weight: 0.15
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.30
+
+evaluation:
+  max_steps: 30
+  timeout_seconds: 240
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - calibration
+  - brier_score
+  - random_forest
+  - platt_scaling
+  - probability
+  - medium

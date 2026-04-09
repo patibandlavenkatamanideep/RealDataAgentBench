@@ -1,0 +1,78 @@
+task_id: mod_004
+title: "Ensemble Voting vs Individual Models — Multi-Class Classification"
+difficulty: medium
+category: ml_engineering
+description: |
+  You are given a multi-class classification dataset (3 classes, 8 features).
+  Your task is to:
+  1. Split data 80/20 (random_state=42). Scale features with StandardScaler.
+  2. Train three base classifiers:
+     - LogisticRegression (max_iter=1000, random_state=42)
+     - RandomForestClassifier (n_estimators=100, random_state=42)
+     - GradientBoostingClassifier (n_estimators=100, random_state=42)
+  3. Report test accuracy and macro F1 for each base classifier.
+  4. Create a VotingClassifier (voting='soft') combining all three. Report its
+     test accuracy and macro F1.
+  5. State whether the ensemble outperforms all three base classifiers on F1.
+  6. Report which single model has the highest accuracy.
+
+dataset:
+  generator: ensemble_dataset
+  seed: 42
+  n_rows: 700
+  schema:
+    feature_1: float
+    feature_2: float
+    feature_3: float
+    feature_4: float
+    feature_5: float
+    feature_6: float
+    feature_7: float
+    feature_8: float
+    target: int
+
+ground_truth:
+  all_three_trained: true
+  all_three_trained_aliases:
+    - "logistic"
+    - "random forest"
+    - "gradient boost"
+    - "three models"
+    - "base classifiers"
+  voting_classifier_used: true
+  voting_classifier_used_aliases:
+    - "voting"
+    - "ensemble"
+    - "VotingClassifier"
+    - "soft voting"
+    - "combined"
+  ensemble_comparison_reported: true
+  ensemble_comparison_reported_aliases:
+    - "outperform"
+    - "ensemble"
+    - "f1"
+    - "accuracy"
+    - "compared"
+    - "better than"
+
+scoring:
+  correctness_weight: 0.40
+  code_quality_weight: 0.15
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.30
+
+evaluation:
+  max_steps: 30
+  timeout_seconds: 240
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - ensemble
+  - voting_classifier
+  - multi_class
+  - f1_score
+  - model_comparison
+  - medium

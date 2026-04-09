@@ -18,6 +18,12 @@ from .generators.clinical_trial import generate as generate_clinical_trial
 from .generators.salary_survey import generate as generate_salary_survey
 from .generators.time_series_sales import generate as generate_time_series_sales
 from .generators.manufacturing_quality import generate as generate_manufacturing_quality
+# ML engineering generators
+from .generators.leakage_dataset import generate as generate_leakage
+from .generators.cv_comparison import generate as generate_cv_comparison
+from .generators.calibration_dataset import generate as generate_calibration
+from .generators.ensemble_dataset import generate as generate_ensemble
+from .generators.nested_cv_dataset import generate as generate_nested_cv
 
 GENERATORS = {
     "income_distribution": generate_income,
@@ -40,6 +46,12 @@ GENERATORS = {
     "salary_survey": generate_salary_survey,
     "time_series_sales": generate_time_series_sales,
     "manufacturing_quality": generate_manufacturing_quality,
+    # ML engineering
+    "leakage_dataset": generate_leakage,
+    "cv_comparison": generate_cv_comparison,
+    "calibration_dataset": generate_calibration,
+    "ensemble_dataset": generate_ensemble,
+    "nested_cv_dataset": generate_nested_cv,
 }
 
 

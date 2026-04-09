@@ -1,0 +1,82 @@
+task_id: mod_005
+title: "Nested Cross-Validation for Unbiased Hyperparameter Tuning"
+difficulty: hard
+category: ml_engineering
+description: |
+  You are given a small regression dataset (400 rows, 10 features — 4 informative, 6 noise).
+  Your task is to:
+  1. Perform standard (non-nested) model selection: use 5-fold CV with GridSearchCV
+     to tune Ridge alpha in [0.01, 0.1, 1.0, 10.0, 100.0]. Report the best alpha
+     and its CV R².
+  2. Perform nested cross-validation: outer 5-fold, inner 5-fold GridSearchCV
+     (same alpha grid). Report the outer CV R² mean ± std.
+  3. Compare the two R² estimates. Is the non-nested estimate optimistically biased
+     (higher than nested)?
+  4. Report the difference between non-nested CV R² and nested CV R².
+  5. Explain in one sentence why nested CV gives a less biased performance estimate.
+  6. Report which features have non-zero importance (use the best Ridge model's
+     coefficients — features with |coef| > 0.5).
+
+dataset:
+  generator: nested_cv_dataset
+  seed: 42
+  n_rows: 400
+  schema:
+    x1: float
+    x2: float
+    x3: float
+    x4: float
+    noise_1: float
+    noise_2: float
+    noise_3: float
+    noise_4: float
+    noise_5: float
+    noise_6: float
+    target: float
+
+ground_truth:
+  nested_cv_done: true
+  nested_cv_done_aliases:
+    - "nested"
+    - "nested cv"
+    - "nested cross-validation"
+    - "outer"
+    - "inner"
+  bias_identified: true
+  bias_identified_aliases:
+    - "bias"
+    - "optimistic"
+    - "overestimate"
+    - "inflated"
+    - "non-nested"
+    - "higher"
+  explanation_given: true
+  explanation_given_aliases:
+    - "selection bias"
+    - "chosen on same data"
+    - "evaluated on same"
+    - "independent"
+    - "unbiased"
+    - "separate"
+
+scoring:
+  correctness_weight: 0.40
+  code_quality_weight: 0.15
+  efficiency_weight: 0.10
+  stat_validity_weight: 0.35
+
+evaluation:
+  max_steps: 40
+  timeout_seconds: 300
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - nested_cv
+  - cross_validation
+  - hyperparameter_tuning
+  - ridge
+  - selection_bias
+  - hard

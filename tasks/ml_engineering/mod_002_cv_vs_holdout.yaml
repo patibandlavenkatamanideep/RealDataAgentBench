@@ -1,0 +1,74 @@
+task_id: mod_002
+title: "K-Fold Cross-Validation vs Single Hold-Out Comparison"
+difficulty: easy
+category: ml_engineering
+description: |
+  You are given a small noisy binary classification dataset (500 rows, 5 features).
+  Your task is to:
+  1. Train a Logistic Regression. Evaluate it using a single 80/20 hold-out split
+     (random_state=42). Report accuracy and ROC-AUC.
+  2. Evaluate the same Logistic Regression using 10-fold cross-validation.
+     Report mean accuracy and std across folds.
+  3. Explain why cross-validation gives a more reliable estimate on small datasets
+     (mention variance / standard deviation of the estimate).
+  4. Report whether the single hold-out accuracy is within 1 std of the CV mean.
+  5. State which evaluation method you would trust more and why.
+
+dataset:
+  generator: cv_comparison
+  seed: 42
+  n_rows: 500
+  schema:
+    feature_1: float
+    feature_2: float
+    feature_3: float
+    feature_4: float
+    feature_5: float
+    target: int
+
+ground_truth:
+  cv_reported: true
+  cv_reported_aliases:
+    - "cross-validation"
+    - "k-fold"
+    - "10-fold"
+    - "cv"
+    - "mean accuracy"
+    - "std"
+  variance_explained: true
+  variance_explained_aliases:
+    - "variance"
+    - "standard deviation"
+    - "reliable"
+    - "small dataset"
+    - "more folds"
+    - "stable"
+  cv_preferred: true
+  cv_preferred_aliases:
+    - "cross-validation"
+    - "cv"
+    - "prefer"
+    - "trust"
+    - "more reliable"
+    - "better estimate"
+
+scoring:
+  correctness_weight: 0.40
+  code_quality_weight: 0.20
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.25
+
+evaluation:
+  max_steps: 20
+  timeout_seconds: 180
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - cross_validation
+  - hold_out
+  - model_evaluation
+  - variance
+  - easy

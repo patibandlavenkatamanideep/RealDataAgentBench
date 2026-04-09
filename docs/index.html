@@ -33,23 +33,13 @@
     header {
       border-bottom: 1px solid var(--border);
       padding: 2rem 2rem 1.5rem;
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
     }
 
-    header h1 {
-      font-size: 1.75rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
+    header h1 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; }
     header h1 span { color: var(--accent); }
-
-    header p {
-      color: var(--muted);
-      margin-top: 0.4rem;
-      font-size: 0.95rem;
-    }
+    header p { color: var(--muted); margin-top: 0.4rem; font-size: 0.95rem; }
 
     .meta {
       display: flex;
@@ -58,10 +48,9 @@
       font-size: 0.8rem;
       color: var(--muted);
     }
-
     .meta span { display: flex; align-items: center; gap: 0.3rem; }
 
-    main { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
 
     /* Model summary cards */
     .model-cards {
@@ -78,35 +67,12 @@
       padding: 1.2rem 1.4rem;
     }
 
-    .model-card .rank {
-      font-size: 0.75rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
+    .model-card .rank { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .model-card .name { font-size: 0.95rem; font-weight: 600; margin: 0.3rem 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .model-card .score { font-size: 2rem; font-weight: 700; color: var(--accent); }
+    .model-card .tasks-run { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+    .model-card .avg-cost { font-size: 0.78rem; color: var(--green); margin-top: 0.15rem; }
 
-    .model-card .name {
-      font-size: 0.95rem;
-      font-weight: 600;
-      margin: 0.3rem 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .model-card .score {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--accent);
-    }
-
-    .model-card .tasks-run {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-top: 0.2rem;
-    }
-
-    /* Section title */
     .section-title {
       font-size: 0.8rem;
       text-transform: uppercase;
@@ -147,18 +113,14 @@
       border-radius: 10px;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.875rem;
-    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 
     thead th {
       background: var(--surface);
-      padding: 0.75rem 1rem;
+      padding: 0.75rem 0.8rem;
       text-align: left;
       font-weight: 600;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--muted);
@@ -171,26 +133,18 @@
     thead th:hover { color: var(--text); }
     thead th.sorted { color: var(--accent); }
 
-    tbody tr {
-      border-bottom: 1px solid var(--border);
-      transition: background 0.1s;
-    }
-
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: var(--surface); }
 
-    td {
-      padding: 0.85rem 1rem;
-      white-space: nowrap;
-    }
-
-    td.task-title { white-space: normal; min-width: 200px; }
+    td { padding: 0.75rem 0.8rem; white-space: nowrap; }
+    td.task-title { white-space: normal; min-width: 180px; }
 
     .badge {
       display: inline-block;
       padding: 0.2rem 0.55rem;
       border-radius: 4px;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 600;
       text-transform: capitalize;
     }
@@ -199,47 +153,16 @@
     .badge-medium { background: #422006; color: var(--yellow); }
     .badge-hard   { background: #450a0a; color: var(--red); }
 
-    .score-bar-wrap {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      min-width: 90px;
-    }
+    .score-bar-wrap { display: flex; align-items: center; gap: 0.4rem; min-width: 80px; }
+    .score-bar { flex: 1; height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; min-width: 40px; }
+    .score-bar-fill { height: 100%; border-radius: 99px; background: var(--accent); }
+    .score-val { font-variant-numeric: tabular-nums; font-size: 0.82rem; font-weight: 600; min-width: 34px; text-align: right; }
 
-    .score-bar {
-      flex: 1;
-      height: 5px;
-      background: var(--border);
-      border-radius: 99px;
-      overflow: hidden;
-      min-width: 50px;
-    }
+    .dab-score { color: var(--accent); font-size: 0.92rem; font-weight: 700; }
+    .cost-val  { color: var(--green); font-variant-numeric: tabular-nums; font-size: 0.82rem; }
 
-    .score-bar-fill {
-      height: 100%;
-      border-radius: 99px;
-      background: var(--accent);
-    }
-
-    .score-val {
-      font-variant-numeric: tabular-nums;
-      font-size: 0.85rem;
-      font-weight: 600;
-      min-width: 36px;
-      text-align: right;
-    }
-
-    .dab-score { color: var(--accent); font-size: 0.95rem; }
-
-    .model-chip {
-      background: var(--border);
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-family: monospace;
-    }
-
-    .sort-arrow { margin-left: 0.25rem; opacity: 0.4; }
+    .model-chip { background: var(--border); padding: 0.2rem 0.45rem; border-radius: 4px; font-size: 0.72rem; font-family: monospace; }
+    .sort-arrow { margin-left: 0.2rem; opacity: 0.4; }
     .sort-arrow.active { opacity: 1; }
 
     footer {
@@ -262,9 +185,10 @@
 
 <header>
   <h1>Real<span>DataAgent</span>Bench</h1>
-  <p>The benchmark that checks if LLM agents do real data science — not just get the right number</p>
+  <p>Forces LLM agents to think like real statisticians — not just copy answers</p>
   <div class="meta">
     <span id="meta-runs">— runs</span>
+    <span id="meta-tasks">— tasks</span>
     <span id="meta-updated">—</span>
     <span>
       <a href="https://github.com/patibandlavenkatamanideep/RealDataAgentBench"
@@ -285,10 +209,15 @@
 
     <p class="section-title">All Runs</p>
     <div class="filters" id="filters">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="easy">Easy</button>
-      <button class="filter-btn" data-filter="medium">Medium</button>
-      <button class="filter-btn" data-filter="hard">Hard</button>
+      <button class="filter-btn active" data-filter="all" data-type="difficulty">All Difficulties</button>
+      <button class="filter-btn" data-filter="easy" data-type="difficulty">Easy</button>
+      <button class="filter-btn" data-filter="medium" data-type="difficulty">Medium</button>
+      <button class="filter-btn" data-filter="hard" data-type="difficulty">Hard</button>
+      <button class="filter-btn" data-filter="eda" data-type="category">EDA</button>
+      <button class="filter-btn" data-filter="feature_engineering" data-type="category">Feature Eng.</button>
+      <button class="filter-btn" data-filter="modeling" data-type="category">Modeling</button>
+      <button class="filter-btn" data-filter="statistical_inference" data-type="category">Stat. Inference</button>
+      <button class="filter-btn" data-filter="ml_engineering" data-type="category">ML Engineering</button>
     </div>
 
     <div class="table-wrap">
@@ -297,14 +226,16 @@
           <tr>
             <th data-col="task_id">Task <span class="sort-arrow">↕</span></th>
             <th data-col="title">Title <span class="sort-arrow">↕</span></th>
-            <th data-col="difficulty">Difficulty <span class="sort-arrow">↕</span></th>
+            <th data-col="difficulty">Diff. <span class="sort-arrow">↕</span></th>
+            <th data-col="category">Category <span class="sort-arrow">↕</span></th>
             <th data-col="model">Model <span class="sort-arrow">↕</span></th>
             <th data-col="correctness">Correctness <span class="sort-arrow">↕</span></th>
             <th data-col="code_quality">Code Quality <span class="sort-arrow">↕</span></th>
             <th data-col="efficiency">Efficiency <span class="sort-arrow">↕</span></th>
             <th data-col="stat_validity">Stat Validity <span class="sort-arrow">↕</span></th>
-            <th data-col="dab_score">DAB Score <span class="sort-arrow active">↓</span></th>
+            <th data-col="dab_score">RDAB Score <span class="sort-arrow active">↓</span></th>
             <th data-col="total_tokens">Tokens <span class="sort-arrow">↕</span></th>
+            <th data-col="cost_usd">Cost ($) <span class="sort-arrow">↕</span></th>
           </tr>
         </thead>
         <tbody id="table-body"></tbody>
@@ -317,13 +248,15 @@
   Built by <a href="https://github.com/patibandlavenkatamanideep" target="_blank">Manideep Patibandla</a>
   &nbsp;·&nbsp;
   <a href="https://github.com/patibandlavenkatamanideep/RealDataAgentBench" target="_blank">RealDataAgentBench on GitHub</a>
+  &nbsp;·&nbsp; 23 tasks · 4 models · 4-dimension scoring
 </footer>
 
 <script>
   let allRuns = [];
   let sortCol = 'dab_score';
-  let sortDir = -1; // -1 = desc
+  let sortDir = -1;
   let activeFilter = 'all';
+  let activeFilterType = 'difficulty';
 
   async function load() {
     try {
@@ -336,6 +269,8 @@
 
       document.getElementById('meta-runs').textContent =
         `${data.total_runs} run${data.total_runs !== 1 ? 's' : ''}`;
+      const taskCount = new Set(data.runs.map(r => r.task_id)).size;
+      document.getElementById('meta-tasks').textContent = `${taskCount} tasks`;
       document.getElementById('meta-updated').textContent =
         'Updated ' + new Date(data.generated_at).toLocaleDateString('en-US', {
           month: 'short', day: 'numeric', year: 'numeric'
@@ -360,6 +295,7 @@
         <div class="name" title="${s.model}">${s.model}</div>
         <div class="score">${s.avg_dab_score.toFixed(3)}</div>
         <div class="tasks-run">${s.tasks_run} task${s.tasks_run !== 1 ? 's' : ''} completed</div>
+        <div class="avg-cost">avg $${(s.avg_cost_usd || 0).toFixed(4)} / task</div>
       </div>
     `).join('');
   }
@@ -376,12 +312,13 @@
   }
 
   function renderTable() {
-    const filtered = activeFilter === 'all'
-      ? allRuns
-      : allRuns.filter(r => r.difficulty === activeFilter);
+    let filtered = allRuns;
+    if (activeFilter !== 'all') {
+      filtered = allRuns.filter(r => r[activeFilterType] === activeFilter);
+    }
 
     const sorted = [...filtered].sort((a, b) => {
-      const av = a[sortCol], bv = b[sortCol];
+      const av = a[sortCol] ?? 0, bv = b[sortCol] ?? 0;
       if (typeof av === 'number') return sortDir * (bv - av);
       return sortDir * String(av).localeCompare(String(bv));
     });
@@ -392,13 +329,15 @@
         <td><code>${r.task_id}</code></td>
         <td class="task-title">${r.title}</td>
         <td><span class="badge badge-${r.difficulty}">${r.difficulty}</span></td>
+        <td style="color:var(--muted);font-size:0.78rem">${r.category}</td>
         <td><span class="model-chip">${r.model}</span></td>
         <td>${scoreBar(r.correctness)}</td>
         <td>${scoreBar(r.code_quality)}</td>
         <td>${scoreBar(r.efficiency)}</td>
         <td>${scoreBar(r.stat_validity)}</td>
         <td><span class="dab-score">${r.dab_score.toFixed(3)}</span></td>
-        <td style="color:var(--muted)">${r.total_tokens.toLocaleString()}</td>
+        <td style="color:var(--muted)">${(r.total_tokens || 0).toLocaleString()}</td>
+        <td><span class="cost-val">$${(r.cost_usd || 0).toFixed(4)}</span></td>
       </tr>
     `).join('');
   }
@@ -412,7 +351,7 @@
       sortDir *= -1;
     } else {
       sortCol = col;
-      sortDir = -1;
+      sortDir = col === 'cost_usd' ? 1 : -1; // cost: sort ascending by default
     }
     document.querySelectorAll('thead th').forEach(t => {
       const arrow = t.querySelector('.sort-arrow');
@@ -435,6 +374,7 @@
     const btn = e.target.closest('.filter-btn');
     if (!btn) return;
     activeFilter = btn.dataset.filter;
+    activeFilterType = btn.dataset.type;
     document.querySelectorAll('.filter-btn').forEach(b =>
       b.classList.toggle('active', b === btn)
     );
