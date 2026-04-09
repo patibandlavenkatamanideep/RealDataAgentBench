@@ -62,8 +62,8 @@ scoring:
   stat_validity_weight: 0.20
 
 evaluation:
-  max_steps: 18
-  timeout_seconds: 150
+  max_steps: 30
+  timeout_seconds: 240
   allowed_tools:
     - run_code
     - get_dataframe_info
