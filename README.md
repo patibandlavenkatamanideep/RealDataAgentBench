@@ -145,5 +145,5 @@ pytest tests/ --cov=dataagentbench --cov-report=term-missing
 
 ## Built by
 
-[Manideep Patibandla](https://github.com/patibandlavenkatamanideep) — MS CS student at University at Buffalo.
-Designed to demonstrate production-grade ML engineering and LLM evaluation skills.
+[Venkata Manideep Patibandla](https://github.com/patibandlavenkatamanideep)
+
