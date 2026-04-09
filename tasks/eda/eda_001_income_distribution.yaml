@@ -1,0 +1,58 @@
+task_id: eda_001
+title: "Income Distribution Analysis"
+difficulty: easy
+category: eda
+description: |
+  You are given a dataset of individual incomes sampled from a right-skewed distribution.
+  Your task is to:
+  1. Compute the mean, median, and standard deviation of the income column.
+  2. Identify whether the distribution is left-skewed, right-skewed, or symmetric.
+  3. Recommend a transformation (if any) to normalize the distribution.
+  Provide a brief written summary of your findings.
+
+dataset:
+  generator: income_distribution
+  seed: 42
+  n_rows: 1000
+  schema:
+    income: float
+    age: int
+    education_years: int
+
+ground_truth:
+  skewness_direction: "right"
+  skewness_direction_aliases:
+    - "right-skewed"
+    - "positively skewed"
+    - "positive skew"
+    - "right skew"
+    - "skewed right"
+  recommended_transform: "log_transform"
+  recommended_transform_aliases:
+    - "log transformation"
+    - "log transform"
+    - "logarithmic"
+    - "log(x)"
+    - "np.log"
+  skewness_value_approx: 3.82
+  skewness_tolerance: 0.5
+
+scoring:
+  correctness_weight: 0.50
+  code_quality_weight: 0.20
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.15
+
+evaluation:
+  max_steps: 8
+  timeout_seconds: 90
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - eda
+  - distribution
+  - skewness
+  - transformation

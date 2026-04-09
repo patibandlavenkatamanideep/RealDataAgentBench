@@ -1,0 +1,75 @@
+task_id: eda_003
+title: "E-Commerce Confounding Variable Detection"
+difficulty: hard
+category: eda
+description: |
+  You are given an e-commerce transactions dataset. A naive analysis suggests that
+  higher discounts are associated with lower revenue — but this may be a Simpson's
+  Paradox driven by customer segment and order size.
+
+  Your task is to:
+  1. Compute the raw (unconditional) Pearson correlation between discount_pct and revenue.
+  2. Stratify by customer_segment and recompute the correlation within each stratum.
+  3. Control for order_size using partial correlation and report the result.
+  4. State whether the raw correlation is misleading, and explain why (or why not).
+  5. Conclude: should a pricing team act on the raw correlation? Justify your answer.
+
+dataset:
+  generator: ecommerce_transactions
+  seed: 42
+  n_rows: 2000
+  schema:
+    transaction_id: int
+    customer_segment: str
+    order_size: float
+    discount_pct: float
+    revenue: float
+
+ground_truth:
+  raw_correlation_sign: "negative"
+  raw_correlation_sign_aliases:
+    - "r=-"
+    - "-0."
+    - "negative correlation"
+    - "negatively correlated"
+    - "inverse"
+  partial_correlation_direction_change: true
+  partial_correlation_direction_change_aliases:
+    - "collapses"
+    - "near zero"
+    - "differs"
+    - "changes sign"
+    - "no longer"
+    - "disappears"
+    - "weaker"
+    - "spurious"
+  conclusion: "do_not_act"
+  conclusion_aliases:
+    - "do not act"
+    - "misleading"
+    - "confounded"
+    - "simpson"
+    - "spurious"
+    - "should not"
+    - "caution"
+
+scoring:
+  correctness_weight: 0.40
+  code_quality_weight: 0.15
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.30
+
+evaluation:
+  max_steps: 15
+  timeout_seconds: 180
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - eda
+  - correlation
+  - confounding
+  - simpsons_paradox
+  - partial_correlation

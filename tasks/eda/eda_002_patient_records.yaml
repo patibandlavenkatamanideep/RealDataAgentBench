@@ -1,0 +1,65 @@
+task_id: eda_002
+title: "Patient Records — Missing Data & Outlier Audit"
+difficulty: medium
+category: eda
+description: |
+  You are given a synthetic patient records dataset with injected data quality issues.
+  Your task is to:
+  1. Identify all columns with missing values and report their missing rates.
+  2. Detect outliers in the numeric columns using IQR or Z-score method.
+  3. Identify any columns with data type mismatches or suspicious value ranges.
+  4. Produce a data quality report summarising: missing rate per column, outlier count
+     per numeric column, and any columns that require cleaning before modelling.
+
+dataset:
+  generator: patient_records
+  seed: 42
+  n_rows: 800
+  schema:
+    patient_id: int
+    age: int
+    bmi: float
+    blood_pressure: float
+    cholesterol: float
+    glucose: float
+    diagnosis: str
+  injected_issues:
+    - "missing_values_bmi_15pct"
+    - "outliers_blood_pressure"
+    - "missing_values_cholesterol_8pct"
+
+ground_truth:
+  columns_with_missing:
+    - bmi
+    - cholesterol
+  bmi_missing_rate_approx: 0.15
+  bmi_missing_rate_tolerance: 0.03
+  cholesterol_missing_rate_approx: 0.08
+  cholesterol_missing_rate_tolerance: 0.03
+  outlier_column: "blood_pressure"
+  outlier_detection_methods:
+    - "IQR"
+    - "Z-score"
+    - "interquartile"
+    - "z score"
+    - "standard deviation"
+
+scoring:
+  correctness_weight: 0.45
+  code_quality_weight: 0.20
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.20
+
+evaluation:
+  max_steps: 10
+  timeout_seconds: 120
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - eda
+  - missing_data
+  - outliers
+  - data_quality
