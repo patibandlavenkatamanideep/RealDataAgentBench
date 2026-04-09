@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-04-09T06:16:14.140844+00:00",
+  "generated_at": "2026-04-09T06:36:26.427147+00:00",
   "total_runs": 3,
   "model_summary": [
     {
       "model": "claude-sonnet-4-6",
-      "avg_dab_score": 0.7829,
+      "avg_dab_score": 0.8512,
       "tasks_run": 3
     }
   ],
@@ -15,14 +15,14 @@
       "difficulty": "easy",
       "category": "eda",
       "model": "claude-sonnet-4-6",
-      "run_at": "2026-04-09T06:07:31.316542+00:00",
+      "run_at": "2026-04-09T06:23:53.006522+00:00",
       "correctness": 1.0,
-      "code_quality": 0.72,
-      "efficiency": 0.25,
+      "code_quality": 0.6667,
+      "efficiency": 0.95,
       "stat_validity": 1.0,
-      "dab_score": 0.8315,
-      "total_tokens": 24411,
-      "num_steps": 14
+      "dab_score": 0.9258,
+      "total_tokens": 16269,
+      "num_steps": 10
     },
     {
       "task_id": "eda_002",
@@ -30,14 +30,14 @@
       "difficulty": "medium",
       "category": "eda",
       "model": "claude-sonnet-4-6",
-      "run_at": "2026-04-09T06:09:47.365478+00:00",
+      "run_at": "2026-04-09T06:34:26.021269+00:00",
       "correctness": 0.6667,
-      "code_quality": 0.82,
-      "efficiency": 0.1,
-      "stat_validity": 0.75,
-      "dab_score": 0.629,
-      "total_tokens": 55925,
-      "num_steps": 25
+      "code_quality": 0.7714,
+      "efficiency": 0.97,
+      "stat_validity": 0.5,
+      "dab_score": 0.6998,
+      "total_tokens": 47627,
+      "num_steps": 23
     },
     {
       "task_id": "eda_003",
@@ -45,14 +45,14 @@
       "difficulty": "hard",
       "category": "eda",
       "model": "claude-sonnet-4-6",
-      "run_at": "2026-04-09T06:10:59.132142+00:00",
+      "run_at": "2026-04-09T06:32:27.234966+00:00",
       "correctness": 1.0,
-      "code_quality": 0.72,
-      "efficiency": 0.5344,
+      "code_quality": 0.825,
+      "efficiency": 0.6955,
       "stat_validity": 1.0,
-      "dab_score": 0.8882,
-      "total_tokens": 27705,
-      "num_steps": 17
+      "dab_score": 0.9281,
+      "total_tokens": 39894,
+      "num_steps": 23
     }
   ]
 }
