@@ -1,0 +1,75 @@
+task_id: feat_003
+title: "Datetime Feature Extraction for Retail Sales"
+difficulty: medium
+category: feature_engineering
+description: |
+  You are given a retail sales dataset with a transaction_date column stored as a string
+  in ISO format (YYYY-MM-DD).
+  Your task is to:
+  1. Parse transaction_date into a proper datetime column.
+  2. Extract the following features: year, month, day_of_week (0=Monday), is_weekend,
+     quarter, and days_since_first_sale (relative to the earliest date in the dataset).
+  3. Compute the average daily_sales grouped by day_of_week. Which day has the highest
+     average sales?
+  4. Compute the average daily_sales grouped by is_weekend. Do weekends outperform
+     weekdays on average?
+  5. Fit a linear regression using only the extracted datetime features to predict
+     daily_sales and report the R² score.
+
+dataset:
+  generator: retail_sales
+  seed: 42
+  n_rows: 730
+  schema:
+    transaction_date: str
+    store_id: int
+    daily_sales: float
+    promo_active: int
+
+ground_truth:
+  datetime_parsed: true
+  datetime_parsed_aliases:
+    - "to_datetime"
+    - "parsed"
+    - "datetime"
+    - "pd.to_datetime"
+  day_of_week_extracted: true
+  day_of_week_extracted_aliases:
+    - "day_of_week"
+    - "dayofweek"
+    - "day of week"
+    - "weekday"
+  weekend_outperforms: true
+  weekend_outperforms_aliases:
+    - "weekend"
+    - "weekends higher"
+    - "weekends outperform"
+    - "higher on weekend"
+    - "saturday"
+    - "sunday"
+  is_weekend_created: true
+  is_weekend_created_aliases:
+    - "is_weekend"
+    - "is weekend"
+    - "weekend flag"
+
+scoring:
+  correctness_weight: 0.45
+  code_quality_weight: 0.20
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.20
+
+evaluation:
+  max_steps: 18
+  timeout_seconds: 150
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - feature_engineering
+  - datetime
+  - time_series
+  - retail
+  - linear_regression

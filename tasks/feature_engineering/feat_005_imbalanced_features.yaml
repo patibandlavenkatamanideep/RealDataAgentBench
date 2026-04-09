@@ -1,0 +1,85 @@
+task_id: feat_005
+title: "Feature Engineering for Imbalanced Fraud Detection"
+difficulty: hard
+category: feature_engineering
+description: |
+  You are given a fraud detection dataset that is heavily imbalanced (~5% fraud).
+  Your task is to:
+  1. Report the class imbalance ratio (fraud / non-fraud).
+  2. Engineer at least 3 new features that could help distinguish fraud:
+     - amount_zscore: Z-score of transaction_amount within each merchant_category
+     - hour_of_day: extracted from transaction_hour (already numeric 0-23)
+     - is_high_amount: 1 if transaction_amount > 90th percentile, else 0
+  3. Train a Random Forest on original features only and report the F1-score (macro).
+  4. Train a Random Forest on original + engineered features and report F1-score (macro).
+  5. Apply SMOTE or class_weight='balanced' to handle imbalance — report which you chose
+     and why.
+  6. State whether engineered features improved the F1-score.
+
+dataset:
+  generator: fraud_detection
+  seed: 42
+  n_rows: 1000
+  schema:
+    transaction_amount: float
+    merchant_category: str
+    transaction_hour: int
+    customer_age: int
+    num_transactions_today: int
+    account_balance: float
+    is_foreign: int
+    fraud: int
+
+ground_truth:
+  imbalance_reported: true
+  imbalance_reported_aliases:
+    - "imbalance"
+    - "class imbalance"
+    - "fraud rate"
+    - "5%"
+    - "minority"
+    - "ratio"
+  amount_zscore_created: true
+  amount_zscore_created_aliases:
+    - "amount_zscore"
+    - "z-score"
+    - "zscore"
+    - "z score"
+    - "standardized"
+  is_high_amount_created: true
+  is_high_amount_created_aliases:
+    - "is_high_amount"
+    - "high amount"
+    - "90th percentile"
+    - "percentile"
+    - "threshold"
+  features_improved_f1: true
+  features_improved_f1_aliases:
+    - "improved"
+    - "higher f1"
+    - "better f1"
+    - "increased f1"
+    - "outperforms"
+    - "better performance"
+
+scoring:
+  correctness_weight: 0.40
+  code_quality_weight: 0.15
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.30
+
+evaluation:
+  max_steps: 20
+  timeout_seconds: 200
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - feature_engineering
+  - imbalanced
+  - fraud_detection
+  - smote
+  - f1_score
+  - random_forest

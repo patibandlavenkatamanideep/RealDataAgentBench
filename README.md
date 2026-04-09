@@ -1,7 +1,7 @@
 # DataAgentBench
 
 [![CI](https://github.com/patibandlavenkatamanideep/Data-AgentBench/actions/workflows/ci.yml/badge.svg)](https://github.com/patibandlavenkatamanideep/Data-AgentBench/actions)
-[![Tests](https://img.shields.io/badge/tests-85%20passing-brightgreen)](https://github.com/patibandlavenkatamanideep/Data-AgentBench/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-120%20passing-brightgreen)](https://github.com/patibandlavenkatamanideep/Data-AgentBench/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue)](https://github.com/patibandlavenkatamanideep/Data-AgentBench/blob/main/LICENSE)
 
@@ -61,6 +61,11 @@ dab run --all
 | eda_001 | Income Distribution Analysis | Easy | EDA | Skewness, log transform |
 | eda_002 | Patient Records — Missing Data & Outlier Audit | Medium | EDA | Missing rates, IQR outliers |
 | eda_003 | E-Commerce Confounding Variable Detection | Hard | EDA | Simpson's Paradox, partial correlation |
+| feat_001 | Polynomial Feature Engineering for House Prices | Easy | Feature Engineering | Interaction terms, R² comparison |
+| feat_002 | Categorical Encoding & Feature Selection for Employee Attrition | Medium | Feature Engineering | One-hot encoding, feature importance |
+| feat_003 | Datetime Feature Extraction for Retail Sales | Medium | Feature Engineering | Datetime parsing, weekend effect |
+| feat_004 | Feature Importance & Selection Pipeline for Credit Risk | Hard | Feature Engineering | Multicollinearity, ROC-AUC, Gradient Boosting |
+| feat_005 | Feature Engineering for Imbalanced Fraud Detection | Hard | Feature Engineering | SMOTE, F1-score, class imbalance |
 
 ---
 
@@ -137,10 +142,10 @@ pytest tests/ --cov=dataagentbench --cov-report=term-missing
 
 ## Roadmap
 
-- [ ] Phase 3 — GitHub Pages leaderboard (live DAB score table)
-- [ ] Feature engineering tasks (feat_001–feat_005)
+- [x] Phase 3 — GitHub Pages leaderboard (live DAB score table)
+- [x] Feature engineering tasks (feat_001–feat_005)
 - [ ] Model comparison runs (GPT-4o, Gemini 1.5 Pro)
-- [ ] Automated leaderboard updates via GitHub Actions
+- [x] Automated leaderboard updates via GitHub Actions
 
 ---
 

@@ -1,0 +1,68 @@
+task_id: feat_001
+title: "Polynomial Feature Engineering for House Prices"
+difficulty: easy
+category: feature_engineering
+description: |
+  You are given a housing dataset with numeric features.
+  Your task is to:
+  1. Compute the Pearson correlation of each original numeric feature with the target (price).
+  2. Create the following engineered features:
+     - sqft_per_room: total_sqft / num_rooms
+     - price_per_sqft is NOT available at inference — do not create it.
+     - age_sqft_interaction: house_age * total_sqft
+  3. Fit a linear regression on (a) original features only and (b) original + engineered features.
+  4. Report the R² score for both models and state which is better.
+  Provide exact R² values rounded to 3 decimal places.
+
+dataset:
+  generator: house_prices
+  seed: 42
+  n_rows: 500
+  schema:
+    total_sqft: float
+    num_rooms: int
+    house_age: int
+    garage: int
+    price: float
+
+ground_truth:
+  better_model: "engineered"
+  better_model_aliases:
+    - "engineered features"
+    - "with engineered"
+    - "original + engineered"
+    - "improved"
+    - "higher r"
+    - "model b"
+    - "second model"
+  sqft_per_room_created: true
+  sqft_per_room_created_aliases:
+    - "sqft_per_room"
+    - "sqft per room"
+  r2_improves: true
+  r2_improves_aliases:
+    - "improves"
+    - "higher"
+    - "better"
+    - "increased"
+    - "outperforms"
+
+scoring:
+  correctness_weight: 0.50
+  code_quality_weight: 0.20
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.15
+
+evaluation:
+  max_steps: 12
+  timeout_seconds: 120
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - feature_engineering
+  - polynomial
+  - linear_regression
+  - r2

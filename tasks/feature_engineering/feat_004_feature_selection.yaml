@@ -1,0 +1,88 @@
+task_id: feat_004
+title: "Feature Importance & Selection Pipeline for Credit Risk"
+difficulty: hard
+category: feature_engineering
+description: |
+  You are given a credit risk dataset with 15+ features, some of which are noisy or redundant.
+  Your task is to:
+  1. Identify and report any features with near-zero variance (std < 0.01 after normalisation).
+  2. Compute the correlation matrix and identify pairs of features with |r| > 0.85
+     (highly correlated — candidates for removal).
+  3. Train a Gradient Boosting classifier on ALL features and report the cross-validated
+     ROC-AUC (5-fold).
+  4. Drop one feature from each highly-correlated pair and any near-zero variance features.
+     Re-train and report the new cross-validated ROC-AUC.
+  5. State whether the reduced model performs comparably (within 0.02 AUC) to the full model.
+  6. List the final selected feature names.
+
+dataset:
+  generator: credit_risk
+  seed: 42
+  n_rows: 800
+  schema:
+    age: int
+    income: float
+    debt_ratio: float
+    credit_score: int
+    num_loans: int
+    loan_amount: float
+    employment_years: int
+    monthly_payment: float
+    payment_history: float
+    utilization_rate: float
+    num_credit_lines: int
+    income_log: float
+    debt_income_ratio: float
+    dummy_noise_1: float
+    dummy_noise_2: float
+    default: int
+
+ground_truth:
+  correlated_pair_found: true
+  correlated_pair_found_aliases:
+    - "highly correlated"
+    - "correlation"
+    - "collinear"
+    - "redundant"
+    - "|r| >"
+    - "r > 0.85"
+    - "0.85"
+  reduced_model_comparable: true
+  reduced_model_comparable_aliases:
+    - "comparable"
+    - "within 0.02"
+    - "similar"
+    - "no significant loss"
+    - "performs comparably"
+    - "negligible"
+    - "maintained"
+  near_zero_variance_checked: true
+  near_zero_variance_checked_aliases:
+    - "near-zero variance"
+    - "near zero variance"
+    - "low variance"
+    - "variance threshold"
+    - "std"
+    - "dummy_noise"
+
+scoring:
+  correctness_weight: 0.40
+  code_quality_weight: 0.15
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.30
+
+evaluation:
+  max_steps: 20
+  timeout_seconds: 200
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - feature_engineering
+  - feature_selection
+  - gradient_boosting
+  - roc_auc
+  - credit_risk
+  - multicollinearity
