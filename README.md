@@ -50,24 +50,51 @@ An agent can score **1.0 on correctness and 0.2 on statistical validity** — an
 
 ## Key Findings
 
-From 163 runs across 10 models and 23 tasks:
+From 163 runs across 10 models and 23 tasks — these are patterns observed in actual benchmark output, not hypothetical:
 
-- **Frontier models often fail statistical validity** — high correctness scores mask poor uncertainty reporting, missing confidence intervals, and causal claims drawn from observational data
-- **Lower-cost models close the gap fast** — GPT-4.1 scores within 3% of GPT-5 at ~15× lower cost per task ($0.038 vs $0.596)
-- **Performance varies significantly by category** — no single model dominates across EDA, modeling, and inference; the best model per category differs
-- **Reasoning models don't always win** — GPT-4o outscores Claude Opus on many tasks despite being far cheaper ($0.042 vs $1.92 per task)
+**1. Statistical validity is the universal weak point — even for frontier models**
+
+Every model, including GPT-5 and Claude Opus, scores 0.25 on statistical validity for `feat_002` (Categorical Encoding), `feat_003` (Datetime Features), `model_001` (Logistic Regression), and `model_002` (Random Forest). Correctness on these same tasks is 0.83–1.00. Models get the right numbers but skip uncertainty reporting, omit feature importance confidence ranges, and treat point estimates as conclusions.
+
+**2. No single model dominates across categories**
+
+| Category | Best Model | Avg RDAB |
+|----------|-----------|:--------:|
+| EDA | gpt-4.1 | 0.890 |
+| Feature Engineering | gpt-4.1 | 0.829 |
+| Statistical Inference | gpt-4.1 | **0.917** |
+| ML Engineering | gpt-4o | 0.805 |
+| Modeling | llama-3.3-70b | **0.765** |
+
+Llama 3.3-70b (free via Groq) outperforms GPT-5, GPT-4.1, and all Claude models on the modeling category — an unexpected result driven by more methodical step-by-step code structure.
+
+**3. Claude models massively over-spend tokens**
+
+Claude Haiku used **608,861 tokens** on `feat_005` (efficiency = 0.13). Claude Sonnet used **375,920 tokens** on `feat_004`. Claude Opus hit 340,296 tokens on `model_004`. GPT-4.1 and Llama 3.3-70b completed the same tasks in under 30,000 tokens with higher correctness. The Anthropic models explore more but conclude less efficiently.
+
+**4. grok-3-mini completely fails sklearn-dependent tasks**
+
+Grok-3-mini scores **correctness = 0.00** on 7 out of 23 tasks — all of them modeling or ML engineering tasks requiring sklearn (`model_001`, `model_002`, `model_004`, `model_005`, `mod_002`, `mod_004`, `mod_005`). The model couldn't navigate the sandboxed sklearn environment and returned empty answers. Its 0.626 overall score hides a bimodal distribution: near-perfect on EDA and inference, zero on anything requiring a trained model.
+
+**5. GPT-4.1 is the most cost-efficient serious contender**
+
+GPT-4.1 leads EDA, Feature Engineering, and Statistical Inference outright — at $0.038/task vs GPT-5's $0.596. For teams running data analysis at scale, GPT-4.1 delivers ~98% of GPT-5's output at 6% of the cost.
 
 ---
 
-## Concrete failure example
+## Observed failure patterns
 
-> A model achieved **0.95 correctness but 0.28 statistical validity** on `stat_003` (Salary Gap Analysis):
-> - Reported a salary gap number without controlling for confounders (education, tenure, role)
-> - Drew a causal conclusion ("women are paid less *because of* gender") from an OLS coefficient
-> - Omitted confidence intervals and p-value interpretation
-> - Passed the numeric check — failed the statistical reasoning check
+**Pattern 1 — Correct number, wrong reasoning** (`feat_002`, `feat_003`, `model_001–003`):
+Every model computes the right feature importances, encodes correctly, or fits the right coefficients — then stops. No model spontaneously adds: which features are statistically indistinguishable, whether the importance ranking is stable across folds, or whether the model is overfit. Correctness = 1.0, Stat Validity = 0.25.
 
-This is the gap RDAB is designed to measure.
+**Pattern 2 — Token spiral without convergence** (Claude models, `feat_004`, `feat_005`, `model_003`):
+Claude Opus and Haiku enter a loop of calling `get_column_stats` on every column one-by-one, then re-running the same `run_code` block with minor variations. They produce correct intermediate outputs but take 5–15× more tokens than GPT-4o to reach the same conclusion. Efficiency scores as low as 0.12–0.13.
+
+**Pattern 3 — sklearn blind spot** (grok-3-mini, all modeling tasks):
+Grok-3-mini attempts to import sklearn inside `run_code`, hits the sandbox restriction, then either retries imports repeatedly or gives up and returns a non-answer. The model never adapts to the pre-injected namespace. Result: 7 zero-correctness runs on tasks it could theoretically solve.
+
+**Pattern 4 — Gemini over-truncates** (`mod_003`, `model_002`, `feat_005`):
+Gemini 2.5 Flash produces structurally correct code but truncates its final answer before reporting key metrics. Average correctness = 0.58 despite reasonable reasoning steps — the model reaches the right place but doesn't output the conclusion in a scoreable form.
 
 ---
 
