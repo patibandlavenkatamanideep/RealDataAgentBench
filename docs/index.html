@@ -514,7 +514,7 @@
 <header>
   <div class="header-inner">
     <h1>Real<span>DataAgent</span>Bench</h1>
-    <p>Forces LLM agents to think like real statisticians — not just copy answers</p>
+    <p>Most LLMs get the right answer. RDAB checks if they did it the right way.</p>
     <div class="meta">
       <span class="pill" id="meta-runs">— runs</span>
       <span class="pill" id="meta-tasks">— tasks</span>
@@ -595,6 +595,7 @@
             <th data-col="dab_score">RDAB Score <span class="sort-arrow active">↓</span></th>
             <th data-col="total_tokens">Tokens <span class="sort-arrow">↕</span></th>
             <th data-col="cost_usd">Cost ($) <span class="sort-arrow">↕</span></th>
+            <th title="RDAB Score ÷ Cost per task. Higher = more value per dollar.">Score / $</th>
           </tr>
         </thead>
         <tbody id="table-body"></tbody>
@@ -604,7 +605,8 @@
 </main>
 
 <footer>
-  Built by <a href="https://github.com/patibandlavenkatamanideep" target="_blank">Manideep Patibandla</a>
+  Built by <a href="https://github.com/patibandlavenkatamanideep" target="_blank">Venkata Manideep Patibandla</a>
+  &nbsp;·&nbsp; LLM evaluation · agent systems · statistically robust AI
   &nbsp;·&nbsp;
   <a href="https://github.com/patibandlavenkatamanideep/RealDataAgentBench" target="_blank">RealDataAgentBench on GitHub</a>
   &nbsp;·&nbsp; <span id="footer-stats">23 tasks · 4-dimension scoring</span>
@@ -812,6 +814,9 @@
     const tbody = document.getElementById('table-body');
     tbody.innerHTML = sorted.map(r => {
       const dabTier = scoreTier(r.dab_score);
+      const scorePer$ = r.cost_usd > 0
+        ? Math.min(r.dab_score / r.cost_usd, 999).toFixed(1)
+        : '—';
       return `
         <tr>
           <td><code>${r.task_id}</code></td>
@@ -826,6 +831,7 @@
           <td><span class="dab-score dab-${dabTier}">${r.dab_score.toFixed(3)}</span></td>
           <td style="color:var(--muted);font-size:0.78rem">${(r.total_tokens || 0).toLocaleString()}</td>
           <td><span class="cost-val">$${(r.cost_usd || 0).toFixed(4)}</span></td>
+          <td style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--muted)">${scorePer$}</td>
         </tr>`;
     }).join('');
   }
