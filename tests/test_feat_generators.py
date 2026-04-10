@@ -58,7 +58,7 @@ class TestEmployeeAttritionGenerator:
 
     def test_categorical_columns(self):
         df = gen_attrition()
-        cats = df.select_dtypes("object").columns.tolist()
+        cats = df.select_dtypes(include=["object", "str"]).columns.tolist()
         assert "department" in cats
         assert "gender" in cats
         assert "overtime" in cats

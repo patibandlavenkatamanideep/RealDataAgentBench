@@ -1,14 +1,16 @@
-"""Model providers — unified interface for Claude, GPT-4o, Groq, and future models."""
+"""Model providers — unified interface for Claude, GPT-4o, Groq, Grok, Gemini, and future models."""
 
 from __future__ import annotations
 
 import json
 import os
+import time
 from abc import ABC, abstractmethod
 from typing import Any
 
 import pandas as pd
 
+from .pricing import COST_PER_M_TOKENS, compute_cost  # single source of truth
 from .tools import TOOL_DEFINITIONS, get_column_stats, get_dataframe_info, run_code
 
 # ── Model name aliases ────────────────────────────────────────────────────────
@@ -22,13 +24,18 @@ ANTHROPIC_MODELS = {
 }
 
 OPENAI_MODELS = {
+    "gpt-5",
+    "gpt-5-mini",
+    "gpt-4.1",
+    "gpt-4.1-mini",
+    "gpt-4.1-nano",
     "gpt-4o",
     "gpt-4o-mini",
     "gpt-4-turbo",
     "gpt-4",
     "gpt-3.5-turbo",
     # short aliases
-    "gpt4o", "gpt-4o-2024-11-20",
+    "gpt4o", "gpt4.1", "gpt5", "gpt-4o-2024-11-20",
 }
 
 GROQ_MODELS = {
@@ -43,51 +50,50 @@ GROQ_MODELS = {
     "groq", "llama", "llama-70b", "llama-8b", "mixtral",
 }
 
+GROK_MODELS = {
+    "grok-3",
+    "grok-3-mini",
+    "grok-3-fast",
+    "grok-2-1212",
+    # short aliases
+    "grok", "grok-mini", "grok-fast",
+}
+
+GEMINI_MODELS = {
+    "gemini-2.5-pro",
+    "gemini-2.5-flash",
+    "gemini-2.0-flash",
+    "gemini-2.0-flash-lite",
+    # short aliases
+    "gemini", "gemini-pro", "gemini-flash",
+}
+
 MODEL_ALIASES = {
     "claude": "claude-sonnet-4-6",
     "sonnet": "claude-sonnet-4-6",
     "opus": "claude-opus-4-6",
     "haiku": "claude-haiku-4-5-20251001",
+    # OpenAI shortcuts
     "gpt4o": "gpt-4o",
+    "gpt5": "gpt-5",
+    "gpt4.1": "gpt-4.1",
     # Groq shortcuts
     "groq": "llama-3.3-70b-versatile",
     "llama": "llama-3.3-70b-versatile",
     "llama-70b": "llama-3.3-70b-versatile",
     "llama-8b": "llama-3.1-8b-instant",
     "mixtral": "mixtral-8x7b-32768",
+    # Grok shortcuts
+    "grok": "grok-3",
+    "grok-mini": "grok-3-mini",
+    "grok-fast": "grok-3-fast",
+    # Gemini shortcuts
+    "gemini": "gemini-2.5-flash",
+    "gemini-pro": "gemini-2.5-pro",
+    "gemini-flash": "gemini-2.5-flash",
 }
 
-# ── Cost table (USD per million tokens) ──────────────────────────────────────
-# Source: official pricing pages as of April 2026.
-# Groq has a free tier with rate limits — paid tier prices shown here.
-
-COST_PER_M_TOKENS: dict[str, tuple[float, float]] = {
-    # model_id: (input_$/M, output_$/M)
-    "claude-sonnet-4-6":        (3.00,  15.00),
-    "claude-opus-4-6":          (15.00, 75.00),
-    "claude-haiku-4-5-20251001": (0.25,   1.25),
-    "gpt-4o":                   (2.50,  10.00),
-    "gpt-4o-mini":              (0.15,   0.60),
-    "gpt-4-turbo":              (10.00, 30.00),
-    "gpt-4":                    (30.00, 60.00),
-    "gpt-3.5-turbo":            (0.50,   1.50),
-    # Groq — very cheap, some models have free tiers
-    "llama-3.3-70b-versatile":  (0.59,   0.79),
-    "llama-3.1-70b-versatile":  (0.59,   0.79),
-    "llama-3.1-8b-instant":     (0.05,   0.08),
-    "llama3-70b-8192":          (0.59,   0.79),
-    "llama3-8b-8192":           (0.05,   0.08),
-    "mixtral-8x7b-32768":       (0.24,   0.24),
-    "gemma2-9b-it":             (0.20,   0.20),
-}
-
-_FALLBACK_COST = (1.00, 3.00)  # conservative fallback for unknown models
-
-
-def compute_cost(model: str, input_tokens: int, output_tokens: int) -> float:
-    """Return estimated cost in USD for a given number of tokens."""
-    in_per_m, out_per_m = COST_PER_M_TOKENS.get(model, _FALLBACK_COST)
-    return (input_tokens * in_per_m + output_tokens * out_per_m) / 1_000_000
+# COST_PER_M_TOKENS and compute_cost are imported from pricing.py above.
 
 
 SYSTEM_PROMPT = """You are an expert data scientist working on a benchmark task.
@@ -124,11 +130,16 @@ def get_provider(model: str) -> "BaseProvider":
         return AnthropicProvider(model)
     if model.startswith(("gpt-", "gpt4")):
         return OpenAIProvider(model)
-    if model in GROQ_MODELS or model.startswith(("llama", "mixtral", "gemma")):
+    if model in GROQ_MODELS or model.startswith(("llama", "mixtral", "gemma2")):
         return GroqProvider(model)
+    if model in GROK_MODELS or model.startswith("grok"):
+        return GrokProvider(model)
+    if model in GEMINI_MODELS or model.startswith("gemini"):
+        return GeminiProvider(model)
     raise ValueError(
         f"Unknown model: {model!r}. "
-        f"Supported: 'claude-*', 'gpt-*', 'llama-*', 'mixtral-*' (Groq). "
+        f"Supported prefixes: 'claude-*', 'gpt-*', 'llama-*'/'mixtral-*' (Groq), "
+        f"'grok-*' (xAI), 'gemini-*' (Google). "
         f"Add new providers in harness/providers.py."
     )
 
@@ -270,6 +281,19 @@ class OpenAIProvider(BaseProvider):
             for t in tools
         ]
 
+    def _chat_with_retry(self, **kwargs) -> Any:
+        """Call chat.completions.create with exponential backoff on 429 / 503."""
+        from openai import RateLimitError
+        delay = 5.0
+        for attempt in range(4):
+            try:
+                return self.client.chat.completions.create(**kwargs)
+            except RateLimitError:
+                if attempt == 3:
+                    raise
+                time.sleep(delay)
+                delay *= 2
+
     def run(self, task_description, dataframe, max_steps, allowed_tools, tracer,
             budget=None):
         tools = self._filter_tools(allowed_tools)
@@ -284,12 +308,12 @@ class OpenAIProvider(BaseProvider):
         total_in, total_out = 0, 0
 
         for _ in range(max_steps):
-            response = self.client.chat.completions.create(
+            response = self._chat_with_retry(
                 model=self.model,
                 messages=messages,
                 tools=oai_tools,
                 tool_choice="auto",
-                max_tokens=4096,
+                max_completion_tokens=4096,
             )
 
             choice = response.choices[0]
@@ -358,6 +382,15 @@ class GroqProvider(OpenAIProvider):
       dab run eda_001 --model mixtral       # mixtral-8x7b-32768
     """
 
+    # Llama models on Groq sometimes emit malformed tool-call XML instead of
+    # proper JSON function calls.  A more explicit system prompt helps significantly.
+    _GROQ_SYSTEM_PROMPT = (
+        SYSTEM_PROMPT
+        + "\n\nIMPORTANT: When calling a tool you MUST use the JSON function-call "
+        "format provided by the API. Do NOT write <function=...> tags or any other "
+        "format — only use the structured tool_calls mechanism."
+    )
+
     def __init__(self, model: str):
         # Skip OpenAIProvider.__init__ — build our own client with Groq base URL
         BaseProvider.__init__(self, model)
@@ -372,3 +405,133 @@ class GroqProvider(OpenAIProvider):
             api_key=groq_key,
             base_url="https://api.groq.com/openai/v1",
         )
+
+    def run(self, task_description, dataframe, max_steps, allowed_tools, tracer,
+            budget=None):
+        tools = self._filter_tools(allowed_tools)
+        oai_tools = self._tools_to_openai(tools)
+
+        messages = [
+            {"role": "system", "content": self._GROQ_SYSTEM_PROMPT},
+            {"role": "user", "content": task_description},
+        ]
+
+        assistant_text = ""
+        total_in, total_out = 0, 0
+
+        for _ in range(max_steps):
+            response = self._chat_with_retry(
+                model=self.model,
+                messages=messages,
+                tools=oai_tools,
+                tool_choice="auto",
+                max_completion_tokens=4096,
+            )
+
+            choice = response.choices[0]
+            msg = choice.message
+            usage = response.usage
+
+            assistant_text = msg.content or ""
+            tool_calls = msg.tool_calls or []
+
+            in_tok = usage.prompt_tokens if usage else 0
+            out_tok = usage.completion_tokens if usage else 0
+            total_in += in_tok
+            total_out += out_tok
+
+            tracer.record(
+                role="assistant",
+                content=assistant_text,
+                input_tokens=in_tok,
+                output_tokens=out_tok,
+            )
+
+            self._check_budget(compute_cost(self.model, total_in, total_out), budget)
+
+            if choice.finish_reason == "stop" or not tool_calls:
+                return assistant_text
+
+            messages.append(msg)
+
+            for tc in tool_calls:
+                try:
+                    inputs = json.loads(tc.function.arguments)
+                except json.JSONDecodeError:
+                    inputs = {}
+
+                result = dispatch_tool(tc.function.name, inputs, dataframe)
+                result_str = json.dumps(result) if isinstance(result, dict) else str(result)
+
+                tracer.record(
+                    role="tool",
+                    content=result_str,
+                    tool_name=tc.function.name,
+                    tool_input=inputs,
+                    tool_output=result,
+                )
+
+                messages.append({
+                    "role": "tool",
+                    "tool_call_id": tc.id,
+                    "content": result_str,
+                })
+
+        return assistant_text
+
+
+# ── xAI Grok provider (OpenAI-compatible endpoint) ───────────────────────────
+
+class GrokProvider(OpenAIProvider):
+    """
+    xAI's Grok models via an OpenAI-compatible API.
+    Get an API key at https://console.x.ai — set XAI_API_KEY in your .env file.
+
+    Models to try:
+      dab run eda_001 --model grok           # grok-3 (flagship)
+      dab run eda_001 --model grok-mini      # grok-3-mini (cheap, fast)
+      dab run eda_001 --model grok-2-1212    # grok-2 (previous gen)
+    """
+
+    def __init__(self, model: str):
+        BaseProvider.__init__(self, model)
+        from openai import OpenAI
+        xai_key = os.environ.get("XAI_API_KEY")
+        if not xai_key:
+            raise EnvironmentError(
+                "XAI_API_KEY is not set. "
+                "Get a key at https://console.x.ai and add it to your .env file."
+            )
+        self.client = OpenAI(
+            api_key=xai_key,
+            base_url="https://api.x.ai/v1",
+        )
+
+
+# ── Google Gemini provider (OpenAI-compatible endpoint) ──────────────────────
+
+class GeminiProvider(OpenAIProvider):
+    """
+    Google Gemini models via the OpenAI-compatible REST endpoint.
+    Get a free API key at https://aistudio.google.com — set GEMINI_API_KEY in your .env file.
+
+    Models to try:
+      dab run eda_001 --model gemini              # gemini-2.5-flash (fast + cheap)
+      dab run eda_001 --model gemini-pro          # gemini-2.5-pro (highest quality)
+      dab run eda_001 --model gemini-2.0-flash    # gemini-2.0-flash (previous gen)
+    """
+
+    def __init__(self, model: str):
+        BaseProvider.__init__(self, model)
+        from openai import OpenAI
+        gemini_key = os.environ.get("GEMINI_API_KEY")
+        if not gemini_key:
+            raise EnvironmentError(
+                "GEMINI_API_KEY is not set. "
+                "Get a free key at https://aistudio.google.com and add it to your .env file."
+            )
+        self.client = OpenAI(
+            api_key=gemini_key,
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+        )
+

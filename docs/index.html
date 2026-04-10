@@ -213,11 +213,20 @@
       <button class="filter-btn" data-filter="easy" data-type="difficulty">Easy</button>
       <button class="filter-btn" data-filter="medium" data-type="difficulty">Medium</button>
       <button class="filter-btn" data-filter="hard" data-type="difficulty">Hard</button>
+      <span style="width:1px;background:var(--border);margin:0 0.25rem;display:inline-block;height:24px;vertical-align:middle"></span>
       <button class="filter-btn" data-filter="eda" data-type="category">EDA</button>
       <button class="filter-btn" data-filter="feature_engineering" data-type="category">Feature Eng.</button>
       <button class="filter-btn" data-filter="modeling" data-type="category">Modeling</button>
       <button class="filter-btn" data-filter="statistical_inference" data-type="category">Stat. Inference</button>
       <button class="filter-btn" data-filter="ml_engineering" data-type="category">ML Engineering</button>
+      <span style="width:1px;background:var(--border);margin:0 0.25rem;display:inline-block;height:24px;vertical-align:middle"></span>
+      <button class="filter-btn" data-filter="all" data-type="provider">All Models</button>
+      <button class="filter-btn" data-filter="anthropic" data-type="provider">Anthropic</button>
+      <button class="filter-btn" data-filter="openai" data-type="provider">OpenAI</button>
+      <button class="filter-btn" data-filter="google" data-type="provider">Google</button>
+      <button class="filter-btn" data-filter="xai" data-type="provider">xAI</button>
+      <button class="filter-btn" data-filter="deepseek" data-type="provider">DeepSeek</button>
+      <button class="filter-btn" data-filter="groq" data-type="provider">Groq (Llama)</button>
     </div>
 
     <div class="table-wrap">
@@ -248,7 +257,7 @@
   Built by <a href="https://github.com/patibandlavenkatamanideep" target="_blank">Manideep Patibandla</a>
   &nbsp;·&nbsp;
   <a href="https://github.com/patibandlavenkatamanideep/RealDataAgentBench" target="_blank">RealDataAgentBench on GitHub</a>
-  &nbsp;·&nbsp; 23 tasks · 4 models · 4-dimension scoring
+  &nbsp;·&nbsp; <span id="footer-stats">23 tasks · 4-dimension scoring</span>
 </footer>
 
 <script>
@@ -257,6 +266,17 @@
   let sortDir = -1;
   let activeFilter = 'all';
   let activeFilterType = 'difficulty';
+
+  // Map canonical model prefixes → provider slug for filter buttons
+  function modelProvider(model) {
+    if (model.startsWith('claude'))    return 'anthropic';
+    if (model.startsWith('gpt-') || model.startsWith('gpt4')) return 'openai';
+    if (model.startsWith('gemini'))    return 'google';
+    if (model.startsWith('grok'))      return 'xai';
+    if (model.startsWith('deepseek')) return 'deepseek';
+    // Groq: llama, mixtral, gemma
+    return 'groq';
+  }
 
   async function load() {
     try {
@@ -278,6 +298,13 @@
 
       renderModelCards(data.model_summary);
       allRuns = data.runs;
+
+      // Dynamic footer
+      const taskCount = new Set(data.runs.map(r => r.task_id)).size;
+      const modelCount = new Set(data.runs.map(r => r.model)).size;
+      document.getElementById('footer-stats').textContent =
+        `${taskCount} tasks · ${modelCount} models · 4-dimension scoring`;
+
       renderTable();
     } catch (e) {
       document.getElementById('loading').style.display = 'none';
@@ -314,7 +341,11 @@
   function renderTable() {
     let filtered = allRuns;
     if (activeFilter !== 'all') {
-      filtered = allRuns.filter(r => r[activeFilterType] === activeFilter);
+      if (activeFilterType === 'provider') {
+        filtered = allRuns.filter(r => modelProvider(r.model) === activeFilter);
+      } else {
+        filtered = allRuns.filter(r => r[activeFilterType] === activeFilter);
+      }
     }
 
     const sorted = [...filtered].sort((a, b) => {

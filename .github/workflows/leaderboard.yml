@@ -4,9 +4,11 @@ on:
   push:
     branches: [main]
     paths:
-      - 'outputs/**'
+      - 'docs/results.json'
       - 'scripts/build_leaderboard.py'
       - 'realdataagentbench/scoring/**'
+      - 'realdataagentbench/harness/pricing.py'
+  workflow_dispatch:  # allow manual trigger from GitHub Actions UI
 
 permissions:
   contents: write

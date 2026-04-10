@@ -1,19 +1,42 @@
+# Python
 __pycache__/
 *.py[cod]
+*.pyo
 *.egg-info/
 dist/
 build/
 .eggs/
+*.egg
+
+# Virtual environments
 .venv/
 venv/
 env/
+
+# Environment / secrets — NEVER commit real keys
 .env
 *.env
+
+# Coverage & test artefacts
 .coverage
 htmlcov/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Benchmark outputs (raw run artefacts — not needed in repo)
+# Only docs/results.json (the aggregated leaderboard) is committed.
+outputs/*.json
+
+# JSON everywhere else (keeps tasks/ and docs/ clean of accidental json files)
 *.json
-!tasks/**/*.yaml
-!outputs/*.json
 !docs/results.json
+!docs/screenshots/*.json
+
+# macOS
 .DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp

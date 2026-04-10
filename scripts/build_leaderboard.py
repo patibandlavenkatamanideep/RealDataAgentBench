@@ -12,27 +12,8 @@ ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))
 
 from realdataagentbench.core.registry import TaskRegistry
+from realdataagentbench.harness.pricing import compute_cost  # single source of truth
 from realdataagentbench.scoring.composite import CompositeScorer
-
-# ── Token cost per million tokens (input / output) ───────────────────────────
-# Prices as of 2025-Q4 (USD per 1M tokens)
-COST_PER_M = {
-    "claude-sonnet-4-6":        {"input": 3.00,  "output": 15.00},
-    "claude-opus-4-6":          {"input": 15.00, "output": 75.00},
-    "claude-haiku-4-5-20251001": {"input": 0.25,  "output": 1.25},
-    "haiku":                    {"input": 0.25,  "output": 1.25},
-    "gpt-4o":                   {"input": 2.50,  "output": 10.00},
-    "gpt-4o-mini":              {"input": 0.15,  "output": 0.60},
-}
-
-def compute_cost(model: str, input_tokens: int, output_tokens: int) -> float:
-    """Return cost in USD for a run."""
-    rates = COST_PER_M.get(model, {"input": 3.00, "output": 15.00})
-    return round(
-        (input_tokens / 1_000_000) * rates["input"]
-        + (output_tokens / 1_000_000) * rates["output"],
-        6,
-    )
 
 
 def build(
