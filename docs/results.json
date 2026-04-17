@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-04-17T06:51:24.057356+00:00",
-  "total_runs": 227,
+  "generated_at": "2026-04-17T08:30:13.029616+00:00",
+  "total_runs": 234,
   "model_summary": [
     {
       "model": "gpt-4.1-mini",
@@ -53,10 +53,10 @@
     },
     {
       "model": "gpt-4o-mini",
-      "avg_dab_score": 0.7549,
-      "avg_cost_usd": 0.017292,
-      "total_cost_usd": 0.3113,
-      "tasks_run": 18
+      "avg_dab_score": 0.759,
+      "avg_cost_usd": 0.016214,
+      "total_cost_usd": 0.3243,
+      "tasks_run": 20
     },
     {
       "model": "claude-opus-4-6",
@@ -64,13 +64,6 @@
       "avg_cost_usd": 1.919704,
       "total_cost_usd": 32.635,
       "tasks_run": 17
-    },
-    {
-      "model": "gpt-4.1-nano",
-      "avg_dab_score": 0.6302,
-      "avg_cost_usd": 0.009851,
-      "total_cost_usd": 0.1379,
-      "tasks_run": 14
     },
     {
       "model": "gemini-2.5-flash",
@@ -85,6 +78,13 @@
       "avg_cost_usd": 0.002431,
       "total_cost_usd": 0.0559,
       "tasks_run": 23
+    },
+    {
+      "model": "gpt-4.1-nano",
+      "avg_dab_score": 0.6241,
+      "avg_cost_usd": 0.010314,
+      "total_cost_usd": 0.196,
+      "tasks_run": 19
     }
   ],
   "runs": [
@@ -633,6 +633,24 @@
       "title": "E-Commerce Confounding Variable Detection",
       "difficulty": "hard",
       "category": "eda",
+      "model": "gpt-4.1-nano",
+      "run_at": "2026-04-17T08:19:24.862697+00:00",
+      "correctness": 0.0,
+      "code_quality": 0.5,
+      "efficiency": 0.3941,
+      "stat_validity": 1.0,
+      "dab_score": 0.4341,
+      "total_tokens": 36591,
+      "input_tokens": 36078,
+      "output_tokens": 513,
+      "cost_usd": 0.003813,
+      "num_steps": 35
+    },
+    {
+      "task_id": "eda_003",
+      "title": "E-Commerce Confounding Variable Detection",
+      "difficulty": "hard",
+      "category": "eda",
       "model": "gpt-4o",
       "run_at": "2026-04-09T09:50:04.893525+00:00",
       "correctness": 1.0,
@@ -831,6 +849,24 @@
       "title": "Polynomial Feature Engineering for House Prices",
       "difficulty": "easy",
       "category": "feature_engineering",
+      "model": "gpt-4.1-nano",
+      "run_at": "2026-04-17T08:19:39.044041+00:00",
+      "correctness": 1.0,
+      "code_quality": 0.5,
+      "efficiency": 0.095,
+      "stat_validity": 0.75,
+      "dab_score": 0.7268,
+      "total_tokens": 42695,
+      "input_tokens": 41911,
+      "output_tokens": 784,
+      "cost_usd": 0.004505,
+      "num_steps": 41
+    },
+    {
+      "task_id": "feat_001",
+      "title": "Polynomial Feature Engineering for House Prices",
+      "difficulty": "easy",
+      "category": "feature_engineering",
       "model": "gpt-4o",
       "run_at": "2026-04-09T09:50:35.349805+00:00",
       "correctness": 0.6667,
@@ -843,6 +879,24 @@
       "output_tokens": 2289,
       "cost_usd": 0.05233,
       "num_steps": 15
+    },
+    {
+      "task_id": "feat_001",
+      "title": "Polynomial Feature Engineering for House Prices",
+      "difficulty": "easy",
+      "category": "feature_engineering",
+      "model": "gpt-4o-mini",
+      "run_at": "2026-04-17T08:11:21.431589+00:00",
+      "correctness": 1.0,
+      "code_quality": 0.7111,
+      "efficiency": 0.5,
+      "stat_validity": 0.5,
+      "dab_score": 0.7922,
+      "total_tokens": 19575,
+      "input_tokens": 17224,
+      "output_tokens": 2351,
+      "cost_usd": 0.003994,
+      "num_steps": 20
     },
     {
       "task_id": "feat_001",
@@ -1425,6 +1479,24 @@
       "title": "Feature Importance & Selection Pipeline for Credit Risk",
       "difficulty": "hard",
       "category": "feature_engineering",
+      "model": "gpt-4.1-nano",
+      "run_at": "2026-04-17T08:20:49.959744+00:00",
+      "correctness": 1.0,
+      "code_quality": 0.5,
+      "efficiency": 0.0825,
+      "stat_validity": 0.25,
+      "dab_score": 0.5624,
+      "total_tokens": 316071,
+      "input_tokens": 313579,
+      "output_tokens": 2492,
+      "cost_usd": 0.032355,
+      "num_steps": 87
+    },
+    {
+      "task_id": "feat_004",
+      "title": "Feature Importance & Selection Pipeline for Credit Risk",
+      "difficulty": "hard",
+      "category": "feature_engineering",
       "model": "gpt-4o",
       "run_at": "2026-04-09T12:54:17.783067+00:00",
       "correctness": 0.6667,
@@ -1797,6 +1869,24 @@
       "output_tokens": 1404,
       "cost_usd": 0.012212,
       "num_steps": 26
+    },
+    {
+      "task_id": "mod_001",
+      "title": "Data Leakage Detection in Model Selection",
+      "difficulty": "easy",
+      "category": "ml_engineering",
+      "model": "gpt-4.1-nano",
+      "run_at": "2026-04-17T08:21:06.448385+00:00",
+      "correctness": 1.0,
+      "code_quality": 0.5,
+      "efficiency": 0.14,
+      "stat_validity": 0.75,
+      "dab_score": 0.7515,
+      "total_tokens": 42676,
+      "input_tokens": 41752,
+      "output_tokens": 924,
+      "cost_usd": 0.004545,
+      "num_steps": 32
     },
     {
       "task_id": "mod_001",
@@ -3009,6 +3099,24 @@
       "title": "Ridge vs Lasso Regression for Student Performance",
       "difficulty": "medium",
       "category": "modeling",
+      "model": "gpt-4.1-nano",
+      "run_at": "2026-04-17T08:22:55.960871+00:00",
+      "correctness": 1.0,
+      "code_quality": 0.5,
+      "efficiency": 0.064,
+      "stat_validity": 0.25,
+      "dab_score": 0.5596,
+      "total_tokens": 125296,
+      "input_tokens": 124292,
+      "output_tokens": 1004,
+      "cost_usd": 0.012831,
+      "num_steps": 59
+    },
+    {
+      "task_id": "model_003",
+      "title": "Ridge vs Lasso Regression for Student Performance",
+      "difficulty": "medium",
+      "category": "modeling",
       "model": "gpt-4o",
       "run_at": "2026-04-09T15:56:16.793044+00:00",
       "correctness": 1.0,
@@ -3813,6 +3921,24 @@
       "output_tokens": 1583,
       "cost_usd": 0.041015,
       "num_steps": 16
+    },
+    {
+      "task_id": "stat_003",
+      "title": "Salary Gap Analysis \u2014 Controlling for Confounders",
+      "difficulty": "hard",
+      "category": "statistical_inference",
+      "model": "gpt-4o-mini",
+      "run_at": "2026-04-17T08:19:08.165322+00:00",
+      "correctness": 1.0,
+      "code_quality": 0.7333,
+      "efficiency": 0.2855,
+      "stat_validity": 0.75,
+      "dab_score": 0.801,
+      "total_tokens": 50882,
+      "input_tokens": 47773,
+      "output_tokens": 3109,
+      "cost_usd": 0.009031,
+      "num_steps": 37
     },
     {
       "task_id": "stat_003",
