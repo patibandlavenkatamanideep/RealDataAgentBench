@@ -548,7 +548,7 @@
             <th>#</th>
             <th>Model</th>
             <th>RDAB Score</th>
-            <th>Tasks</th>
+            <th>Coverage</th>
             <th>Avg Cost / Task</th>
             <th>Provider</th>
           </tr>
@@ -674,9 +674,94 @@
       renderTable();
     } catch (e) {
       document.getElementById('loading').style.display = 'none';
+      // Static fallback — embedded snapshot of leaderboard data (April 2026)
+      // This ensures the page is always readable even if results.json fails to load.
       const el = document.getElementById('error');
       el.style.display = 'block';
-      el.textContent = 'Could not load results.json — ' + e.message;
+      el.innerHTML = `
+        <div style="background:#FFF9C4;border:1px solid #F59E0B;border-radius:8px;padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:0.85rem;color:#92400E;">
+          <strong>Note:</strong> Live data could not be loaded (${e.message}). Showing the last published snapshot (April 2026).
+          <a href="results.json" style="color:#1D4ED8;margin-left:0.5rem;">Try direct link</a>
+        </div>
+        <h2 style="font-size:1rem;font-weight:700;margin-bottom:0.75rem;color:#0F172A;">
+          Full-coverage leaderboard — 227 runs · 7 models · 23 tasks
+        </h2>
+        <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+          <thead>
+            <tr style="background:#F1F5F9;text-align:left;">
+              <th style="padding:0.5rem 0.75rem;border-bottom:2px solid #E2E8F0;">Rank</th>
+              <th style="padding:0.5rem 0.75rem;border-bottom:2px solid #E2E8F0;">Model</th>
+              <th style="padding:0.5rem 0.75rem;border-bottom:2px solid #E2E8F0;text-align:center;">Avg RDAB Score</th>
+              <th style="padding:0.5rem 0.75rem;border-bottom:2px solid #E2E8F0;text-align:center;">Coverage</th>
+              <th style="padding:0.5rem 0.75rem;border-bottom:2px solid #E2E8F0;text-align:right;">Avg Cost / Task</th>
+              <th style="padding:0.5rem 0.75rem;border-bottom:2px solid #E2E8F0;text-align:right;">Score / $</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#EFF6FF;font-weight:600;">
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;">1</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;">gpt-4.1-mini</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:center;">0.832</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:center;">23 / 23</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:right;">$0.0127</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:right;">65.8</td>
+            </tr>
+            <tr>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;">2</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;">gpt-5</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:center;">0.812</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:center;">23 / 23</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:right;">$0.5957</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:right;">1.4</td>
+            </tr>
+            <tr>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;">3</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;">gpt-4o</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:center;">0.794</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:center;">23 / 23</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:right;">$0.0439</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:right;">18.1</td>
+            </tr>
+            <tr>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;">4</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;">gpt-4.1</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:center;">0.791</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:center;">23 / 23</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:right;">$0.0384</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:right;">20.6</td>
+            </tr>
+            <tr>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;">5</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;">llama-3.3-70b</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:center;">0.772</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:center;">23 / 23</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:right;">$0.0020</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:right;">393.2</td>
+            </tr>
+            <tr>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;">6</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;">gemini-2.5-flash</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:center;">0.626</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:center;">23 / 23</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:right;">$0.0015</td>
+              <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:right;">417.0</td>
+            </tr>
+            <tr>
+              <td style="padding:0.5rem 0.75rem;">7</td>
+              <td style="padding:0.5rem 0.75rem;">grok-3-mini</td>
+              <td style="padding:0.5rem 0.75rem;text-align:center;">0.626</td>
+              <td style="padding:0.5rem 0.75rem;text-align:center;">23 / 23</td>
+              <td style="padding:0.5rem 0.75rem;text-align:right;">$0.0024</td>
+              <td style="padding:0.5rem 0.75rem;text-align:right;">257.3</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <p style="margin-top:1rem;font-size:0.78rem;color:#64748B;">
+          Snapshot: April 2026 · 227 runs · 12 models (7 full-coverage) · 23 tasks ·
+          <a href="https://github.com/patibandlavenkatamanideep/RealDataAgentBench" style="color:#3B82F6;">GitHub repo</a>
+        </p>`;
     }
   }
 
@@ -729,27 +814,33 @@
   }
 
   function renderSnapshot(summaries) {
-    const eligible  = summaries.filter(s => s.tasks_run >= 5);
-    const best      = summaries[0];
+    const full    = summaries.filter(s => s.tasks_run === 23);
+    const partial = summaries.filter(s => s.tasks_run < 23);
+
+    const eligible  = full; // cost/value comparisons only over full-coverage models
+    const best      = full[0];
     const cheapest  = [...eligible].sort((a, b) => a.avg_cost_usd - b.avg_cost_usd)[0];
     const bestValue = [...eligible].sort((a, b) =>
       (b.avg_dab_score / (b.avg_cost_usd || 0.0001)) -
       (a.avg_dab_score / (a.avg_cost_usd || 0.0001))
     )[0];
 
-    const tbody = document.getElementById('snapshot-body');
-    tbody.innerHTML = summaries.map((s, i) => {
+    function rowHtml(s, rank, isPartial) {
       const pct      = Math.round(s.avg_dab_score * 100);
       const tier     = scoreTier(s.avg_dab_score);
       const provider = PROVIDER_LABELS[modelProvider(s.model)] || 'Other';
       const tags     = [];
-      if (s.model === best.model)      tags.push('<span class="tag tag-best">Top Score</span>');
-      if (s.model === bestValue.model) tags.push('<span class="tag tag-value">Best Value</span>');
-      if (s.model === cheapest.model)  tags.push('<span class="tag tag-cheap">Cheapest</span>');
+      if (!isPartial && best      && s.model === best.model)      tags.push('<span class="tag tag-best">Top Score</span>');
+      if (!isPartial && bestValue && s.model === bestValue.model) tags.push('<span class="tag tag-value">Best Value</span>');
+      if (!isPartial && cheapest  && s.model === cheapest.model)  tags.push('<span class="tag tag-cheap">Cheapest</span>');
+      if (isPartial) tags.push('<span class="tag" style="background:var(--surface-2);color:var(--muted);border:1px solid var(--border)">partial</span>');
+
+      const rowStyle = isPartial ? ' style="opacity:0.65;font-style:italic"' : '';
+      const rankCell = isPartial ? '<td class="snap-rank" style="color:var(--muted)">—</td>' : `<td class="snap-rank">${rank}</td>`;
 
       return `
-        <tr>
-          <td class="snap-rank">${i + 1}</td>
+        <tr${rowStyle}>
+          ${rankCell}
           <td class="snap-model">${s.model}${tags.join('')}</td>
           <td>
             <div class="snap-bar-wrap">
@@ -765,22 +856,60 @@
           <td class="snap-cost">$${s.avg_cost_usd.toFixed(4)}</td>
           <td style="color:var(--muted-light);font-size:0.75rem">${provider}</td>
         </tr>`;
-    }).join('');
+    }
+
+    const fullRows    = full.map((s, i) => rowHtml(s, i + 1, false)).join('');
+    const dividerRow  = partial.length ? `
+      <tr>
+        <td colspan="6" style="padding:0.5rem 0.75rem;background:var(--surface-2);
+            color:var(--muted);font-size:0.7rem;font-weight:700;
+            text-transform:uppercase;letter-spacing:0.08em;border-top:2px solid var(--border-2)">
+          Partial coverage — not directly comparable · scores may be biased relative to a 23/23 run
+        </td>
+      </tr>` : '';
+    const partialRows = partial.map(s => rowHtml(s, null, true)).join('');
+
+    document.getElementById('snapshot-body').innerHTML = fullRows + dividerRow + partialRows;
   }
 
   function renderModelCards(summaries) {
+    const full    = summaries.filter(s => s.tasks_run === 23);
+    const partial = summaries.filter(s => s.tasks_run < 23);
     const container = document.getElementById('model-cards');
-    container.innerHTML = summaries.map((s, i) => {
+
+    const fullCards = full.map((s, i) => {
       const tier = scoreTier(s.avg_dab_score);
       return `
         <div class="model-card ${i === 0 ? 'top-card' : ''}">
           <div class="rank">#${i + 1}${i === 0 ? ' 🏆' : ''}</div>
           <div class="name" title="${s.model}">${s.model}</div>
           <div class="score score-${tier}">${s.avg_dab_score.toFixed(3)}</div>
-          <div class="tasks-run">${s.tasks_run} task${s.tasks_run !== 1 ? 's' : ''} completed</div>
+          <div class="tasks-run">${s.tasks_run} / 23 tasks</div>
           <div class="avg-cost">avg $${(s.avg_cost_usd || 0).toFixed(4)} / task</div>
         </div>`;
     }).join('');
+
+    const partialHeader = partial.length ? `
+      <div style="grid-column:1/-1;padding:0.4rem 0 0.1rem;
+          color:var(--muted);font-size:0.7rem;font-weight:700;
+          text-transform:uppercase;letter-spacing:0.08em;
+          border-top:1px solid var(--border);margin-top:0.5rem">
+        Partial coverage — for reference only
+      </div>` : '';
+
+    const partialCards = partial.map(s => {
+      const tier = scoreTier(s.avg_dab_score);
+      return `
+        <div class="model-card" style="opacity:0.6;border-style:dashed">
+          <div class="rank" style="color:var(--muted)">—</div>
+          <div class="name" title="${s.model}" style="font-style:italic">${s.model}</div>
+          <div class="score score-${tier}">${s.avg_dab_score.toFixed(3)}</div>
+          <div class="tasks-run" style="color:var(--red-dark)">${s.tasks_run} / 23 tasks</div>
+          <div class="avg-cost">avg $${(s.avg_cost_usd || 0).toFixed(4)} / task</div>
+        </div>`;
+    }).join('');
+
+    container.innerHTML = fullCards + partialHeader + partialCards;
   }
 
   function scoreBar(val) {
