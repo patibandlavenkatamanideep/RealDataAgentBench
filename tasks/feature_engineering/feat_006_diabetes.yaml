@@ -1,0 +1,79 @@
+task_id: feat_006
+title: "Diabetes Dataset — Feature Correlation & Regression Baseline"
+difficulty: medium
+category: feature_engineering
+dataset_type: real
+dataset_source: "Efron et al. (2004) / sklearn.datasets.load_diabetes()"
+dataset_license: "BSD 3-Clause / Annals of Statistics open access"
+
+description: |
+  You are given the Diabetes dataset (Efron et al., 2004) — a real medical dataset
+  of 442 patients with 10 baseline variables and a quantitative measure of disease
+  progression one year after baseline (`disease_progression`).
+
+  All features are already mean-centered and unit-normalized.
+
+  Your task is to:
+  1. Compute the Pearson correlation of each feature with `disease_progression`.
+  2. Identify the top 3 features most correlated with the target (by absolute value).
+  3. Fit a linear regression using only the top feature and report its R² on the
+     full dataset.
+  4. Fit a linear regression using all 10 features and report its R² on the full
+     dataset. Compare with the single-feature R².
+
+dataset:
+  generator: real_diabetes
+  seed: 42
+  n_rows: 442
+  schema:
+    age: float
+    sex: float
+    bmi: float
+    bp: float
+    s1: float
+    s2: float
+    s3: float
+    s4: float
+    s5: float
+    s6: float
+    disease_progression: float
+
+ground_truth:
+  top_feature: "bmi"
+  top_feature_aliases:
+    - "bmi"
+    - "body mass index"
+  second_feature: "s5"
+  second_feature_aliases:
+    - "s5"
+    - "ltg"
+  third_feature: "bp"
+  third_feature_aliases:
+    - "bp"
+    - "blood pressure"
+  top_feature_correlation_approx: 0.5865
+  top_feature_correlation_tolerance: 0.02
+  target_mean_approx: 152.133
+  target_mean_tolerance: 1.0
+
+scoring:
+  correctness_weight: 0.45
+  code_quality_weight: 0.20
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.20
+
+evaluation:
+  max_steps: 20
+  timeout_seconds: 90
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - feature_engineering
+  - real_data
+  - regression
+  - diabetes
+  - feature_selection
+  - efron

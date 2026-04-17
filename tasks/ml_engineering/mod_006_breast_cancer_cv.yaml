@@ -1,0 +1,78 @@
+task_id: mod_006
+title: "Breast Cancer Wisconsin — K-Fold CV vs Hold-Out on Real Clinical Data"
+difficulty: medium
+category: ml_engineering
+dataset_type: real
+dataset_source: "UCI ML Repository / sklearn.datasets.load_breast_cancer()"
+dataset_license: "BSD 3-Clause / Public domain (UCI)"
+
+description: |
+  You are given the Breast Cancer Wisconsin dataset (569 samples, 30 features).
+  The `diagnosis` column is the target: 0 = malignant, 1 = benign.
+
+  A team is debating whether to use a single 80/20 hold-out split or 5-fold
+  cross-validation for model evaluation. Your task is to compare both approaches
+  on a Logistic Regression classifier (max_iter=1000, random_state=42) and
+  advise which is more appropriate.
+
+  1. Evaluate using a single 80/20 hold-out split (random_state=42).
+     Report accuracy and ROC-AUC.
+  2. Evaluate using 5-fold stratified cross-validation.
+     Report mean accuracy, standard deviation of accuracy across folds,
+     and mean ROC-AUC.
+  3. Compare the variance: how does the CV standard deviation compare to the
+     confidence you can place in the hold-out estimate?
+  4. Recommend which evaluation method is more appropriate and why, given the
+     dataset size and class imbalance.
+
+dataset:
+  generator: real_breast_cancer_cv
+  seed: 42
+  n_rows: 569
+  schema:
+    diagnosis: int
+    mean_radius: float
+    mean_texture: float
+
+ground_truth:
+  cv_recommended: true
+  cv_recommended_aliases:
+    - "cross-validation"
+    - "k-fold"
+    - "cv is"
+    - "cv provides"
+    - "prefer cv"
+    - "recommend cv"
+    - "more reliable"
+    - "lower variance"
+  class_imbalance_noted: true
+  class_imbalance_noted_aliases:
+    - "stratified"
+    - "class imbalance"
+    - "imbalanced"
+    - "357"
+    - "212"
+  holdout_accuracy_approx: 0.956
+  holdout_accuracy_tolerance: 0.03
+
+scoring:
+  correctness_weight: 0.45
+  code_quality_weight: 0.20
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.20
+
+evaluation:
+  max_steps: 25
+  timeout_seconds: 120
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - ml_engineering
+  - real_data
+  - cross_validation
+  - breast_cancer
+  - evaluation_design
+  - uci

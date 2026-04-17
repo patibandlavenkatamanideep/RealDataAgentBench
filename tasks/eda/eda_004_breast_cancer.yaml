@@ -1,0 +1,77 @@
+task_id: eda_004
+title: "Breast Cancer Wisconsin — Feature Distribution & Malignancy Predictors"
+difficulty: medium
+category: eda
+dataset_type: real
+dataset_source: "UCI ML Repository / sklearn.datasets.load_breast_cancer()"
+dataset_license: "BSD 3-Clause / Public domain"
+
+description: |
+  You are given the Breast Cancer Wisconsin (Diagnostic) dataset — a real clinical
+  dataset with 569 samples and 30 numeric features derived from digitized images of
+  fine needle aspirates (FNA) of breast masses.
+
+  The `diagnosis` column encodes the outcome: 0 = malignant, 1 = benign.
+
+  Your task is to:
+  1. Report the class distribution (count of malignant and benign cases).
+  2. Compute the absolute Pearson correlation of each feature with the `diagnosis`
+     column and identify the top 3 most predictive features.
+  3. Compare the mean of the top predictive feature between malignant and benign cases.
+  4. State whether the class distribution is balanced or imbalanced, and by what ratio.
+
+dataset:
+  generator: real_breast_cancer
+  seed: 42
+  n_rows: 569
+  schema:
+    diagnosis: int
+    mean_radius: float
+    mean_texture: float
+    mean_perimeter: float
+    mean_area: float
+
+ground_truth:
+  malignant_count: 212
+  malignant_count_approx: 212
+  malignant_count_tolerance: 0
+  benign_count: 357
+  benign_count_approx: 357
+  benign_count_tolerance: 0
+  top_feature_1: "worst concave points"
+  top_feature_1_aliases:
+    - "worst concave points"
+    - "worst_concave_points"
+  top_feature_2: "worst perimeter"
+  top_feature_2_aliases:
+    - "worst perimeter"
+    - "worst_perimeter"
+  class_balance: "imbalanced"
+  class_balance_aliases:
+    - "imbalanced"
+    - "unbalanced"
+    - "class imbalance"
+    - "not balanced"
+    - "357"
+
+scoring:
+  correctness_weight: 0.50
+  code_quality_weight: 0.20
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.15
+
+evaluation:
+  max_steps: 20
+  timeout_seconds: 90
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - eda
+  - real_data
+  - classification
+  - feature_correlation
+  - breast_cancer
+  - uci

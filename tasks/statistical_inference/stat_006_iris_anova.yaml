@@ -1,0 +1,70 @@
+task_id: stat_006
+title: "Iris Species — One-Way ANOVA for Petal Length Separation"
+difficulty: medium
+category: statistical_inference
+dataset_type: real
+dataset_source: "Fisher (1936) / sklearn.datasets.load_iris()"
+dataset_license: "BSD 3-Clause / Public domain"
+
+description: |
+  You are given the Iris dataset. A colleague claims that petal length differs
+  significantly across the three iris species (setosa, versicolor, virginica).
+
+  Your task is to:
+  1. Compute the mean and standard deviation of `petal length (cm)` for each species.
+  2. Run a one-way ANOVA test (scipy.stats.f_oneway) to test whether petal length
+     differs significantly across the three groups.
+  3. Report the F-statistic, p-value, and state whether the result is statistically
+     significant at α = 0.05.
+  4. If significant, identify which pair of species has the largest difference in
+     mean petal length and compute that difference.
+
+dataset:
+  generator: real_iris
+  seed: 42
+  n_rows: 150
+  schema:
+    petal_length_cm: float
+    species: int
+
+ground_truth:
+  anova_significant: true
+  anova_significant_aliases:
+    - "statistically significant"
+    - "significant at"
+    - "p < 0.05"
+    - "p-value"
+    - "reject"
+    - "significant difference"
+  setosa_mean_approx: 1.462
+  setosa_mean_tolerance: 0.05
+  virginica_mean_approx: 5.552
+  virginica_mean_tolerance: 0.1
+  largest_diff_pair: "setosa and virginica"
+  largest_diff_pair_aliases:
+    - "setosa and virginica"
+    - "virginica and setosa"
+    - "between setosa and virginica"
+    - "setosa vs virginica"
+
+scoring:
+  correctness_weight: 0.40
+  code_quality_weight: 0.15
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.30
+
+evaluation:
+  max_steps: 20
+  timeout_seconds: 90
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - statistical_inference
+  - real_data
+  - anova
+  - iris
+  - hypothesis_test
+  - fisher

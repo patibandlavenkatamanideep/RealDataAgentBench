@@ -1,4 +1,11 @@
 from .generators.income_distribution import generate as generate_income
+# Real (non-synthetic) dataset loaders
+from .generators.real_breast_cancer import generate as generate_real_breast_cancer
+from .generators.real_breast_cancer_cv import generate as generate_real_breast_cancer_cv
+from .generators.real_diabetes import generate as generate_real_diabetes
+from .generators.real_wine import generate as generate_real_wine
+from .generators.real_wine_model import generate as generate_real_wine_model
+from .generators.real_iris import generate as generate_real_iris
 from .generators.patient_records import generate as generate_patient
 from .generators.ecommerce_transactions import generate as generate_ecommerce
 from .generators.house_prices import generate as generate_house_prices
@@ -52,6 +59,13 @@ GENERATORS = {
     "calibration_dataset": generate_calibration,
     "ensemble_dataset": generate_ensemble,
     "nested_cv_dataset": generate_nested_cv,
+    # Real datasets (UCI / sklearn bundled)
+    "real_breast_cancer": generate_real_breast_cancer,
+    "real_breast_cancer_cv": generate_real_breast_cancer_cv,
+    "real_diabetes": generate_real_diabetes,
+    "real_wine": generate_real_wine,
+    "real_wine_model": generate_real_wine_model,
+    "real_iris": generate_real_iris,
 }
 
 

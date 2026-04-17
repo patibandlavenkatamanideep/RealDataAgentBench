@@ -1,0 +1,78 @@
+task_id: eda_005
+title: "Iris Dataset — Species Separability & Feature Importance"
+difficulty: easy
+category: eda
+dataset_type: real
+dataset_source: "Fisher (1936) / sklearn.datasets.load_iris()"
+dataset_license: "BSD 3-Clause / Public domain"
+
+description: |
+  You are given the classic Iris dataset — 150 samples across 3 iris species
+  (setosa, versicolor, virginica) with 4 morphological measurements.
+
+  The `species` column encodes the class: 0 = setosa, 1 = versicolor, 2 = virginica.
+
+  Your task is to:
+  1. Compute the mean petal length and petal width for each species.
+  2. Identify the single feature most correlated (by absolute Pearson correlation)
+     with the species label.
+  3. State whether setosa is linearly separable from the other two classes based
+     on petal measurements alone.
+  4. Report the overall feature ranking by absolute correlation with `species`.
+
+dataset:
+  generator: real_iris
+  seed: 42
+  n_rows: 150
+  schema:
+    sepal_length_cm: float
+    sepal_width_cm: float
+    petal_length_cm: float
+    petal_width_cm: float
+    species: int
+
+ground_truth:
+  top_feature: "petal width"
+  top_feature_aliases:
+    - "petal width"
+    - "petal_width"
+    - "petal width (cm)"
+  second_feature: "petal length"
+  second_feature_aliases:
+    - "petal length"
+    - "petal_length"
+    - "petal length (cm)"
+  setosa_separable: true
+  setosa_separable_aliases:
+    - "linearly separable"
+    - "linearly separable from"
+    - "setosa is separable"
+    - "setosa can be"
+    - "easily separated"
+    - "clearly separated"
+  setosa_petal_length_mean_approx: 1.462
+  setosa_petal_length_mean_tolerance: 0.05
+  versicolor_petal_length_mean_approx: 4.26
+  versicolor_petal_length_mean_tolerance: 0.1
+
+scoring:
+  correctness_weight: 0.50
+  code_quality_weight: 0.20
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.15
+
+evaluation:
+  max_steps: 15
+  timeout_seconds: 60
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - eda
+  - real_data
+  - classification
+  - iris
+  - species_separation
+  - fisher

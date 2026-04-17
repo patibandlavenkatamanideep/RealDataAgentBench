@@ -1,0 +1,71 @@
+task_id: model_006
+title: "Wine Recognition — Multi-Class Classification with Feature Analysis"
+difficulty: medium
+category: modeling
+dataset_type: real
+dataset_source: "Forina et al. (1986) / sklearn.datasets.load_wine()"
+dataset_license: "BSD 3-Clause / Public domain (UCI)"
+
+description: |
+  You are given the Wine Recognition dataset — 178 wine samples from three Italian
+  cultivars, characterized by 13 chemical measurements.
+
+  The `wine_class` column encodes cultivar: 0, 1, or 2.
+  Class distribution: class 0 = 59, class 1 = 71, class 2 = 48.
+
+  Your task is to:
+  1. Identify the feature with the highest absolute correlation with `wine_class`.
+  2. Train a Random Forest classifier (100 trees, random_state=42) on an 80/20
+     train/test split. Report the test accuracy and the top 3 features by
+     Random Forest feature importance.
+  3. Train a Logistic Regression (max_iter=500, random_state=42) on the same split.
+     Report its test accuracy.
+  4. Compare the two models: which performs better on this dataset?
+
+dataset:
+  generator: real_wine_model
+  seed: 42
+  n_rows: 178
+  schema:
+    alcohol: float
+    malic_acid: float
+    ash: float
+    wine_class: int
+
+ground_truth:
+  top_correlated_feature: "flavanoids"
+  top_correlated_feature_aliases:
+    - "flavanoids"
+    - "flavanoid"
+  top_corr_value_approx: 0.8475
+  top_corr_value_tolerance: 0.03
+  class_distribution: "imbalanced"
+  class_distribution_aliases:
+    - "imbalanced"
+    - "unbalanced"
+    - "48"
+    - "class 2"
+    - "smallest class"
+
+scoring:
+  correctness_weight: 0.40
+  code_quality_weight: 0.15
+  efficiency_weight: 0.15
+  stat_validity_weight: 0.30
+
+evaluation:
+  max_steps: 25
+  timeout_seconds: 120
+  allowed_tools:
+    - run_code
+    - get_dataframe_info
+    - get_column_stats
+
+tags:
+  - modeling
+  - real_data
+  - classification
+  - wine
+  - multi_class
+  - random_forest
+  - uci
