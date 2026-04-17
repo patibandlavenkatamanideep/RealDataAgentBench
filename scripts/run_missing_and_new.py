@@ -2,14 +2,17 @@
 Run missing tasks for existing models + benchmark new models.
 Skips tasks already completed. Prints cost summary at the end.
 
-Coverage status (2026-04-17 after batch 2):
-  gpt-4o-mini  and gpt-4.1-nano tasks re-run with --max-steps override.
-  Root cause: both models exceed YAML max_steps (take 2-5x more steps than
-  calibration models). Fix: per-task step budget in PLAN below.
+Coverage status (2026-04-17 after batch 3):
+  All GPT models (gpt-4o-mini, gpt-4.1-nano) now at 23/23.
+  GPT fix: per-task --max-steps overrides (YAML calibrated on Claude Sonnet;
+  GPT models take 2-5x more steps).
 
-  claude-opus-4-6       17/23  — 6 remaining (~$11.52) ← needs Anthropic credits
-  claude-sonnet-4-6      9/23  — 14 remaining (~$6.66) ← needs Anthropic credits
-  claude-haiku-4-5       8/23  — 15 remaining (~$0.94) ← needs Anthropic credits
+  Remaining — needs Anthropic credits to complete:
+    claude-opus-4-6         17/23  — 6 remaining  (~$11.52)
+    claude-sonnet-4-6        9/23  — 14 remaining (~$6.66)
+    claude-haiku-4-5-20251001  8/23  — 15 remaining (~$0.94)
+
+  Run this script again once credits are loaded — it auto-skips completed tasks.
 """
 import subprocess, sys, json, time
 from pathlib import Path
@@ -46,30 +49,29 @@ PLAN = [
         ("model_005", 140),
         ("stat_004",  None),   # only 10 steps observed; YAML default is fine
     ]),
-    # ── Anthropic models — uncomment after adding credits ────────────────────
     # 6 tasks — Anthropic Opus, ~$11.52 total
-    # ("claude-opus-4-6", [
-    #     ("model_005", None),
-    #     ("stat_001", None), ("stat_002", None), ("stat_003", None),
-    #     ("stat_004", None), ("stat_005", None),
-    # ]),
+    ("claude-opus-4-6", [
+        ("model_005", None),
+        ("stat_001", None), ("stat_002", None), ("stat_003", None),
+        ("stat_004", None), ("stat_005", None),
+    ]),
     # 14 tasks — Anthropic Sonnet, ~$6.66 total
-    # ("claude-sonnet-4-6", [
-    #     ("mod_001", None), ("mod_003", None), ("mod_004", None), ("mod_005", None),
-    #     ("model_001", None), ("model_002", None), ("model_003", None),
-    #     ("model_004", None), ("model_005", None),
-    #     ("stat_001", None), ("stat_002", None), ("stat_003", None),
-    #     ("stat_004", None), ("stat_005", None),
-    # ]),
+    ("claude-sonnet-4-6", [
+        ("mod_001", None), ("mod_003", None), ("mod_004", None), ("mod_005", None),
+        ("model_001", None), ("model_002", None), ("model_003", None),
+        ("model_004", None), ("model_005", None),
+        ("stat_001", None), ("stat_002", None), ("stat_003", None),
+        ("stat_004", None), ("stat_005", None),
+    ]),
     # 15 tasks — Anthropic Haiku, ~$0.94 total
-    # ("claude-haiku-4-5-20251001", [
-    #     ("mod_001", None), ("mod_002", None), ("mod_003", None),
-    #     ("mod_004", None), ("mod_005", None),
-    #     ("model_001", None), ("model_002", None), ("model_003", None),
-    #     ("model_004", None), ("model_005", None),
-    #     ("stat_001", None), ("stat_002", None), ("stat_003", None),
-    #     ("stat_004", None), ("stat_005", None),
-    # ]),
+    ("claude-haiku-4-5-20251001", [
+        ("mod_001", None), ("mod_002", None), ("mod_003", None),
+        ("mod_004", None), ("mod_005", None),
+        ("model_001", None), ("model_002", None), ("model_003", None),
+        ("model_004", None), ("model_005", None),
+        ("stat_001", None), ("stat_002", None), ("stat_003", None),
+        ("stat_004", None), ("stat_005", None),
+    ]),
 ]
 
 # ── runner ────────────────────────────────────────────────────────────────────
