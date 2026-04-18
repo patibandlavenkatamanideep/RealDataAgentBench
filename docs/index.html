@@ -526,10 +526,9 @@
 </header>
 
 <main>
-  <div id="loading">Loading results…</div>
   <div id="error" style="display:none"></div>
 
-  <div id="content" style="display:none">
+  <div id="content">
 
     <!-- Insight boxes -->
     <div class="insights" id="insights-row"></div>
@@ -582,6 +581,7 @@
       <button class="filter-btn"        data-filter="synthetic"            data-type="data_source" title="23 tasks using seeded synthetic generators">Synthetic</button>
     </div>
 
+    <div id="table-loading" style="padding:1.5rem;text-align:center;color:var(--muted);font-size:0.9rem">Loading runs…</div>
     <div class="table-wrap">
       <table id="results-table">
         <thead>
@@ -630,6 +630,23 @@
   // Coverage threshold: a model must complete ≥80% of tasks to appear in ranked section
   const COVERAGE_THRESHOLD = 0.80;
 
+  // Embedded snapshot — allows top sections to render instantly without a network request.
+  // Keep in sync with results.json when new model runs are added.
+  const INLINE_SUMMARY = [
+    {"model":"gpt-4.1-mini",             "avg_dab_score":0.8323,"avg_cost_usd":0.012658,"total_cost_usd":0.2911, "tasks_run":23},
+    {"model":"gpt-5",                    "avg_dab_score":0.8118,"avg_cost_usd":0.595694,"total_cost_usd":13.701, "tasks_run":23},
+    {"model":"gpt-4o",                   "avg_dab_score":0.7943,"avg_cost_usd":0.043891,"total_cost_usd":1.0095, "tasks_run":23},
+    {"model":"gpt-4.1",                  "avg_dab_score":0.7908,"avg_cost_usd":0.038404,"total_cost_usd":0.8833, "tasks_run":23},
+    {"model":"claude-opus-4-6",          "avg_dab_score":0.7794,"avg_cost_usd":1.627575,"total_cost_usd":37.4342,"tasks_run":23},
+    {"model":"claude-sonnet-4-6",        "avg_dab_score":0.7787,"avg_cost_usd":0.338201,"total_cost_usd":7.7786, "tasks_run":23},
+    {"model":"llama-3.3-70b-versatile",  "avg_dab_score":0.7718,"avg_cost_usd":0.001963,"total_cost_usd":0.0452, "tasks_run":23},
+    {"model":"gpt-4o-mini",              "avg_dab_score":0.7559,"avg_cost_usd":0.016900,"total_cost_usd":0.3887, "tasks_run":23},
+    {"model":"claude-haiku-4-5-20251001","avg_dab_score":0.7384,"avg_cost_usd":0.050266,"total_cost_usd":1.1561, "tasks_run":23},
+    {"model":"gpt-4.1-nano",             "avg_dab_score":0.6418,"avg_cost_usd":0.012636,"total_cost_usd":0.2906, "tasks_run":23},
+    {"model":"gemini-2.5-flash",         "avg_dab_score":0.6264,"avg_cost_usd":0.001502,"total_cost_usd":0.0345, "tasks_run":23},
+    {"model":"grok-3-mini",              "avg_dab_score":0.6256,"avg_cost_usd":0.002431,"total_cost_usd":0.0559, "tasks_run":23},
+  ];
+
   function modelProvider(model) {
     if (model.startsWith('claude'))                          return 'anthropic';
     if (model.startsWith('gpt-') || model.startsWith('gpt4')) return 'openai';
@@ -659,11 +676,10 @@
   let humanBaseline = null;
 
   async function load() {
-    // Use new URL() so the path is always resolved relative to the document,
-    // even if GitHub Pages serves the page without a trailing slash before redirect.
+    // Only responsible for fetching run-level data and populating the runs table.
+    // Top sections (model cards, snapshot, insights) render immediately from INLINE_SUMMARY.
     const base = new URL('./', location.href).href;
-
-    // ── Step 1: Fetch data (network errors land here) ───────────────────────
+    const tableLoading = document.getElementById('table-loading');
     let data;
     try {
       const bust = '?v=' + Date.now();
@@ -674,83 +690,21 @@
       if (!dataResp.ok) throw new Error(`HTTP ${dataResp.status} — ${base}results.json`);
       data = await dataResp.json();
       if (humanResp && humanResp.ok) {
-        try { humanBaseline = await humanResp.json(); } catch (_) { /* non-fatal */ }
+        try { humanBaseline = await humanResp.json(); } catch (_) {}
       }
     } catch (e) {
       console.error('[RDAB] results.json fetch failed:', e);
-      document.getElementById('loading').style.display = 'none';
-      // Static fallback — embedded snapshot of leaderboard data (April 2026)
-      // This ensures the page is always readable even if results.json fails to load.
-      const el = document.getElementById('error');
-      el.style.display = 'block';
-      // Build static fallback from embedded data — kept in sync with results.json
-      const FALLBACK_MODELS = [
-        { rank:1,  model:'gpt-4.1-mini',              score:0.832, tasks:23, cost:'$0.0127', ratio:'65.8'  },
-        { rank:2,  model:'gpt-5',                      score:0.812, tasks:23, cost:'$0.5957', ratio:'1.4'   },
-        { rank:3,  model:'gpt-4o',                     score:0.794, tasks:23, cost:'$0.0439', ratio:'18.1'  },
-        { rank:4,  model:'gpt-4.1',                    score:0.791, tasks:23, cost:'$0.0384', ratio:'20.6'  },
-        { rank:5,  model:'claude-opus-4-6',             score:0.779, tasks:23, cost:'$1.6276', ratio:'0.5'   },
-        { rank:6,  model:'claude-sonnet-4-6',           score:0.779, tasks:23, cost:'$0.3382', ratio:'2.3'   },
-        { rank:7,  model:'llama-3.3-70b-versatile',    score:0.772, tasks:23, cost:'$0.0020', ratio:'393.2' },
-        { rank:8,  model:'gpt-4o-mini',                score:0.756, tasks:23, cost:'$0.0169', ratio:'44.7'  },
-        { rank:9,  model:'claude-haiku-4-5-20251001',  score:0.738, tasks:23, cost:'$0.0503', ratio:'14.7'  },
-        { rank:10, model:'gpt-4.1-nano',               score:0.642, tasks:23, cost:'$0.0126', ratio:'51.0'  },
-        { rank:11, model:'gemini-2.5-flash',           score:0.626, tasks:23, cost:'$0.0015', ratio:'417.0' },
-        { rank:12, model:'grok-3-mini',                score:0.626, tasks:23, cost:'$0.0024', ratio:'257.3' },
-      ];
-      const tbRows = FALLBACK_MODELS.map(m => {
-        const highlight = m.rank === 1 ? 'background:#EFF6FF;font-weight:600;' : '';
-        return `<tr style="${highlight}">
-          <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;">${m.rank}</td>
-          <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;font-family:monospace">${m.model}</td>
-          <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:center;">${m.score.toFixed(3)}</td>
-          <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:center;">${m.tasks} / 23</td>
-          <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:right;">${m.cost}</td>
-          <td style="padding:0.5rem 0.75rem;border-bottom:1px solid #E2E8F0;text-align:right;">${m.ratio}</td>
-        </tr>`;
-      }).join('');
-      el.innerHTML = `
-        <div style="background:#FFF9C4;border:1px solid #F59E0B;border-radius:8px;padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:0.85rem;color:#92400E;">
-          <strong>Note:</strong> Live data could not be loaded (${e.message}). Showing the last published snapshot (April 2026).
-          <a href="results.json" style="color:#1D4ED8;margin-left:0.5rem;">Try direct link ↗</a>
-        </div>
-        <h2 style="font-size:1rem;font-weight:700;margin-bottom:0.35rem;color:#0F172A;">
-          Full-coverage leaderboard — 276 runs · 12 models · 23 tasks
-        </h2>
-        <p style="font-size:0.78rem;color:#64748B;margin-bottom:0.75rem;">
-          All 12 models completed all 23 tasks (100% coverage). Ranking requires ≥80% coverage.
-        </p>
-        <div style="overflow-x:auto;">
-        <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
-          <thead>
-            <tr style="background:#F1F5F9;text-align:left;">
-              <th style="padding:0.5rem 0.75rem;border-bottom:2px solid #E2E8F0;">#</th>
-              <th style="padding:0.5rem 0.75rem;border-bottom:2px solid #E2E8F0;">Model</th>
-              <th style="padding:0.5rem 0.75rem;border-bottom:2px solid #E2E8F0;text-align:center;">Avg RDAB Score</th>
-              <th style="padding:0.5rem 0.75rem;border-bottom:2px solid #E2E8F0;text-align:center;">Coverage</th>
-              <th style="padding:0.5rem 0.75rem;border-bottom:2px solid #E2E8F0;text-align:right;">Avg Cost / Task</th>
-              <th style="padding:0.5rem 0.75rem;border-bottom:2px solid #E2E8F0;text-align:right;">Score / $</th>
-            </tr>
-          </thead>
-          <tbody>${tbRows}</tbody>
-        </table>
-        </div>
-        <p style="margin-top:1rem;font-size:0.78rem;color:#64748B;">
-          Snapshot: April 2026 · 276 runs · 12 models (all full-coverage) · 23 synthetic tasks ·
-          <a href="https://github.com/patibandlavenkatamanideep/RealDataAgentBench" style="color:#3B82F6;">GitHub ↗</a>
-          &nbsp;·&nbsp;
-          <a href="https://github.com/patibandlavenkatamanideep/RealDataAgentBench/blob/main/SCORING_SPEC.md" style="color:#3B82F6;">Scoring Spec ↗</a>
-        </p>`;
-      return; // static fallback shown — stop here
+      if (tableLoading) tableLoading.innerHTML =
+        `<span style="color:var(--red-dark)">⚠ Could not load run data (${e.message}).</span> ` +
+        `<a href="results.json" style="color:var(--accent)">Try direct link ↗</a>`;
+      return;
     }
 
-    // ── Step 2: Render (bugs here are JS errors, not network failures) ───────
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('content').style.display = 'block';
+    if (tableLoading) tableLoading.style.display = 'none';
 
+    // Update meta pills with live values from fetched data
     const taskCount  = new Set(data.runs.map(r => r.task_id)).size;
     const modelCount = new Set(data.runs.map(r => r.model)).size;
-
     document.getElementById('meta-runs').textContent =
       `${data.total_runs} run${data.total_runs !== 1 ? 's' : ''}`;
     document.getElementById('meta-tasks').textContent = `${taskCount} tasks`;
@@ -761,15 +715,12 @@
     document.getElementById('footer-stats').textContent =
       `${taskCount} tasks · ${modelCount} models · 4-dimension scoring`;
 
-    try {
-      renderInsights(data.model_summary);
-      renderModelCards(data.model_summary);
-      renderSnapshot(data.model_summary);
-      allRuns = data.runs;
-      renderTable();
-    } catch (e) {
-      // Render error — data loaded fine; log for debugging but keep content visible
-      console.error('[RDAB] Render error (data loaded OK):', e);
+    // Re-render snapshot with live data (may include humanBaseline now loaded)
+    try { renderSnapshot(data.model_summary); } catch (_) {}
+
+    allRuns = data.runs;
+    try { renderTable(); } catch (e) {
+      console.error('[RDAB] renderTable error:', e);
     }
   }
 
@@ -1063,6 +1014,20 @@
     renderTable();
   });
 
+  // Render top sections immediately from embedded data — zero network latency
+  document.getElementById('meta-runs').textContent    = '276 runs';
+  document.getElementById('meta-tasks').textContent   = '23 tasks';
+  document.getElementById('meta-updated').textContent = 'Updated Apr 18, 2026';
+  document.getElementById('footer-stats').textContent = '23 tasks · 12 models · 4-dimension scoring';
+  try {
+    renderInsights(INLINE_SUMMARY);
+    renderModelCards(INLINE_SUMMARY);
+    renderSnapshot(INLINE_SUMMARY);
+  } catch (e) {
+    console.error('[RDAB inline render]', e);
+  }
+
+  // Fetch full run data in background — only needed for the 276-row runs table
   load();
 </script>
 </body>
