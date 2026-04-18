@@ -150,19 +150,19 @@ def resolve_model(model: str) -> str:
     return MODEL_ALIASES.get(model, model)
 
 
-def get_provider(model: str) -> "BaseProvider":
+def get_provider(model: str, api_keys: dict[str, str] | None = None) -> "BaseProvider":
     """Return the correct provider instance for a model name."""
     model = resolve_model(model)
     if model.startswith("claude"):
-        return AnthropicProvider(model)
+        return AnthropicProvider(model, api_keys=api_keys)
     if model.startswith(("gpt-", "gpt4")):
-        return OpenAIProvider(model)
+        return OpenAIProvider(model, api_keys=api_keys)
     if model in GROQ_MODELS or model.startswith(("llama", "mixtral", "gemma2")):
-        return GroqProvider(model)
+        return GroqProvider(model, api_keys=api_keys)
     if model in GROK_MODELS or model.startswith("grok"):
-        return GrokProvider(model)
+        return GrokProvider(model, api_keys=api_keys)
     if model in GEMINI_MODELS or model.startswith("gemini"):
-        return GeminiProvider(model)
+        return GeminiProvider(model, api_keys=api_keys)
     raise ValueError(
         f"Unknown model: {model!r}. "
         f"Supported prefixes: 'claude-*', 'gpt-*', 'llama-*'/'mixtral-*' (Groq), "
@@ -214,11 +214,11 @@ class BaseProvider(ABC):
 # ── Anthropic provider ────────────────────────────────────────────────────────
 
 class AnthropicProvider(BaseProvider):
-    def __init__(self, model: str):
+    def __init__(self, model: str, api_keys: dict[str, str] | None = None):
         super().__init__(model)
         import anthropic
         self.client = anthropic.Anthropic(
-            api_key=os.environ.get("ANTHROPIC_API_KEY")
+            api_key=(api_keys or {}).get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_API_KEY")
         )
 
     def run(self, task_description, dataframe, max_steps, allowed_tools, tracer,
@@ -289,10 +289,10 @@ class AnthropicProvider(BaseProvider):
 # ── OpenAI provider ───────────────────────────────────────────────────────────
 
 class OpenAIProvider(BaseProvider):
-    def __init__(self, model: str):
+    def __init__(self, model: str, api_keys: dict[str, str] | None = None):
         super().__init__(model)
         from openai import OpenAI
-        self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+        self.client = OpenAI(api_key=(api_keys or {}).get("OPENAI_API_KEY") or os.environ.get("OPENAI_API_KEY"))
 
     def _tools_to_openai(self, tools: list[dict]) -> list[dict]:
         """Convert Anthropic tool schema format to OpenAI function format."""
@@ -431,11 +431,11 @@ class GroqProvider(OpenAIProvider):
         "format — only use the structured tool_calls mechanism."
     )
 
-    def __init__(self, model: str):
+    def __init__(self, model: str, api_keys: dict[str, str] | None = None):
         # Skip OpenAIProvider.__init__ — build our own client with Groq base URL
         BaseProvider.__init__(self, model)
         from openai import OpenAI
-        groq_key = os.environ.get("GROQ_API_KEY")
+        groq_key = (api_keys or {}).get("GROQ_API_KEY") or os.environ.get("GROQ_API_KEY")
         if not groq_key:
             raise EnvironmentError(
                 "GROQ_API_KEY is not set. "
@@ -533,10 +533,10 @@ class GrokProvider(OpenAIProvider):
       dab run eda_001 --model grok-2-1212    # grok-2 (previous gen)
     """
 
-    def __init__(self, model: str):
+    def __init__(self, model: str, api_keys: dict[str, str] | None = None):
         BaseProvider.__init__(self, model)
         from openai import OpenAI
-        xai_key = os.environ.get("XAI_API_KEY")
+        xai_key = (api_keys or {}).get("XAI_API_KEY") or os.environ.get("XAI_API_KEY")
         if not xai_key:
             raise EnvironmentError(
                 "XAI_API_KEY is not set. "
@@ -561,10 +561,10 @@ class GeminiProvider(OpenAIProvider):
       dab run eda_001 --model gemini-2.0-flash    # gemini-2.0-flash (previous gen)
     """
 
-    def __init__(self, model: str):
+    def __init__(self, model: str, api_keys: dict[str, str] | None = None):
         BaseProvider.__init__(self, model)
         from openai import OpenAI
-        gemini_key = os.environ.get("GEMINI_API_KEY")
+        gemini_key = (api_keys or {}).get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")
         if not gemini_key:
             raise EnvironmentError(
                 "GEMINI_API_KEY is not set. "

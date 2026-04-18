@@ -11,10 +11,9 @@ DEFAULT_MODEL = "claude-sonnet-4-6"
 
 
 class Agent:
-    def __init__(self, model: str = DEFAULT_MODEL, api_key: str | None = None):
+    def __init__(self, model: str = DEFAULT_MODEL, api_keys: dict[str, str] | None = None):
         self.model = resolve_model(model)
-        # api_key override kept for backwards compatibility — providers read from env
-        self._api_key = api_key
+        self._api_keys = api_keys
 
     def run(
         self,
@@ -27,7 +26,7 @@ class Agent:
         budget: float | None = None,
     ) -> Trace:
         tracer = Tracer(task_id=task_id, model=self.model)
-        provider = get_provider(self.model)
+        provider = get_provider(self.model, api_keys=self._api_keys)
 
         try:
             final_answer = provider.run(
