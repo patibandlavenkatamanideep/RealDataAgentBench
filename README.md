@@ -108,9 +108,9 @@ RDAB gives you a number for this risk before you commit to a provider.
 
 There is no "simulation mode" or pre-cached response replay. Every score in the leaderboard is from a live model run with a real API call. The trace files in `outputs/` are the raw records.
 
-### Data handling and privacy guarantee
+### Data handling
 
-> **Your data is processed in memory and never stored by RDAB.** The benchmark generates or loads datasets at runtime, passes them to the agent, scores the output, and writes the trace to your local `outputs/` directory. No data is uploaded to external servers by this framework. API calls to model providers (OpenAI, Anthropic, etc.) are governed by those providers' own privacy policies.
+RDAB uses seeded synthetic generators and publicly licensed datasets (UCI/sklearn). All datasets are generated or loaded locally at runtime — no user-uploaded data is involved. Trace outputs are written to your local `outputs/` directory. API calls to model providers (OpenAI, Anthropic, etc.) are governed by those providers' own privacy policies.
 
 Synthetic datasets are generated from seeded NumPy/Pandas operations — they do not contain or approximate any real person's data. Real-data tasks use publicly licensed datasets (UCI/sklearn) that are already in the public domain or licensed for open use (see [SCORING_SPEC.md §11](SCORING_SPEC.md)).
 
@@ -541,7 +541,7 @@ pytest tests/ --cov=realdataagentbench --cov-report=term-missing
 - [x] Phase 5 — 23 tasks across 5 categories including ML Engineering (leakage, calibration, nested CV)
 - [x] Phase 6 — Cost per run ($) in leaderboard; category filters; 150 tests
 - [x] Phase 7 — 12 models: GPT-5, GPT-4.1, GPT-4.1-mini, GPT-4.1-nano, Grok-3-mini, Gemini 2.5 Flash, Llama 3.3 via Groq; 276 total runs (all 12 × 23)
-- [x] Phase 8 — 6 real-data tasks (UCI/sklearn): Breast Cancer, Iris, Diabetes, Wine, ANOVA; SCORING_SPEC.md v1.2; coverage threshold policy; benchmark methodology + privacy docs
+- [x] Phase 8 — 6 real-data tasks (UCI/sklearn): Breast Cancer, Iris, Diabetes, Wine, ANOVA; SCORING_SPEC.md v1.2; coverage threshold policy; benchmark methodology docs; human expert baseline
 - [ ] Run real-data tasks across all 12 models; label synthetic vs. real in leaderboard
 - [ ] Human baseline scores on 5+ representative tasks
 - [ ] 30+ tasks (visualization, NLP, time series categories)
@@ -641,6 +641,16 @@ To cite:
   note      = {23 tasks, 4-dimensional scoring, 12 models at full coverage, human expert baseline.}
 }
 ```
+
+---
+
+## Related: CostGuard
+
+**CostGuard** is a companion tool built alongside RDAB that lets you upload your own CSV and run a live cost-performance analysis against any model — without writing code.
+
+Where RDAB is a fixed benchmark (seeded datasets, published scores, reproducible runs), CostGuard is interactive: you bring your data, it runs the analysis and returns results. The privacy guarantee ("your data is processed in memory and never stored") applies to CostGuard, not to RDAB — RDAB uses only its own seeded and public datasets and never touches user-uploaded files.
+
+> CostGuard repo: *(link when published)*
 
 ---
 
