@@ -659,39 +659,25 @@
   let humanBaseline = null;
 
   async function load() {
+    // Use new URL() so the path is always resolved relative to the document,
+    // even if GitHub Pages serves the page without a trailing slash before redirect.
+    const base = new URL('./', location.href).href;
+
+    // ── Step 1: Fetch data (network errors land here) ───────────────────────
+    let data;
     try {
+      const bust = '?v=' + Date.now();
       const [dataResp, humanResp] = await Promise.all([
-        fetch('results.json?v=' + Date.now()),
-        fetch('human_baseline.json?v=' + Date.now()).catch(() => null),
+        fetch(base + 'results.json' + bust),
+        fetch(base + 'human_baseline.json' + bust).catch(() => null),
       ]);
-      if (!dataResp.ok) throw new Error(`HTTP ${dataResp.status}`);
-      const data = await dataResp.json();
+      if (!dataResp.ok) throw new Error(`HTTP ${dataResp.status} — ${base}results.json`);
+      data = await dataResp.json();
       if (humanResp && humanResp.ok) {
-        humanBaseline = await humanResp.json();
+        try { humanBaseline = await humanResp.json(); } catch (_) { /* non-fatal */ }
       }
-
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('content').style.display = 'block';
-
-      const taskCount  = new Set(data.runs.map(r => r.task_id)).size;
-      const modelCount = new Set(data.runs.map(r => r.model)).size;
-
-      document.getElementById('meta-runs').textContent =
-        `${data.total_runs} run${data.total_runs !== 1 ? 's' : ''}`;
-      document.getElementById('meta-tasks').textContent = `${taskCount} tasks`;
-      document.getElementById('meta-updated').textContent =
-        'Updated ' + new Date(data.generated_at).toLocaleDateString('en-US', {
-          month: 'short', day: 'numeric', year: 'numeric'
-        });
-      document.getElementById('footer-stats').textContent =
-        `${taskCount} tasks · ${modelCount} models · 4-dimension scoring`;
-
-      renderInsights(data.model_summary);
-      renderModelCards(data.model_summary);
-      renderSnapshot(data.model_summary);
-      allRuns = data.runs;
-      renderTable();
     } catch (e) {
+      console.error('[RDAB] results.json fetch failed:', e);
       document.getElementById('loading').style.display = 'none';
       // Static fallback — embedded snapshot of leaderboard data (April 2026)
       // This ensures the page is always readable even if results.json fails to load.
@@ -755,6 +741,35 @@
           &nbsp;·&nbsp;
           <a href="https://github.com/patibandlavenkatamanideep/RealDataAgentBench/blob/main/SCORING_SPEC.md" style="color:#3B82F6;">Scoring Spec ↗</a>
         </p>`;
+      return; // static fallback shown — stop here
+    }
+
+    // ── Step 2: Render (bugs here are JS errors, not network failures) ───────
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+
+    const taskCount  = new Set(data.runs.map(r => r.task_id)).size;
+    const modelCount = new Set(data.runs.map(r => r.model)).size;
+
+    document.getElementById('meta-runs').textContent =
+      `${data.total_runs} run${data.total_runs !== 1 ? 's' : ''}`;
+    document.getElementById('meta-tasks').textContent = `${taskCount} tasks`;
+    document.getElementById('meta-updated').textContent =
+      'Updated ' + new Date(data.generated_at).toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric'
+      });
+    document.getElementById('footer-stats').textContent =
+      `${taskCount} tasks · ${modelCount} models · 4-dimension scoring`;
+
+    try {
+      renderInsights(data.model_summary);
+      renderModelCards(data.model_summary);
+      renderSnapshot(data.model_summary);
+      allRuns = data.runs;
+      renderTable();
+    } catch (e) {
+      // Render error — data loaded fine; log for debugging but keep content visible
+      console.error('[RDAB] Render error (data loaded OK):', e);
     }
   }
 
