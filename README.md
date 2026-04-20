@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://github.com/patibandlavenkatamanideep/RealDataAgentBench/actions"><img src="https://github.com/patibandlavenkatamanideep/RealDataAgentBench/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://github.com/patibandlavenkatamanideep/RealDataAgentBench/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/tests-150%20passing-brightgreen" alt="Tests"></a>
+  <a href="https://github.com/patibandlavenkatamanideep/RealDataAgentBench/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/tests-161%20passing-brightgreen" alt="Tests"></a>
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.10%2B-blue" alt="Python"></a>
   <a href="https://github.com/patibandlavenkatamanideep/RealDataAgentBench/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"></a>
   <a href="https://patibandlavenkatamanideep.github.io/RealDataAgentBench/"><img src="https://img.shields.io/badge/leaderboard-live-brightgreen" alt="Leaderboard"></a>
@@ -16,17 +16,17 @@
   <a href="tasks/"><img src="https://img.shields.io/badge/tasks-29%20(6%20real%20data)-orange" alt="Tasks"></a>
 </p>
 
-> **Frontier models score 0.83–1.00 on correctness across data-science tasks.**  
-> **The same models score 0.25 on statistical validity on the same tasks.**  
-> Correct number. Wrong reasoning. This gap appears across GPT-5, Claude, Llama, and Gemini — without exception.
+> **Frontier models score 0.83–1.00 on correctness across data science tasks.**  
+> **Stat-validity ranges from 0.45 (feature engineering) to 0.87 (EDA and stat inference) — models know when statistical language is expected but not when it's warranted.**  
+> The gap is largest where it's least visible: modeling and feature engineering tasks where models report outputs but skip uncertainty quantification.
 
 ---
 
 ## What RDAB is
 
-**RealDataAgentBench (RDAB)** is a production-grade open-source benchmark that evaluates whether LLM agents do data science work that is not just *correct* but *statistically sound* — reporting uncertainty, using appropriate tests, and avoiding causal overreach.
+**RealDataAgentBench (RDAB)** is an open-source benchmark that evaluates whether LLM agents do data science work that is not just *correct* but *statistically sound* — reporting uncertainty, using appropriate tests, and avoiding causal overreach.
 
-Built with the rigor you'd expect from an internal evaluation framework at an AI lab: transparent scoring specs, reproducible datasets, real-world data tasks, and a pre-registered controlled experiment.
+Built with transparent scoring specs, reproducible datasets, real-world data tasks, and a pre-registered controlled experiment.
 
 → **29 tasks** — 23 synthetic + **6 real-data tasks** (UCI Breast Cancer, Iris, Diabetes, Wine — real clinical and scientific datasets)  
 → **4-dimensional scoring** — correctness, code quality, efficiency, statistical validity  
@@ -91,7 +91,7 @@ RDAB gives you a number for this risk before you commit to a provider.
 ## Why RDAB is credible
 
 - **Every score is independently reproducible.** [SCORING_SPEC.md](SCORING_SPEC.md) documents every formula, regex, threshold, and known limitation. No source code reading required.
-- **Scoring limitations are disclosed.** The stat-validity scorer has a documented bug (Check 2 is EDA-only). The impact is quantified. The leaderboard numbers are what they are — not overclaimed.
+- **Known limitations are disclosed.** The stat-validity scorer is lexical — it detects vocabulary, not reasoning quality. A calibration script (`scripts/calibrate_stat_validity.py`) measures agreement between the lexical scorer and an LLM judge, giving a quantified bound on the gap.
 - **Partial-coverage models are excluded from ranking.** Any model with <80% task coverage is flagged and excluded from the ranked leaderboard. Their scores are not averaged against different task sets. Currently all 12 models are at 23/23 coverage.
 - **Datasets are real where it matters.** Six tasks use publicly licensed real-world datasets (UCI Breast Cancer, Iris, Diabetes, Wine) with ground truths computed independently from the data.
 - **The key experiment is pre-registered.** The uncertainty prompting uplift experiment has committed outcome interpretations before any runs are executed.
@@ -134,17 +134,19 @@ Ground truth for synthetic tasks is pre-computed at task-creation time and store
 
 ## 🔍 Key Findings
 
-From 276 runs across 12 models and 23 tasks — patterns observed in actual benchmark output, not hypothetical.
+From 326 runs across 12 models and 29 tasks — patterns observed in actual benchmark output, not hypothetical.
 
 ---
 
-> **💡 Insight 1: Statistical validity is the universal weak point**
+> **💡 Insight 1: Statistical validity gaps are category-dependent, not uniform**
 >
-> Every model — GPT-5, Claude Opus, Llama, Gemini — scores **0.25 on statistical validity** for `feat_002`, `feat_003`, `model_001`, and `model_002` while scoring 0.83–1.00 on correctness for the same tasks. Not some models. All of them. The scorer checks for uncertainty reporting, appropriate test choice, and correct interpretation. Models pass the correctness check and fail the other three.
+> Stat-validity scores vary sharply by task category: **EDA = 0.87, stat inference = 0.86, ML engineering = 0.59, modeling = 0.51, feature engineering = 0.45**. Models do well when the task name signals that statistics are expected. They underperform when statistical rigour is appropriate but not cued — such as reporting uncertainty on feature importances or adding confidence intervals to model evaluation metrics.
 >
-> The methodology and a worked example with manual re-scoring are in [docs/methodology/stat_validity.md](docs/methodology/stat_validity.md).
+> Notably, Claude models lead on stat-validity (Sonnet: 0.71, Haiku: 0.70) while trailing GPT models on overall RDAB score — suggesting the dimensions measure genuinely different capabilities.
 >
-> **→ Correct answer ≠ statistically sound reasoning.**
+> The scorer-to-scorer correlation analysis (`scripts/dimension_correlations.py`) shows correctness × stat-validity at r = 0.48, with all other dimension pairs below r = 0.25 — confirming the four dimensions capture largely independent signals.
+>
+> **→ Aggregate leaderboard position masks category-level capability gaps.**
 
 ---
 
@@ -256,34 +258,34 @@ Gemini 2.5 Flash produces structurally correct code but truncates its final answ
 
 ---
 
-## Leaderboard — 276 runs · 12 models · 23 tasks
+## Leaderboard — 326 runs · 12 models · 29 tasks
 
-All 12 models completed all 23 tasks (100% coverage). **Ranking eligibility requires ≥80% task coverage** — see [SCORING_SPEC.md §10](SCORING_SPEC.md#10-ranking-eligibility--coverage-threshold) for the policy. Models below that threshold would appear in a separate "partial coverage" section, excluded from ranked comparison.
+All 12 models completed all 23 original tasks (100% coverage). **Ranking eligibility requires ≥80% task coverage** — see [SCORING_SPEC.md §10](SCORING_SPEC.md#10-ranking-eligibility--coverage-threshold). Scores below reflect the fixed category-aware stat-validity scorer; rankings shifted from the prior scorer (notably gpt-5 dropped from #2 to #8).
 
-| Rank | Model | Avg RDAB Score | Coverage | Avg Cost / Task | Score / $* |
-|:----:|-------|:--------------:|:--------:|:---------------:|:----------:|
-| 1 | **gpt-4.1-mini** | **0.832** | 23 / 23 | $0.0127 | **65.8** |
-| 2 | gpt-5 | 0.812 | 23 / 23 | $0.5957 | 1.4 |
-| 3 | gpt-4o | 0.794 | 23 / 23 | $0.0439 | 18.1 |
-| 4 | gpt-4.1 | 0.791 | 23 / 23 | $0.0384 | 20.6 |
-| 5 | claude-opus-4-6 | 0.779 | 23 / 23 | $1.6276 | 0.5 |
-| 6 | claude-sonnet-4-6 | 0.779 | 23 / 23 | $0.3382 | 2.3 |
-| 7 | llama-3.3-70b | 0.772 | 23 / 23 | $0.0020 | 393.2 |
-| 8 | gpt-4o-mini | 0.756 | 23 / 23 | $0.0169 | 44.7 |
-| 9 | claude-haiku-4-5 | 0.738 | 23 / 23 | $0.0503 | 14.7 |
-| 10 | gpt-4.1-nano | 0.642 | 23 / 23 | $0.0126 | 51.0 |
-| 11 | gemini-2.5-flash | 0.626 | 23 / 23 | $0.0015 | **417.0** |
-| 12 | grok-3-mini | 0.626 | 23 / 23 | $0.0024 | 257.3 |
+**Note:** Rankings shown are single-run point estimates. 95% confidence intervals are available in the [live leaderboard](https://patibandlavenkatamanideep.github.io/RealDataAgentBench/) and results.json. Wide CIs reflect n=1 per task — use `dab run --runs 3` to compute tighter estimates.
 
-*\*Score / $ = Avg RDAB Score ÷ Avg Cost per task. Higher = more value per dollar.*
+| Rank | Model | Avg RDAB Score | Avg Cost / Task | Stat Validity |
+|:----:|-------|:--------------:|:---------------:|:-------------:|
+| 1 | **gpt-4.1-mini** | **0.854** | $0.0127 | 0.641 |
+| 2 | gpt-4o | 0.823 | $0.0428 | 0.658 |
+| 3 | gpt-4.1 | 0.823 | $0.0388 | 0.630 |
+| 4 | claude-sonnet-4-6 | 0.822 | $0.3170 | **0.714** |
+| 5 | claude-opus-4-6 | 0.816 | $1.6276 | 0.685 |
+| 6 | llama-3.3-70b | 0.814 | $0.0020 | 0.652 |
+| 7 | gpt-4o-mini | 0.790 | $0.0169 | 0.696 |
+| 8 | gpt-5 | 0.763 | $0.6713 | 0.630 |
+| 9 | claude-haiku-4-5 | 0.757 | $0.0483 | 0.701 |
+| 10 | gpt-4.1-nano | 0.659 | $0.0126 | 0.630 |
+| 11 | grok-3-mini | 0.639 | $0.0045 | 0.516 |
+| 12 | gemini-2.5-flash | 0.623 | $0.0014 | 0.478 |
 
-> Live leaderboard with per-task breakdowns and category filters: [patibandlavenkatamanideep.github.io/RealDataAgentBench](https://patibandlavenkatamanideep.github.io/RealDataAgentBench/)
+> Live leaderboard with CI bounds, per-task breakdowns, and category filters: [patibandlavenkatamanideep.github.io/RealDataAgentBench](https://patibandlavenkatamanideep.github.io/RealDataAgentBench/)
 
 ---
 
 ## 🧠 What this means
 
-Three conclusions that hold across all 276 runs:
+Three conclusions that hold across all 326 runs:
 
 - **High correctness does not imply reliable analysis** — a model can score 1.0 on correctness and 0.25 on statistical validity on the same task. Getting the number right is necessary but not sufficient.
 - **Model selection should be category-driven, not ranking-driven** — the #1 overall model loses to a free Groq model on modeling tasks. Aggregate leaderboard position is a starting point, not a decision.
@@ -302,7 +304,7 @@ Three conclusions that hold across all 276 runs:
 
 ## What it looks like
 
-### 1. Live leaderboard — 276 runs across 12 models with cost column
+### 1. Live leaderboard — 326 runs across 12 models with CI bounds and cost column
 
 ![Leaderboard screenshot](docs/screenshots/leaderboard.png)
 
@@ -377,6 +379,10 @@ dab score outputs/eda_001_<timestamp>.json
 
 # 10. Run all tasks with one model
 dab run --all --model gpt-4.1
+
+# 11. Run 3× per task for 95% CI estimates (triples cost but gives defensible uncertainty bounds)
+dab run eda_001 --model gpt-4.1 --runs 3
+dab run --all --model gpt-4.1 --runs 3
 
 # 11. See all supported models + API key status
 dab models
@@ -487,7 +493,8 @@ realdataagentbench/
 │   ├── correctness.py    # Ground truth matching with alias expansion
 │   ├── code_quality.py   # Static analysis of agent-generated code
 │   ├── efficiency.py     # Token and step efficiency vs. budget
-│   ├── stat_validity.py  # Statistical rigour signals
+│   ├── stat_validity.py  # Lexical statistical rigour signals (category-aware)
+│   ├── llm_judge.py      # LLM-as-judge scorer for stat-validity calibration
 │   └── composite.py      # Weighted RDAB Score + ScoreCard
 └── cli.py                # dab run / list / inspect / score / models
 tasks/
@@ -498,7 +505,9 @@ tasks/
 └── ml_engineering/       # 5 tasks (leakage, CV, calibration, ensemble, nested CV)
 tests/                    # 150 offline tests — no API calls required
 scripts/
-└── build_leaderboard.py  # Aggregates outputs/ → docs/results.json
+├── build_leaderboard.py        # Aggregates outputs/ → docs/results.json (mean ± 95% CI)
+├── calibrate_stat_validity.py  # Lexical scorer vs LLM judge agreement (Cohen's κ)
+└── dimension_correlations.py   # Scorer-to-scorer Pearson correlation matrix
 docs/
 └── index.html            # GitHub Pages leaderboard (auto-rebuilt by CI)
 .github/workflows/        # CI: pytest on Python 3.10–3.13 + leaderboard rebuild
@@ -540,51 +549,24 @@ pytest tests/ --cov=realdataagentbench --cov-report=term-missing
 - [x] Phase 4 — Multi-model support (GPT-4o, GPT-4o-mini, Claude Haiku, Claude Sonnet)
 - [x] Phase 5 — 23 tasks across 5 categories including ML Engineering (leakage, calibration, nested CV)
 - [x] Phase 6 — Cost per run ($) in leaderboard; category filters; 150 tests
-- [x] Phase 7 — 12 models: GPT-5, GPT-4.1, GPT-4.1-mini, GPT-4.1-nano, Grok-3-mini, Gemini 2.5 Flash, Llama 3.3 via Groq; 276 total runs (all 12 × 23)
+- [x] Phase 7 — 12 models: GPT-5, GPT-4.1, GPT-4.1-mini, GPT-4.1-nano, Grok-3-mini, Gemini 2.5 Flash, Llama 3.3 via Groq; 326 total runs
 - [x] Phase 8 — 6 real-data tasks (UCI/sklearn): Breast Cancer, Iris, Diabetes, Wine, ANOVA; SCORING_SPEC.md v1.2; coverage threshold policy; benchmark methodology docs; human expert baseline
-- [ ] Run real-data tasks across all 12 models; label synthetic vs. real in leaderboard
-- [ ] Human baseline scores on 5+ representative tasks
+- [x] Phase 9 — Scorer fixes: category-aware stat-validity (was EDA-only); multi-run CI via `--runs N`; LLM-as-judge scorer for calibration; scorer correlation matrix
+- [ ] Run calibration script (`calibrate_stat_validity.py`) and publish Cohen's κ agreement between lexical scorer and LLM judge
+- [ ] Run ≥3× per task for defensible CI estimates; report variance across runs
 - [ ] 30+ tasks (visualization, NLP, time series categories)
 - [ ] arXiv paper
 
 ---
 
-## For Companies — Choose the Right Model
-
-RDAB gives you per-model scores across correctness, code quality, and statistical validity — with per-task cost — so you can make an evidence-based model choice before committing to an API contract.
-
-**Real numbers from 276 runs across 12 models — all at full 23/23 task coverage:**
-
-| Model | Avg RDAB Score | Avg Cost / Task | Score / $* |
-|-------|:--------------:|:---------------:|:----------:|
-| **gpt-4.1-mini** | **0.832** | $0.0127 | **65.8** |
-| gpt-5 | 0.812 | $0.5957 | 1.4 |
-| gpt-4o | 0.794 | $0.0439 | 18.1 |
-| gpt-4.1 | 0.791 | $0.0384 | 20.6 |
-| claude-opus-4-6 | 0.779 | $1.6276 | 0.5 |
-| claude-sonnet-4-6 | 0.779 | $0.3382 | 2.3 |
-| llama-3.3-70b | 0.772 | $0.0020 | 393.2 |
-| gpt-4o-mini | 0.756 | $0.0169 | 44.7 |
-| claude-haiku-4-5 | 0.738 | $0.0503 | 14.7 |
-| gpt-4.1-nano | 0.642 | $0.0126 | 51.0 |
-| gemini-2.5-flash | 0.626 | $0.0015 | **417.0** |
-| grok-3-mini | 0.626 | $0.0024 | 257.3 |
-
-*\*Score / $ = Avg RDAB Score ÷ Avg Cost per task. Higher = more value per dollar.*
-
-GPT-4.1-mini leads overall — at **$0.013/task** vs GPT-5's $0.596, that's **47× cheaper for the #1 spot**. Claude Opus scores comparably to Claude Sonnet at **5× the cost**. For a team running hundreds of analysis tasks a week, cost differences compound fast.
-
-> **Bottom line:** The best model for your use case isn't always the most expensive one. Run RDAB on your own data, check the cost column, and choose accordingly.
-
----
 
 ## FAQ
 
 **How is stat-validity scored? Isn't that just keyword matching?**
 
-Yes, it is lexical. The scorer checks the agent's final answer for four binary signals: (1) uncertainty language such as "p-value", "confidence interval", or "standard error"; (2) an appropriate statistical method mentioned by name; (3) correct interpretation signals such as "statistically significant" or "controlling for"; and (4) absence of p-hacking language. The score is the fraction of checks that pass.
+Yes, it is lexical. The scorer checks the agent's final answer for four binary signals: (1) uncertainty language such as "p-value", "confidence interval", or "standard error"; (2) an appropriate statistical method mentioned by name (category-specific — EDA tasks check for correlation/IQR, stat-inference tasks check for t-test/chi-squared/ANOVA, modeling tasks check for CV/AUC/precision, etc.); (3) correct interpretation signals such as "statistically significant" or "controlling for"; and (4) absence of p-hacking language. The score is the fraction of checks that pass.
 
-This has real limitations. Check 2 currently only recognises EDA-specific methods (correlation, IQR, skewness) regardless of task category, so it structurally fails on modeling and ML engineering tasks even when the method used is correct. The scorer cannot verify that a reported p-value was computed correctly — it detects the word, not the reasoning. For a full list of signals, the exact regexes, a worked manual re-score, and what a 1.0 output actually looks like, see [docs/methodology/stat_validity.md](docs/methodology/stat_validity.md).
+The scorer cannot verify that a reported p-value was computed correctly — it detects the vocabulary, not the reasoning. To quantify this limitation, `scripts/calibrate_stat_validity.py` compares the lexical scorer to an LLM judge (Claude) on a stratified sample of real agent outputs, reporting Pearson correlation and per-criterion Cohen's kappa. For a full list of signals, the exact regexes, and a worked manual re-score, see [docs/methodology/stat_validity.md](docs/methodology/stat_validity.md).
 
 ---
 
@@ -602,7 +584,7 @@ The core difference is the statistical-validity dimension. Most existing benchma
 
 ## Known Limitations
 
-**Lexical stat-validity scorer.** The `stat_validity` scorer is pattern-based and has a systematic bug: the "appropriate test" check only recognises EDA vocabulary regardless of task category. On the 20 non-EDA tasks, this check structurally fails regardless of model output quality. The finding that models score ~0.25 on stat validity is real, but part of the floor is scorer-imposed rather than model-imposed. Fixing this requires per-category pattern lists and re-running all 276 outputs. This is documented and deferred. See [docs/methodology/stat_validity.md](docs/methodology/stat_validity.md).
+**Lexical stat-validity scorer.** The `stat_validity` scorer is pattern-based. It uses category-specific vocabulary lists — EDA/stat-inference tasks check for correlation/IQR/t-test vocabulary; modeling/feature-engineering/ml-engineering tasks check for their respective methods. The scorer detects vocabulary, not reasoning quality: a model that spells out "confidence interval" scores the same as one that correctly computes and interprets one. `scripts/calibrate_stat_validity.py` measures agreement between the lexical scorer and an LLM judge (Pearson r and Cohen's κ) to quantify this limitation. See [docs/methodology/stat_validity.md](docs/methodology/stat_validity.md).
 
 **Seeded synthetic datasets.** 23 of 29 tasks use seeded, reproducible dataset generators. This ensures reproducibility but means RDAB does not test robustness to real-world data quality issues — missing values in unexpected columns, mixed dtypes, inconsistent encoding, corrupted records. The 6 real-data tasks (UCI/sklearn) partially address this, but even those use clean, well-known datasets. Performance on real production data may differ.
 
