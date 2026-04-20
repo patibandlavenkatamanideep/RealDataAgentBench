@@ -180,6 +180,46 @@ class TestStatValidityScorer:
         result = self.scorer.score_detailed(answer)
         assert result.interprets_correctly
 
+    # ------------------------------------------------------------------
+    # Category-specific appropriate-test checks
+    # ------------------------------------------------------------------
+
+    def test_statistical_inference_vocabulary_passes(self):
+        answer = "We ran a two-proportion z-test. The p-value is 0.003, rejecting the null hypothesis."
+        result = self.scorer.score_detailed(answer, category="statistical_inference")
+        assert result.uses_appropriate_test
+
+    def test_statistical_inference_eda_vocab_fails(self):
+        # Histogram / pearson should NOT satisfy the stat_inference check
+        answer = "A histogram shows the distribution. The pearson correlation is 0.4."
+        result = self.scorer.score_detailed(answer, category="statistical_inference")
+        assert not result.uses_appropriate_test
+
+    def test_modeling_vocabulary_passes(self):
+        answer = "We trained a logistic regression. Test accuracy is 0.87, ROC-AUC 0.92. Feature importance shows glucose is top."
+        result = self.scorer.score_detailed(answer, category="modeling")
+        assert result.uses_appropriate_test
+
+    def test_modeling_eda_vocab_fails(self):
+        answer = "The histogram looks good. Skewness is low."
+        result = self.scorer.score_detailed(answer, category="modeling")
+        assert not result.uses_appropriate_test
+
+    def test_feature_engineering_vocabulary_passes(self):
+        answer = "Applied one-hot encoding for categoricals and StandardScaler for numeric columns. Missing values were imputed using median."
+        result = self.scorer.score_detailed(answer, category="feature_engineering")
+        assert result.uses_appropriate_test
+
+    def test_ml_engineering_vocabulary_passes(self):
+        answer = "Used nested CV to avoid overfitting. Data leakage was prevented by fitting the pipeline inside the fold."
+        result = self.scorer.score_detailed(answer, category="ml_engineering")
+        assert result.uses_appropriate_test
+
+    def test_eda_vocabulary_still_passes_for_eda(self):
+        answer = "The Pearson correlation is 0.6. The IQR reveals several outliers."
+        result = self.scorer.score_detailed(answer, category="eda")
+        assert result.uses_appropriate_test
+
 
 # ---------------------------------------------------------------------------
 # Composite

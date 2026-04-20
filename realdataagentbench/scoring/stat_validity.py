@@ -66,11 +66,42 @@ class StatValidityScorer:
             avoids_p_hacking_signals=no_p_hacking,
         )
 
-    def _check_appropriate_test(self, answer_lower: str, category: str) -> bool:
-        eda_methods = [
+    _METHODS_BY_CATEGORY: dict[str, list[str]] = {
+        "eda": [
             r"\bpearson\b", r"\bspearman\b", r"\bcorrelation\b",
             r"\biqr\b", r"\bz[\s-]*score\b", r"\bskewness\b",
             r"\bkurtosis\b", r"\bhistogram\b", r"\bbox[\s-]*plot\b",
-            r"\blog[\s-]transform", r"\bnormalization\b", r"\bnormalise\b",
-        ]
-        return any(re.search(p, answer_lower) for p in eda_methods)
+            r"\blog[\s-]transform", r"\bnormalization\b", r"\bnormalis",
+        ],
+        "statistical_inference": [
+            r"\bt[\s-]*test\b", r"\bz[\s-]*test\b", r"\bchi[\s-]*squar",
+            r"\bmann[\s-]*whitney\b", r"\bwilcoxon\b", r"\banova\b",
+            r"\bfisher\b", r"\bhypothesis\b", r"\bnull hypothesis\b",
+            r"\btest statistic\b", r"\bdegrees of freedom\b",
+            r"\btwo[\s-]*proportion\b", r"\bproportion\b",
+        ],
+        "modeling": [
+            r"\bcross[\s-]*val", r"\btrain[\s-]*test\b",
+            r"\broc[\s-]*auc\b", r"\bprecision\b", r"\brecall\b",
+            r"\bf1[\s-]*score\b", r"\baccuracy\b", r"\bconfusion matrix\b",
+            r"\bbaseline\b", r"\boverfit", r"\bregulariz",
+            r"\bfeature importance\b", r"\bcoefficient\b",
+        ],
+        "feature_engineering": [
+            r"\bone[\s-]*hot\b", r"\blabel[\s-]*encod", r"\bpolynomial\b",
+            r"\bstandard[\s-]*scal", r"\bmin[\s-]*max\b", r"\bnormali[sz]",
+            r"\bimputation\b", r"\bimpute\b", r"\bmissing value",
+            r"\bfeature selection\b", r"\bencoding\b", r"\binteraction term\b",
+        ],
+        "ml_engineering": [
+            r"\bcross[\s-]*val", r"\bnested[\s-]*cv\b",
+            r"\bdata[\s-]*leakage\b", r"\bleakage\b",
+            r"\bcalibrat", r"\bensemble\b", r"\bvoting\b",
+            r"\boverfitting\b", r"\bregulariz", r"\bhyperparameter\b",
+            r"\bpipeline\b",
+        ],
+    }
+
+    def _check_appropriate_test(self, answer_lower: str, category: str) -> bool:
+        patterns = self._METHODS_BY_CATEGORY.get(category, self._METHODS_BY_CATEGORY["eda"])
+        return any(re.search(p, answer_lower) for p in patterns)
