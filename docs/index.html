@@ -624,7 +624,7 @@
 </footer>
 
 <script>
-  let allRuns = INLINE_RUNS;
+  let allRuns = [];
   let sortCol = 'dab_score';
   let sortDir = -1;
   let activeFilter = 'all';
@@ -999,6 +999,7 @@
   document.getElementById('meta-updated').textContent = 'Updated Apr 20, 2026';
   document.getElementById('footer-stats').textContent = '23 tasks · 12 models · 4-dimension scoring';
   try {
+    allRuns = INLINE_RUNS;   // assign after const INLINE_RUNS is fully parsed
     renderInsights(INLINE_SUMMARY);
     renderModelCards(INLINE_SUMMARY);
     renderSnapshot(INLINE_SUMMARY);
