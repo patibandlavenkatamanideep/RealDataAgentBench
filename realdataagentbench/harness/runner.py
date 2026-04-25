@@ -47,7 +47,9 @@ class Runner:
         self.model = resolve_model(model)  # store canonical name, not alias
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        self.agent = Agent(model=model, api_key=api_key)
+        # api_key (singular) kept for backward-compat signature; providers
+        # resolve keys from env vars when api_keys=None.
+        self.agent = Agent(model=model)
         self.dry_run = dry_run
         self.budget = budget
         self.max_steps_override = max_steps_override

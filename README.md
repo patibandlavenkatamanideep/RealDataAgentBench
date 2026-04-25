@@ -261,27 +261,38 @@ Gemini 2.5 Flash produces structurally correct code but truncates its final answ
 
 ---
 
-## Leaderboard — 326 runs · 12 models · 23 tasks
+## Leaderboard — 326 runs · 12 models · 23 tasks (expanding to 39)
 
-All 12 models completed all 23 original tasks (100% coverage). **Ranking eligibility requires ≥80% task coverage** — see [SCORING_SPEC.md §10](SCORING_SPEC.md#10-ranking-eligibility--coverage-threshold). Scores below reflect the fixed category-aware stat-validity scorer; rankings shifted from the prior scorer (notably gpt-5 dropped from #2 to #8).
+**Coverage transparency — what each row means:**
 
-**Note:** Rankings shown are single-run point estimates. 95% confidence intervals are available in the [live leaderboard](https://patibandlavenkatamanideep.github.io/RealDataAgentBench/) and results.json. Wide CIs reflect n=1 per task — use `dab run --runs 3` to compute tighter estimates.
+| Tier | Models | Task coverage | Run count | CI status |
+|------|--------|:---:|:---:|---|
+| Free (expanding) | Gemini 2.5 Flash, Llama 3.3-70b, Grok-3-mini | 39/39 (in progress) | 5 runs target | Full CI planned |
+| Tier 1 GPT | gpt-4.1-nano, gpt-4.1-mini, gpt-4o-mini | 39/39 (in progress) | 3 runs target | Full CI planned |
+| Tier 2 mid | gpt-4.1, gpt-4o, claude-haiku | 39/39 (in progress) | 3 runs target | Full CI planned |
+| **Tier 3 (expensive)** | **claude-sonnet, gpt-5, claude-opus** | **23/39** | **n=1 point estimates** | **No CI — cost-prohibitive at $37–$190 for 3×39 runs** |
 
-| Rank | Model | Avg RDAB Score | Avg Cost / Task | Stat Validity |
-|:----:|-------|:--------------:|:---------------:|:-------------:|
-| 1 | **gpt-4.1-mini** | **0.854** | $0.0127 | 0.641 |
-| 2 | gpt-4o | 0.823 | $0.0428 | 0.658 |
-| 3 | gpt-4.1 | 0.823 | $0.0388 | 0.630 |
-| 4 | claude-sonnet-4-6 | 0.822 | $0.3170 | **0.714** |
-| 5 | claude-opus-4-6 | 0.816 | $1.6276 | 0.685 |
-| 6 | llama-3.3-70b | 0.814 | $0.0020 | 0.652 |
-| 7 | gpt-4o-mini | 0.790 | $0.0169 | 0.696 |
-| 8 | gpt-5 | 0.763 | $0.6713 | 0.630 |
-| 9 | claude-haiku-4-5 | 0.757 | $0.0483 | 0.701 |
-| 10 | gpt-4.1-nano | 0.659 | $0.0126 | 0.630 |
-| 11 | grok-3-mini | 0.639 | $0.0045 | 0.516 |
-| 12 | gemini-2.5-flash | 0.623 | $0.0014 | 0.478 |
+**Ranking eligibility requires ≥80% task coverage** — see [SCORING_SPEC.md §10](SCORING_SPEC.md#10-ranking-eligibility--coverage-threshold).
 
+> **Note on Tier 3 models:** Claude Sonnet 4.6, GPT-5, and Claude Opus 4.6 scores shown below are **single-run point estimates on the original 23 tasks only**. No confidence intervals are available for these models — running 3×39 tasks would cost $37, $78, and $190 respectively. Treat their rankings as indicative, not statistically robust. All other models are receiving full multi-run CI coverage across all 39 tasks.
+
+| Rank | Model | Avg RDAB Score | CI | Avg Cost / Task | Stat Validity | Coverage |
+|:----:|-------|:--------------:|:--:|:---------------:|:-------------:|:--------:|
+| 1 | **gpt-4.1-mini** | **0.854** | n=1† | $0.0127 | 0.641 | 23/39 |
+| 2 | gpt-4o | 0.823 | n=1† | $0.0428 | 0.658 | 23/39 |
+| 3 | gpt-4.1 | 0.823 | n=1† | $0.0388 | 0.630 | 23/39 |
+| 4 | claude-sonnet-4-6 ⚠️ | 0.822 | n=1 | $0.3170 | **0.714** | 23/39 |
+| 5 | claude-opus-4-6 ⚠️ | 0.816 | n=1 | $1.6276 | 0.685 | 23/39 |
+| 6 | llama-3.3-70b | 0.814 | n=1† | $0.0020 | 0.652 | 23/39 |
+| 7 | gpt-4o-mini | 0.790 | n=1† | $0.0169 | 0.696 | 23/39 |
+| 8 | gpt-5 ⚠️ | 0.763 | n=1 | $0.6713 | 0.630 | 23/39 |
+| 9 | claude-haiku-4-5 | 0.757 | n=1† | $0.0483 | 0.701 | 23/39 |
+| 10 | gpt-4.1-nano | 0.659 | n=1† | $0.0126 | 0.630 | 23/39 |
+| 11 | grok-3-mini | 0.639 | n=1† | $0.0045 | 0.516 | 23/39 |
+| 12 | gemini-2.5-flash | 0.623 | n=1† | $0.0014 | 0.478 | 23/39 |
+
+> † = multi-run CI in progress (expanding to 39 tasks × 3–5 runs)  
+> ⚠️ = single-run estimate only; no CI planned due to cost  
 > Live leaderboard with CI bounds, per-task breakdowns, and category filters: [patibandlavenkatamanideep.github.io/RealDataAgentBench](https://patibandlavenkatamanideep.github.io/RealDataAgentBench/)
 
 ---
