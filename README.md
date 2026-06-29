@@ -40,7 +40,7 @@
 |:----:|-------|:----------:|:----:|:-----------:|:-------------:|:--------:|
 | 1 | **gpt-4.1** | **0.875** | 119 | $0.033 | 0.747 | 39/39 ✓ |
 | 2 | **gpt-4.1-mini** | **0.870** | 133 | $0.010 | 0.746 | 39/39 ✓ |
-| — | claude-sonnet-4-6 ⚠️ | 0.857 | 29 | $0.317 | **0.851** | 23/39 |
+| — | claude-sonnet-4-6 ‡ | 0.875 | 89 | $0.198 | **0.831** | 39/39 ‡ |
 | 3 | gpt-4o | 0.851 | 130 | $0.053 | 0.751 | 39/39 ✓ |
 | — | claude-opus-4-6 ⚠️ | 0.846 | 23 | $1.628 | 0.793 | 23/39 |
 | 4 | grok-3-mini | 0.827 | 228 | $0.004 | 0.704 | 39/39 ✓ |
@@ -51,10 +51,10 @@
 | 7 | gemini-2.5-flash | 0.662 | 206 | $0.002 | 0.538 | 39/39 ✓ |
 | 8 | gpt-4.1-nano | 0.624 | 138 | $0.010 | 0.684 | 39/39 ✓ |
 
-> ✓ = full 39-task multi-run CI &nbsp;·&nbsp; † = CI in progress &nbsp;·&nbsp; ⚠️ = single-run point estimate, no CI planned (cost-prohibitive)  
+> ✓ = full 39-task multi-run CI &nbsp;·&nbsp; † = CI in progress &nbsp;·&nbsp; ⚠️ = single-run point estimate, no CI planned (cost-prohibitive) &nbsp;·&nbsp; ‡ = full task coverage, mixed methodology (original tasks single-run; 20 added tasks at n=3 with 95% CI) — ranked position shown on the [live leaderboard](https://patibandlavenkatamanideep.github.io/RealDataAgentBench/)  
 > **Ranking requires ≥80% task coverage** — see [SCORING_SPEC.md §10](SCORING_SPEC.md#10-ranking-eligibility--coverage-threshold)
 
-> **Coverage caveats:** Models marked ⚠️ (Claude Sonnet, Claude Opus, GPT-5) cover 23/39 tasks — single-run, cost-prohibitive to scale. Their scores are point estimates with no CI and are not ranked. Cross-model comparisons involving ⚠️ models are directional signals, not controlled head-to-head results. Llama 3.3-70b vs GPT-5 (0.798 vs 0.780) is the most headline-able comparison — Llama at 39/39 full coverage with multi-run CI, but GPT-5's 23/39 single-run exposure means it ran a different (and likely easier) task mix, so the comparison is directional only. Findings that reference these models note this explicitly; all other findings involve ranked (✓) models only.
+> **Coverage caveats:** Models marked ⚠️ (Claude Opus 4.6, GPT-5) cover 23/39 tasks — single-run, cost-prohibitive to scale. Their scores are point estimates with no CI and are not ranked. **Claude Sonnet 4.6 ‡** now has full 39/39 (+4 messy) coverage at 0.875 (95% CI [0.853, 0.896]), but its score mixes the original 23 single-run tasks with 20 newer tasks run at n=3 — ranked-eligible, read alongside this caveat. Cross-model comparisons involving ⚠️ models are directional signals, not controlled head-to-head results. Llama 3.3-70b vs GPT-5 (0.798 vs 0.780) is the most headline-able comparison — Llama at 39/39 full coverage with multi-run CI, but GPT-5's 23/39 single-run exposure means it ran a different (and likely easier) task mix, so the comparison is directional only. Findings that reference these models note this explicitly; all other findings involve ranked (✓) models only.
 
 ---
 
