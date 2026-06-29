@@ -42,7 +42,7 @@
 | 2 | **gpt-4.1-mini** | **0.870** | 133 | $0.010 | 0.746 | 39/39 ✓ |
 | — | claude-sonnet-4-6 ⚠️ | 0.857 | 29 | $0.317 | **0.851** | 23/39 |
 | 3 | gpt-4o | 0.851 | 130 | $0.053 | 0.751 | 39/39 ✓ |
-| — | claude-opus-4-6 ⚠️ | 0.846 | 23 | $1.628 | 0.793 | 23/39 |
+| — | claude-opus-4-6 ‡ | 0.868 | 83 | $0.610 | 0.794 | 39/39 ‡ |
 | 4 | grok-3-mini | 0.827 | 228 | $0.004 | 0.704 | 39/39 ✓ |
 | — | claude-haiku-4-5 † | 0.801 | 180 | $0.197 | 0.790 | 33/39 ↑ |
 | 5 | llama-3.3-70b | 0.798 | 71 | $0.002 | 0.694 | 39/39 ✓ |
@@ -51,10 +51,10 @@
 | 7 | gemini-2.5-flash | 0.662 | 206 | $0.002 | 0.538 | 39/39 ✓ |
 | 8 | gpt-4.1-nano | 0.624 | 138 | $0.010 | 0.684 | 39/39 ✓ |
 
-> ✓ = full 39-task multi-run CI &nbsp;·&nbsp; † = CI in progress &nbsp;·&nbsp; ⚠️ = single-run point estimate, no CI planned (cost-prohibitive)  
+> ✓ = full 39-task multi-run CI &nbsp;·&nbsp; † = CI in progress &nbsp;·&nbsp; ⚠️ = single-run point estimate, no CI planned (cost-prohibitive) &nbsp;·&nbsp; ‡ = full task coverage, mixed methodology (original 23 tasks single-run; 20 added tasks at n=3 with 95% CI) — ranked position shown on the [live leaderboard](https://patibandlavenkatamanideep.github.io/RealDataAgentBench/)  
 > **Ranking requires ≥80% task coverage** — see [SCORING_SPEC.md §10](SCORING_SPEC.md#10-ranking-eligibility--coverage-threshold)
 
-> **Coverage caveats:** Models marked ⚠️ (Claude Sonnet, Claude Opus, GPT-5) cover 23/39 tasks — single-run, cost-prohibitive to scale. Their scores are point estimates with no CI and are not ranked. Cross-model comparisons involving ⚠️ models are directional signals, not controlled head-to-head results. Llama 3.3-70b vs GPT-5 (0.798 vs 0.780) is the most headline-able comparison — Llama at 39/39 full coverage with multi-run CI, but GPT-5's 23/39 single-run exposure means it ran a different (and likely easier) task mix, so the comparison is directional only. Findings that reference these models note this explicitly; all other findings involve ranked (✓) models only.
+> **Coverage caveats:** Models marked ⚠️ (Claude Sonnet, GPT-5) cover 23/39 tasks — single-run, cost-prohibitive to scale. Their scores are point estimates with no CI and are not ranked. **Claude Opus 4.6 ‡** now has full 39/39 (+4 messy) coverage, but its score (0.868, 95% CI [0.841, 0.895]) mixes the original 23 single-run tasks with 20 newer tasks run at n=3 — so its CI is computed over a methodologically mixed set; treat it as ranked-eligible but read alongside this caveat. Cross-model comparisons involving ⚠️ models are directional signals, not controlled head-to-head results. Llama 3.3-70b vs GPT-5 (0.798 vs 0.780) is the most headline-able comparison — Llama at 39/39 full coverage with multi-run CI, but GPT-5's 23/39 single-run exposure means it ran a different (and likely easier) task mix, so the comparison is directional only. Findings that reference these models note this explicitly; all other findings involve ranked (✓) models only.
 
 ---
 
@@ -98,6 +98,35 @@ GPT-4.1 responded with genuine SE computations and bootstrap attempts. Llama's o
 > **Insight 3 — Claude models massively over-spend tokens**
 >
 > Claude Haiku: 608,861 tokens on `feat_005` (efficiency = 0.13). Claude Sonnet: 375,920 tokens on `feat_004`. GPT-4.1 and Llama completed the same tasks in under 30,000 tokens with higher correctness. The Anthropic models explore more — but conclude less efficiently. **Token count is a capability signal, not just a cost one.**
+
+<details>
+<summary><strong>Why is Claude Opus 4.6 the most expensive model on the board?</strong> ($0.61/run — 18× GPT-4.1, 339× Llama)</summary>
+
+Two costs multiply, and the headline average is skewed by task mix:
+
+**1. Opus-tier per-token price.** `claude-opus-4-6` is **$5 / $25 per 1M tokens** (input/output) — the priciest tier on the board.
+
+| Model | $/run | vs opus-4-6 |
+|-------|------:|:-----------:|
+| claude-opus-4-6 | $0.610 | 1× |
+| claude-opus-4-8 | $0.195 | 3× cheaper |
+| gpt-4.1 | $0.033 | 18× cheaper |
+| gpt-4.1-mini | $0.010 | 61× cheaper |
+| grok-3-mini | $0.004 | 165× cheaper |
+| llama-3.3-70b | $0.002 | 339× cheaper |
+
+**2. Token-spiraling agentic loop** (Insight 3 above). Claude re-explores — looping `get_column_stats` column-by-column, re-running `run_code` — and the harness re-sends the *entire growing conversation every step with no prompt caching*, so tokens compound. On the hardest tasks a single run hits 340K tokens ($5.97 for `model_004`).
+
+**3. The $0.61/run average is skewed by which tasks it ran.** Splitting opus-4-6's 83 runs by difficulty:
+
+- **Original 23 (hard mix):** $37.43 total → **$1.628/run**
+- **20 newly-added (easier EDA/stat/real):** $13.19 total → **$0.220/run** (≈ opus-4-8 territory)
+
+So opus-4-6 isn't uniformly 18× pricier than GPT-4.1 — on a balanced task mix it's ≈6–7×. The headline is inflated because its original coverage was the expensive token-spiral tasks.
+
+**Footnote:** 91% of opus-4-6's tokens are *input* (the re-sent context), but output costs 5× more per token, so output is still 34% of the dollars. That re-sent input is exactly what prompt caching would discount ~90% — but enabling it for one model only would break leaderboard cost comparability, so the harness runs uncached for everyone.
+
+</details>
 
 ---
 
