@@ -44,14 +44,14 @@
 | 3 | gpt-4o | 0.851 | 130 | $0.053 | 0.751 | 39/39 ✓ |
 | — | claude-opus-4-6 ⚠️ | 0.846 | 23 | $1.628 | 0.793 | 23/39 |
 | 4 | grok-3-mini | 0.827 | 228 | $0.004 | 0.704 | 39/39 ✓ |
-| — | claude-haiku-4-5 † | 0.801 | 180 | $0.197 | 0.790 | 33/39 ↑ |
+| — | claude-haiku-4-5 ‡ | 0.809 | 230 | $0.175 | 0.788 | 39/39 ‡ |
 | 5 | llama-3.3-70b | 0.798 | 71 | $0.002 | 0.694 | 39/39 ✓ |
 | 6 | gpt-4o-mini | 0.785 | 123 | $0.012 | 0.777 | 39/39 ✓ |
 | — | gpt-5 ⚠️ | 0.780 | 32 | $0.671 | 0.690 | 23/39 |
 | 7 | gemini-2.5-flash | 0.662 | 206 | $0.002 | 0.538 | 39/39 ✓ |
 | 8 | gpt-4.1-nano | 0.624 | 138 | $0.010 | 0.684 | 39/39 ✓ |
 
-> ✓ = full 39-task multi-run CI &nbsp;·&nbsp; † = CI in progress &nbsp;·&nbsp; ⚠️ = single-run point estimate, no CI planned (cost-prohibitive)  
+> ✓ = full 39-task multi-run CI &nbsp;·&nbsp; † = CI in progress &nbsp;·&nbsp; ⚠️ = single-run point estimate, no CI planned (cost-prohibitive) &nbsp;·&nbsp; ‡ = full task coverage, heterogeneous run counts (6 existing tasks single-run; the 10 added tasks at n=5 with 95% CI) — ranked position on the [live leaderboard](https://patibandlavenkatamanideep.github.io/RealDataAgentBench/)  
 > **Ranking requires ≥80% task coverage** — see [SCORING_SPEC.md §10](SCORING_SPEC.md#10-ranking-eligibility--coverage-threshold)
 
 > **Coverage caveats:** Models marked ⚠️ (Claude Sonnet, Claude Opus, GPT-5) cover 23/39 tasks — single-run, cost-prohibitive to scale. Their scores are point estimates with no CI and are not ranked. Cross-model comparisons involving ⚠️ models are directional signals, not controlled head-to-head results. Llama 3.3-70b vs GPT-5 (0.798 vs 0.780) is the most headline-able comparison — Llama at 39/39 full coverage with multi-run CI, but GPT-5's 23/39 single-run exposure means it ran a different (and likely easier) task mix, so the comparison is directional only. Findings that reference these models note this explicitly; all other findings involve ranked (✓) models only.
@@ -424,7 +424,8 @@ docs/
 ## Roadmap
 
 - **Done:** Task schema and harness (196 tests), 43 tasks (39 scored on the leaderboard + 4 newly-added messy-data tasks), 12 models with live leaderboard, per-run cost tracking, category-aware scorer, 6 real-data tasks, published scorer-validity calibration (lexical vs LLM judge, per-category κ/r), subprocess-isolated code execution, multi-run CI; free models + gpt-4.1 family at full 39-task CI; two-model uncertainty-uplift experiment (GPT-4.1 complete, Llama partial — model-dependent effect confirmed); stat_validity v1.5 patch (numeric-evidence check, partial credit for lexical-only matches; −0.001 to −0.034 per model across 1,356 traces)
-- **In progress:** claude-haiku 39-task CI (33/39 → 39/39); calibration κ between lexical scorer and LLM judge (v1.5 re-run pending); Llama feat_002/model_003 V1 runs (pending daily TPD reset)
+- **In progress:** calibration κ between lexical scorer and LLM judge (v1.5 re-run pending); Llama feat_002/model_003 V1 runs (pending daily TPD reset)
+- **Done (coverage):** claude-haiku-4-5 reached full 39/39 (+4 messy) coverage — the 10 remaining tasks run at n=5 (`stat_011` repeatedly hit `max_steps` without converging, a haiku token-spiral consistent with Insight 3)
 - **Done (integration):** Tether + CostGuard `/replay` — production traces captured via Tether feed directly into CostGuard for RDAB-grounded cost-vs-quality comparison with 95% bootstrap CI
 - **Next:** NLP, visualization, and time-series task categories; arXiv paper
 
