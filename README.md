@@ -497,6 +497,14 @@ Headline: a prompt addendum asking for quantified uncertainty, named methods and
 limitations moved mean statistical validity **0.375 → 0.812** with correctness unchanged —
 but cost 4× the tokens on `claude-sonnet-4-6` and gained nothing on `gpt-4o-mini`.
 
+## Is this leaderboard still reproducible?
+
+24% of the 500 recorded runs cannot be reproduced today — not because this repo changed,
+but because Groq retired a model family and the Anthropic SDK dropped a parameter the
+harness still sent. See [REPRODUCIBILITY.md](REPRODUCIBILITY.md), and re-run the audit
+yourself with `python scripts/audit_model_availability.py` (free — list-models endpoints
+only).
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
