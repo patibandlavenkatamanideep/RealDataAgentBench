@@ -482,6 +482,21 @@ RDAB is the benchmark layer of a three-project evaluation stack:
 
 ---
 
+## Kitaru integration (branch: `kitaru-integration`)
+
+RDAB traces can be imported into [Kitaru](https://github.com/zenml-io/kitaru) as sessions
+and scored by a Kitaru evaluator that wraps this repo's own `StatValidityScorer`, so a
+baseline and a candidate prompt can be compared in one evidence store.
+
+See [`kitaru_integration/README.md`](kitaru_integration/README.md) for the full
+reproduction (total API spend: $1.80), [`RESULTS.md`](kitaru_integration/RESULTS.md) for
+the before/after table, and [`FRICTION.md`](kitaru_integration/FRICTION.md) for what was
+rough in the integration.
+
+Headline: a prompt addendum asking for quantified uncertainty, named methods and stated
+limitations moved mean statistical validity **0.375 → 0.812** with correctness unchanged —
+but cost 4× the tokens on `claude-sonnet-4-6` and gained nothing on `gpt-4o-mini`.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
