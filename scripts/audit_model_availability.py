@@ -55,6 +55,32 @@ REGISTRY = {
 }
 
 
+def harness_can_call_anthropic(model: str) -> bool:
+    """Would this harness successfully build an Anthropic request for `model` today?
+
+    The failure this catches is real but subtle: anthropic>=1.0 removed `temperature`
+    from messages.create(), and a harness that sends it unconditionally dies with a
+    TypeError before any request goes out. Ask the installed SDK and the harness's own
+    rule rather than assuming either.
+    """
+    import inspect
+
+    import anthropic
+
+    if model in NO_SAMPLING_PARAM_MODELS:
+        return True                      # the harness never sends the parameter here
+    accepts = "temperature" in inspect.signature(
+        anthropic.Anthropic(api_key="probe").messages.create
+    ).parameters
+    if accepts:
+        return True                      # SDK still takes it
+    # SDK dropped it: fine only if the harness asks the SDK before sending.
+    from realdataagentbench.harness import providers
+    return hasattr(providers.AnthropicProvider, "__init__") and "_sdk_accepts_temperature" in (
+        inspect.getsource(providers.AnthropicProvider)
+    )
+
+
 def live_models(provider: str) -> set[str] | None:
     """Model ids the provider serves this key, or None when unchecked."""
     if provider not in ENDPOINTS:      # e.g. Ollama: a local daemon, no hosted list API
@@ -93,9 +119,7 @@ def main() -> None:
                 buckets["unchecked"].append(row)
             elif model not in available:
                 buckets["retired"].append(row)
-            elif provider == "Anthropic" and model not in NO_SAMPLING_PARAM_MODELS:
-                # The harness sends `temperature`; anthropic>=1.0 removed it from
-                # messages.create(), so these fail before a request is even built.
+            elif provider == "Anthropic" and not harness_can_call_anthropic(model):
                 buckets["sdk_blocked"].append(row)
             else:
                 buckets["ok"].append(row)
@@ -121,6 +145,18 @@ def main() -> None:
     print(f"  blocked:      {blocked:4} ({blocked / total:.0%})")
     print(f"  reproducible: {totals['ok']:4} ({totals['ok'] / total:.0%})")
     print(f"  unchecked:    {totals['unchecked']:4} ({totals['unchecked'] / total:.0%})")
+
+    if "--check" in sys.argv:
+        # CI mode: fail only on a model that has recorded runs and was actually checked.
+        # An unconfigured provider is unchecked, not broken, and must not fail the build.
+        offenders = [r for r in buckets["retired"] + buckets["sdk_blocked"] if r[2] > 0]
+        if offenders:
+            print("\nFAIL: models with recorded leaderboard runs can no longer be run:")
+            for model, provider, n in sorted(offenders, key=lambda r: -r[2]):
+                print(f"  {model} ({provider}) — {n} recorded runs")
+            print("Update the registry or the harness, then refresh docs/results.json.")
+            raise SystemExit(1)
+        print("\nOK: every checked model with recorded runs is still callable.")
 
 
 if __name__ == "__main__":

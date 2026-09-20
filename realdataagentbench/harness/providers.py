@@ -229,6 +229,35 @@ def get_provider(model: str, api_keys: dict[str, str] | None = None) -> "BasePro
     )
 
 
+# ── Provider SDK provenance ───────────────────────────────────────────────────
+# A run can stop being reproducible because the provider SDK changed under it, not
+# because the model went away — anthropic>=1.0 removing `temperature` broke 79 recorded
+# runs that way, and nothing in the result JSON showed it. Record the version that
+# actually served each run. See REPRODUCIBILITY.md.
+_SDK_BY_PREFIX = (
+    ("claude", "anthropic"),
+    ("gpt-", "openai"), ("gpt4", "openai"),
+    ("gemini", "openai"),        # Google is called through the OpenAI-compatible client
+    ("llama", "openai"), ("mixtral", "openai"), ("gemma2", "openai"),
+    ("grok", "openai"),
+    ("gemma", "openai"), ("ollama", "openai"),
+)
+
+
+def provider_sdk_version(model: str) -> dict[str, str]:
+    """Name and version of the client library used to call `model`."""
+    from importlib.metadata import PackageNotFoundError, version
+
+    model = resolve_model(model)
+    package = next((pkg for prefix, pkg in _SDK_BY_PREFIX if model.startswith(prefix)), None)
+    if package is None:
+        return {}
+    try:
+        return {"sdk": package, "sdk_version": version(package)}
+    except PackageNotFoundError:  # pragma: no cover - the client would have failed first
+        return {"sdk": package, "sdk_version": "unknown"}
+
+
 # ── Shared tool dispatcher ────────────────────────────────────────────────────
 
 def dispatch_tool(name: str, inputs: dict, dataframe: pd.DataFrame) -> Any:

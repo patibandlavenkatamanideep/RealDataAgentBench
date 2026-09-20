@@ -12,11 +12,16 @@ python scripts/audit_model_availability.py
 
 ## Result, 2026-09-20
 
-| | runs | share |
+The audit reports against whatever harness code it is run with, so it gives two answers.
+
+| | as found on `main` | with the SDK fix on `kitaru-integration` |
 |---|---|---|
-| Reproducible today | 300 | 60% |
-| **Blocked** | **118** | **24%** |
-| Unchecked (no key here, or a local runtime) | 82 | 16% |
+| Reproducible | 300 (60%) | **379 (76%)** |
+| Blocked | **118 (24%)** | 39 (8%) |
+| Unchecked (no key here, or a local runtime) | 82 (16%) | 82 (16%) |
+
+A one-line change restores 79 of the 118 blocked runs. The remaining 39 need a decision
+about the registry, not a code fix — the model is genuinely gone.
 
 ### Blocked: retired at the provider — 39 runs
 
@@ -39,8 +44,18 @@ Messages.create() got an unexpected keyword argument 'temperature'
 
 `anthropic>=1.0` removed `temperature` from `messages.create()`. The harness only skipped
 it for the models in `NO_SAMPLING_PARAM_MODELS`, which is why `claude-opus-4-8` (43 runs)
-still works and the other three do not. Fixed on the `kitaru-integration` branch by asking
-the installed SDK whether the parameter exists rather than keeping a version table.
+still works and the other three do not.
+
+Fixed on the `kitaru-integration` branch by asking the installed SDK whether the parameter
+exists instead of maintaining a version table:
+
+```python
+self._sdk_accepts_temperature = "temperature" in inspect.signature(
+    self.client.messages.create
+).parameters
+```
+
+With that in place the audit reports these 79 runs as reproducible again.
 
 ### Unchecked — 82 runs
 
@@ -54,8 +69,12 @@ because the ecosystem moved underneath it — and nothing in the harness noticed
 that. A benchmark that reports a score without recording whether that score can still be
 obtained is reporting history, not a measurement.
 
-Two cheap mitigations, neither implemented yet:
+Both mitigations are now implemented on the `kitaru-integration` branch:
 
-1. Run this audit in CI and fail when a model with recorded runs disappears.
-2. Record the resolved provider SDK version alongside each run, so an SDK-side break is
-   visible in the data rather than only at the next execution.
+1. **`scripts/audit_model_availability.py --check`** exits non-zero when a model with
+   recorded runs can no longer be called, and `.github/workflows/model-availability.yml`
+   runs it weekly and on any change to the provider registry. Providers without a secret
+   are reported as unchecked and never fail the build.
+2. **Every run records the client library that served it.** `_build_result` now stores
+   `environment: {"sdk": "anthropic", "sdk_version": "1.7.0"}`, so an SDK-side break is
+   visible in the result JSON rather than only at the next execution.

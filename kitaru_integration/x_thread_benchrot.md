@@ -87,8 +87,11 @@ Audit script + full report: [link]
 
 ## Notes before posting
 
-- Post 1's "24%" = 118 of 500 runs. Another 16% (82 runs: gemma4 via Ollama, grok-3-mini
-  via xAI) is *unchecked* here, not broken — don't round it into the 24%.
+- Post 1's "24%" = 118 of 500 runs, measured against `main` as found. Another 16%
+  (82 runs: gemma4 via Ollama, grok-3-mini via xAI) is *unchecked* here, not broken —
+  don't round it into the 24%.
+- After the one-line fix in post 5, the audit reports 39 blocked (8%) and 379 reproducible
+  (76%). If you post the fix, post that number with it.
 - The `claude-opus-4-8` claim in post 4 is from the registry, not a live run today; it was
   excluded from the temperature path by `NO_SAMPLING_PARAM_MODELS`.
 - Post 5's snippet is on the `kitaru-integration` branch, not `main`, at the time of writing.
