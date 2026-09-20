@@ -86,3 +86,26 @@ Two, both on this branch and both needed before anything could run:
 The addendum deliberately does not name the scorer's regex vocabulary. `stat_validity` is
 lexical, so feeding it the words it greps for would raise the score without improving the
 analysis.
+
+## Phase 4 — cohorts, production import, tool mocking
+
+All three were tested against the **local** server. None of them required cloud.
+
+| feature | available locally? | evidence |
+|---|---|---|
+| **Cohorts** | ✅ yes | Created `rdab-low-validity` and snapshotted the four correct-but-weak baseline sessions into immutable version 4 (`session_count: 4`). Versions are deltas: each `cohort version create` applies an add/remove against a `--baseline` version |
+| **Production-session import** | ✅ yes | Six importers are registered out of the box on a fresh local server: `kitaru/langfuse`, `kitaru/langsmith`, `kitaru/phoenix`, `kitaru/logfire`, `kitaru/braintrust`, `kitaru/kitaru-jsonl`. `kitaru connection create` stores provider API credentials, and `session import --since/--until` fetches from a provider API rather than a file |
+| **Mocking tools during replay** | ⚠️ exists, untestable here | `--tool-policy` accepts `history` (serve recorded results, matched by tool name + arguments, with `on_miss: fail\|passthrough\|error_result`) and `static` (canned results per case). We could not exercise it end to end because replay cannot drive RDAB at all — see FRICTION.md #3 |
+
+Reproducing the cohort:
+
+```bash
+kitaru cohort create rdab-low-validity --agent <AGENT_UUID>     # not agent@version — FRICTION.md #8
+kitaru cohort version create rdab-low-validity --add-session <SESSION_UUID> --display-version weak-v1
+kitaru cohort version create rdab-low-validity --baseline <VERSION_UUID> --add-session <NEXT_SESSION_UUID>
+kitaru cohort version get rdab-low-validity@4      # session_count: 4
+```
+
+Nothing here needs cloud.kitaru.ai. The one capability we could not demonstrate —
+tool mocking during replay — is blocked by the custom-agent replay protocol, not by the
+local deployment.

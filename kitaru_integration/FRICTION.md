@@ -130,3 +130,32 @@ imports, not only for replays.
   and structured token usage appeared without us mapping them.
 - **The worker never sees your credentials leave the machine**, which made a public demo
   straightforward.
+
+## Found while testing cohorts (Phase 4)
+
+### 13. `--add-session` takes exactly one value, and says so unhelpfully
+"Ordered session IDs to add" reads as plural. Both plural forms fail:
+```
+$ kitaru cohort version create c --add-session ID1 --add-session ID2
+{"kind":"invalid_arguments","message":"Unused Tokens: ['ID2']."}
+$ kitaru cohort version create c --add-session ID1,ID2
+{"kind":"invalid_arguments","message":"Invalid value for --add-session: unable to convert \"ID1,ID2\" into UUID."}
+```
+Building a four-session cohort therefore takes four commands, each chaining off the
+previous version's UUID. "Unused Tokens" also reads like an internal parser message rather
+than "this flag accepts one value".
+
+### 14. `--baseline` rejects the reference format its sibling accepts
+`cohort version get` accepts `COHORT@VERSION` — that is how it is documented, and it works.
+`cohort version create --baseline` does not:
+```
+{"kind":"invalid_arguments","message":"Invalid value for --baseline: unable to convert \"rdab-low-validity@1\" into UUID."}
+```
+Third place in this CLI where the same style of reference means different things:
+`session import --agent` wants `NAME@VERSION`, `cohort create --agent` wants a UUID or bare
+name, `cohort version create --baseline` wants a UUID only.
+
+### Not a bug, worth recording
+`cohort version get` returns `session_count`, not a member list. An earlier note here
+claimed the cohort was empty; that was a wrong key guess on our side. `session_count: 4`
+confirms the membership is correct.
