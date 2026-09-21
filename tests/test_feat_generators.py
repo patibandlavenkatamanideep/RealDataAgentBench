@@ -181,14 +181,27 @@ class TestFeatTaskLoading:
         for tid in ["feat_001", "feat_002", "feat_003", "feat_004", "feat_005"]:
             assert registry.get(tid).category == "feature_engineering"
 
-    def test_registry_total_count(self):
+    def test_every_task_file_on_disk_is_registered(self):
+        """A hardcoded total only ever catches its own staleness.
+
+        The real risk is silent loss: the registry keys on `task_id`, so two files
+        claiming the same id leave one of them quietly unregistered. Comparing against
+        the files on disk catches that and does not break when a task is added.
+        """
         registry = TaskRegistry(TASKS_DIR)
-        assert len(registry) == 39
+        on_disk = sorted(TASKS_DIR.rglob("*.yaml"))
+        assert len(registry) == len(on_disk), (
+            f"{len(on_disk)} task files on disk but {len(registry)} registered - "
+            "a duplicate task_id silently overwrites"
+        )
 
     def test_filter_by_category(self):
         registry = TaskRegistry(TASKS_DIR)
         feat_tasks = registry.filter(category="feature_engineering")
-        assert len(feat_tasks) == 8
+        expected = {t.task_id for t in registry.all()
+                    if t.category == "feature_engineering"}
+        assert expected, "no feature_engineering tasks are registered at all"
+        assert {t.task_id for t in feat_tasks} == expected
 
     def test_feat_generators_registered(self):
         for name in ["house_prices", "employee_attrition", "retail_sales",
