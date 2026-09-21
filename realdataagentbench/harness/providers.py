@@ -162,6 +162,30 @@ write a clear, structured final answer that directly addresses all sub-questions
 in the task description. Be precise — include exact numeric values where computed."""
 
 
+# ── Statistical-validity prompt addendum (opt-in) ─────────────────────────────
+# Set RDAB_STAT_VALIDITY_PROMPT=1 to append this to the system prompt. It asks for
+# rigour the task already requires — quantified uncertainty, a named method, and the
+# limits of the result — rather than naming the scorer's vocabulary, which would game
+# the lexical checks instead of improving the analysis. Off by default: the existing
+# runner and every recorded leaderboard result stay byte-identical.
+STAT_VALIDITY_ADDENDUM = """
+
+When you write the final answer, also:
+  1. Quantify uncertainty numerically wherever you report an estimate — a confidence
+     interval, standard error, or standard deviation with its actual value, not a
+     promise to compute one.
+  2. Name the statistical method or metric you used to reach each conclusion.
+  3. State what would make the conclusion wrong: assumptions, limitations, or where the
+     result should not be applied."""
+
+
+def system_prompt() -> str:
+    """System prompt, optionally extended with the statistical-validity addendum."""
+    if os.environ.get("RDAB_STAT_VALIDITY_PROMPT") == "1":
+        return SYSTEM_PROMPT + STAT_VALIDITY_ADDENDUM
+    return SYSTEM_PROMPT
+
+
 # ── Budget exceeded error ─────────────────────────────────────────────────────
 
 class BudgetExceededError(Exception):
@@ -203,6 +227,35 @@ def get_provider(model: str, api_keys: dict[str, str] | None = None) -> "BasePro
         f"'grok-*' (xAI), 'gemini-*' (Google), 'gemma*' (Ollama). "
         f"Add new providers in harness/providers.py."
     )
+
+
+# ── Provider SDK provenance ───────────────────────────────────────────────────
+# A run can stop being reproducible because the provider SDK changed under it, not
+# because the model went away — anthropic>=1.0 removing `temperature` broke 79 recorded
+# runs that way, and nothing in the result JSON showed it. Record the version that
+# actually served each run. See REPRODUCIBILITY.md.
+_SDK_BY_PREFIX = (
+    ("claude", "anthropic"),
+    ("gpt-", "openai"), ("gpt4", "openai"),
+    ("gemini", "openai"),        # Google is called through the OpenAI-compatible client
+    ("llama", "openai"), ("mixtral", "openai"), ("gemma2", "openai"),
+    ("grok", "openai"),
+    ("gemma", "openai"), ("ollama", "openai"),
+)
+
+
+def provider_sdk_version(model: str) -> dict[str, str]:
+    """Name and version of the client library used to call `model`."""
+    from importlib.metadata import PackageNotFoundError, version
+
+    model = resolve_model(model)
+    package = next((pkg for prefix, pkg in _SDK_BY_PREFIX if model.startswith(prefix)), None)
+    if package is None:
+        return {}
+    try:
+        return {"sdk": package, "sdk_version": version(package)}
+    except PackageNotFoundError:  # pragma: no cover - the client would have failed first
+        return {"sdk": package, "sdk_version": "unknown"}
 
 
 # ── Shared tool dispatcher ────────────────────────────────────────────────────
@@ -257,10 +310,19 @@ class BaseProvider(ABC):
 class AnthropicProvider(BaseProvider):
     def __init__(self, model: str, api_keys: dict[str, str] | None = None):
         super().__init__(model)
+        import inspect
+
         import anthropic
         self.client = anthropic.Anthropic(
             api_key=(api_keys or {}).get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_API_KEY")
         )
+        # anthropic>=1.0 dropped `temperature` from messages.create() altogether, so
+        # sending it raises TypeError before the request is built — on every model, not
+        # just the ones in NO_SAMPLING_PARAM_MODELS. Ask the installed SDK instead of
+        # maintaining a version table.
+        self._sdk_accepts_temperature = "temperature" in inspect.signature(
+            self.client.messages.create
+        ).parameters
 
     def run(self, task_description, dataframe, max_steps, allowed_tools, tracer,
             budget=None, temperature=1.0):
@@ -272,11 +334,12 @@ class AnthropicProvider(BaseProvider):
         create_kwargs: dict = dict(
             model=self.model,
             max_tokens=4096,
-            system=SYSTEM_PROMPT,
+            system=system_prompt(),
             tools=tools,
         )
-        # Opus 4.7+ (and Fable/Mythos) reject `temperature` — omit it there.
-        if self.model not in NO_SAMPLING_PARAM_MODELS:
+        # Opus 4.7+ (and Fable/Mythos) reject `temperature`; newer SDKs remove the
+        # parameter entirely. Send it only when both the model and the SDK accept it.
+        if self.model not in NO_SAMPLING_PARAM_MODELS and self._sdk_accepts_temperature:
             create_kwargs["temperature"] = temperature
 
         for _ in range(max_steps):
@@ -385,7 +448,7 @@ class OpenAIProvider(BaseProvider):
         oai_tools = self._tools_to_openai(tools)
 
         messages = [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": system_prompt()},
             {"role": "user", "content": task_description},
         ]
 

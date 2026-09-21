@@ -27,7 +27,7 @@ from ..core.registry import TaskRegistry
 from ..core.task import TaskSchema
 from ..datasets import get_generator
 from .agent import Agent
-from .providers import resolve_model
+from .providers import provider_sdk_version, resolve_model
 from .tracer import Trace
 
 
@@ -114,6 +114,7 @@ class Runner:
             "model": self.model,
             "run_at": datetime.now(timezone.utc).isoformat(),
             "dataset_shape": list(df.shape),
+            "environment": provider_sdk_version(self.model),
             "trace": trace.to_dict(),
         }
 

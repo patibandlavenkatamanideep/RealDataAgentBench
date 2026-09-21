@@ -21,6 +21,10 @@ dependencies = [
     "RestrictedPython>=6.0",
     "python-dotenv>=1.0.0",
     "openai>=1.30.0",
+    # scripts/audit_model_availability.py imports httpx directly. It arrived
+    # transitively via anthropic/openai until it didn't, which is what the audit job
+    # failing on ModuleNotFoundError was telling us.
+    "httpx>=0.27",
 ]
 
 [project.optional-dependencies]

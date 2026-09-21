@@ -482,6 +482,44 @@ RDAB is the benchmark layer of a three-project evaluation stack:
 
 ---
 
+## Kitaru integration (branch: `kitaru-integration`)
+
+RDAB traces can be imported into [Kitaru](https://github.com/zenml-io/kitaru) as sessions
+and scored by a Kitaru evaluator that wraps this repo's own `StatValidityScorer`, so a
+baseline and a candidate prompt can be compared in one evidence store.
+
+See [`kitaru_integration/README.md`](kitaru_integration/README.md) for the full
+reproduction (total API spend: $1.80), [`RESULTS.md`](kitaru_integration/RESULTS.md) for
+the before/after table, and [`FRICTION.md`](kitaru_integration/FRICTION.md) for what was
+rough in the integration.
+
+Headline: a prompt addendum asking for quantified uncertainty, named methods and stated
+limitations moved mean statistical validity **0.375 → 0.812** with correctness unchanged —
+but cost 4× the tokens on `claude-sonnet-4-6` and gained nothing on `gpt-4o-mini`.
+
+## Is this leaderboard still reproducible?
+
+24% of the 500 recorded runs cannot be reproduced today — not because this repo changed,
+but because Groq retired a model family and the Anthropic SDK dropped a parameter the
+harness still sent. See [REPRODUCIBILITY.md](REPRODUCIBILITY.md), and re-run the audit
+yourself with `python scripts/audit_model_availability.py` (free — list-models endpoints
+only).
+
+## Kitaru Replay Lab
+
+A small experiment in replaying benchmark runs instead of re-paying for them. Runs offline
+from recorded traces — no API key, no cost:
+
+```bash
+python scripts/kitaru_replay_lab.py \
+  --tasks feat_001,feat_003 --model gemini-2.5-flash --runs 1 \
+  --out artifacts/kitaru_replay/
+```
+
+Replay reproduced the live DAB scores exactly (0.848 and 0.810) in 0.05s per case instead
+of ~18s. Findings: [docs/kitaru_replay_findings.md](docs/kitaru_replay_findings.md).
+Feedback for the Kitaru team: [docs/kitaru_feedback_for_zenml.md](docs/kitaru_feedback_for_zenml.md).
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
