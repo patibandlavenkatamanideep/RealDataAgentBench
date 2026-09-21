@@ -165,8 +165,11 @@ class TestMLEngineeringTasks:
             task = registry.get(tid)
             assert task.task_id == tid
 
-    def test_total_task_count(self, registry):
-        assert len(registry) == 39
+    def test_every_task_file_on_disk_is_registered(self, registry):
+        from pathlib import Path
+
+        tasks_dir = Path(__file__).parent.parent / "tasks"
+        assert len(registry) == len(sorted(tasks_dir.rglob("*.yaml")))
 
     def test_mod_001_category(self, registry):
         task = registry.get("mod_001")
